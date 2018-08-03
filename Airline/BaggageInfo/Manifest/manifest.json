@@ -1,0 +1,44 @@
+﻿{
+  "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.0",
+  "version": "1.0.0",
+  "id": "4c33c1e7-6bb8-419f-b5f8-ec6197799ecb",
+  "packageName": "com.airline.BaggageInfo",
+  "developer": {
+    "name": "Airline Company",
+    "websiteUrl": "https://www.microsoft.com",
+    "privacyUrl": "https://www.microsoft.com/privacy",
+    "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
+  },
+  "name": {
+    "short": "BaggageInfo",
+    "full": "This is an app which queries Passenger Baggage Information for a flight"
+  },
+  "description": {
+    "short": "This is a Passenger Baggage Information app",
+    "full": "This is an app to search for passenger baggage information using a bot."
+  },
+  "icons": {
+    "outline": "baggage20x20.png",
+    "color": "baggage96x96.png"
+  },
+  "accentColor": "#60A18E",
+  "bots": [
+    {
+      "botId": "4c33c1e7-6bb8-419f-b5f8-ec6197799ecb",
+      "needsChannelSelector": false,
+      "isNotificationOnly": false,
+      "scopes": [
+        "team",
+        "personal"
+      ]
+    }
+  ],
+  "permissions": [
+    "messageTeamMembers",
+    "identity"
+  ],
+  "validDomains": [
+    "*.azurewebsites.net"
+  ]
+}

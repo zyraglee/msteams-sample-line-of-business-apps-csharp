@@ -1,0 +1,61 @@
+﻿{
+  "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.0",
+  "version": "1.0.0",
+  "id": "bcae082d-24e5-4f85-8b0b-07471c2619d7",
+  "packageName": "com.airline.airpass",
+  "developer": {
+    "name": "AirPASS developer",
+    "websiteUrl": "https://www.microsoft.com",
+    "privacyUrl": "https://www.microsoft.com/privacy",
+    "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
+  },
+  "name": {
+    "short": "AirPASS",
+    "full": "This is an app for an AirPASS"
+  },
+  "description": {
+    "short": "This is an airline app",
+    "full": "This is an airline app whic allows you to search for passengers in bot and compose extension."
+  },
+  "icons": {
+    "outline": "airpass20x20.png",
+    "color": "airpass96x96.png"
+  },
+  "accentColor": "#60A18E",
+  "bots": [
+    {
+      "botId": "bcae082d-24e5-4f85-8b0b-07471c2619d7",
+      "needsChannelSelector": false,
+      "isNotificationOnly": false,
+      "scopes": [
+        "team"
+      ]
+    }
+  ],
+  "composeExtensions": [
+    {
+      "botId": "bcae082d-24e5-4f85-8b0b-07471c2619d7",
+      "scopes": [
+        "team"
+      ],
+      "commands": [
+        {
+          "id": "search",
+          "description": "Gets passenger details based on Name or Seat number.",
+          "title": "Get Passenger Details",
+          "initialRun": true,
+          "parameters": [
+            {
+              "name": "searchText",
+              "description": "Name or seat to select",
+              "title": "Passenger Name/Seat number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": [],
+  "validDomains": []
+}
