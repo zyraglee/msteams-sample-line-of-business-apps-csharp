@@ -1,4 +1,34 @@
+# Industries Demo Apps
 
+## Airline
+
+1. **Flight Info Bot**<br>
+    This bot allows you to search flights and rebook a passenger to another flight.     
+
+2. **Passenger Info Bot**<br>
+    This bot you to search passengers by PNR#, name, zone and seat Number. Also you can find which all passengers need special assistance. 
+
+3. **Baggage Info Bot**<br>
+    This bot allows you to know status of baggage. You can also report missing & rebook it on another flight.
+
+4. **Flight Team Creation Bot**<br>
+    This bot allows you to create teams with specified members for a particular flight.
+
+5. **Fleet Bot**<br>
+    This bot allows you search for aircrafts at given base location. You can also assign aircraft to particular flight or mark it as grounded for maintenance.<br>
+
+## Common
+**Notification Bot**<br>
+Notification Bot will notify you on weather changes, operations delays etc.
+
+## BFSI
+
+## Consumer Good
+
+## Manufacturing
+
+
+<br><br>
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
