@@ -18,33 +18,33 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
             listCard.content = new Content();
             //listCard.content.title = "The following flights are avilibile at Base Location " + JourneyDate.ToShortDateString();
             var list = new List<Item>();
-           
+
             foreach (var aircraft in aircraftDetails)
             {
                 //DateTime journeydate = TimeZoneInfo.ConvertTimeToUtc(JourneyDate.Date);
                 //DateTime dabasedate = TimeZoneInfo.ConvertTimeToUtc(flight.JourneyDate.Date);
                 //if (journeydate.Date>DateTime.Now.Date)
                 //{
-                listCard.content.title = "The following aircrafts are avilibile at " + aircraft.BaseLocation; 
-                    
-                    var item = new Item();
-                    item.icon = "https://airlinebaggage.azurewebsites.net/resources/Flight.png";
-                    item.type = "resultItem";
-                    item.id = aircraft.FlightNumber;
-                    item.title = "Aircraft Id: " + aircraft.AircraftId + "   |" + " Aircraft Type: " + aircraft.FlightType;
+                listCard.content.title = "The following aircrafts are available at " + aircraft.BaseLocation;
+
+                var item = new Item();
+                item.icon = "https://airlinebaggage.azurewebsites.net/resources/Flight.png";
+                item.type = "resultItem";
+                item.id = aircraft.FlightNumber;
+                item.title = "Aircraft ID: " + aircraft.AircraftId + "   |" + " Type: " + aircraft.FlightType;
                 item.subtitle = "Model: " + aircraft.Model + "   |" + " Capacity: " + aircraft.Capacity;
 
                 item.tap = new Tap()
-                    {
-                        type = "imBack",
-                        title = "Aircraft",
-                        value = "Show Aircraft by Id " + " (" + aircraft.AircraftId + ")"
-                    };
-                    list.Add(item);
+                {
+                    type = "imBack",
+                    title = "Aircraft",
+                    value = "Show Aircraft by Id " + " (" + aircraft.AircraftId + ")"
+                };
+                list.Add(item);
                 //}
-               
+
             }
-           
+
             listCard.content.items = list.ToArray();
 
             Attachment attachment = new Attachment();
@@ -65,7 +65,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                         new O365ConnectorCardFact("Base location", flight.BaseLocation),
                         new O365ConnectorCardFact("Capacity", flight.Capacity),
                         new O365ConnectorCardFact("Flight type",flight.FlightType),
-                        new O365ConnectorCardFact("Flight Number",flight.FlightNumber)
+                        //new O365ConnectorCardFact("Flight Number",flight.FlightNumber)
 
                     }
             };
@@ -83,7 +83,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
             //            null,
             //            false,
             //            null)
-                    
+
             //    },
             //    new List<O365ConnectorCardActionBase>
             //    {
@@ -117,9 +117,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
         }
     }
 
-    
 
-    
+
+
 
     public class O365BodyValue
     {

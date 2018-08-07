@@ -90,12 +90,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 }
                 else
                 {
-                    replyActivity.Text = $"Aircrafts not avilibile for selected base location with the flight number";
+                    replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
                 }
             }
             else
             {
-                replyActivity.Text = $"Aircrafts not avilibile for selected base location with the flight number";
+                replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
             }
         }
 
@@ -115,7 +115,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
         private static async Task AttachAssignairCraft(AirCraftDetails aircardInfo, Activity replyActivity)
         {
-            replyActivity.Text = $"Flight {aircardInfo.FlightNumber} has been assigned Aircraft Id: {aircardInfo.AircraftId}"; 
+            replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been assigned flight: {aircardInfo.AircraftId}"; 
         }
 
         private static async Task MarkGroundedAirCraft(string flightnumber, Activity replyActivity)

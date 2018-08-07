@@ -58,7 +58,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
             var section = new O365ConnectorCardSection
             {
-                ActivityTitle = "Show me aircraft details",
+                ActivityTitle = "Your one stop destination to managing your fleet",
                 
             };
             
