@@ -47,6 +47,9 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdaptiveCards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\AdaptiveCards.1.0.3\lib\net452\AdaptiveCards.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac">
       <HintPath>..\..\Packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -91,6 +94,9 @@
     <Reference Include="Microsoft.Bot.Connector">
       <HintPath>..\..\Packages\Microsoft.Bot.Connector.3.15.3\lib\net46\Microsoft.Bot.Connector.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Bot.Connector.Teams, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Connector.Teams.0.9.0\lib\net46\Microsoft.Bot.Connector.Teams.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
       <HintPath>..\..\Packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -149,6 +155,9 @@
       <HintPath>..\..\Packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Polly, Version=5.9.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Polly-Signed.5.9.0\lib\net45\Polly.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IdentityModel.Tokens.Jwt">
       <HintPath>..\..\Packages\System.IdentityModel.Tokens.Jwt.5.2.4\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
@@ -193,6 +202,9 @@
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
     <Content Include="Manifest\color.png" />
+    <Content Include="Public\Resources\seattle-social-tennis-club.png" />
+    <Content Include="Public\Resources\silverdale-active-ladies.png" />
+    <Content Include="Public\Resources\tenderfootadventures.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -200,10 +212,11 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\EchoDialog.cs" />
+    <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\O365ActionRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +227,13 @@
   <ItemGroup>
     <Content Include="Manifest\manifest.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Weather.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\OperationsDelay.json" />
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -5,6 +5,8 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Web.Http.Description;
 using System.Net.Http;
+using System;
+using Microsoft.Bot.Connector.Teams;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -22,16 +24,25 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new EchoDialog());
+                await Conversation.SendAsync(activity, () => new RootDialog());
+            }
+            else if (activity.Type == ActivityTypes.Invoke)
+            {
+                if (activity.IsO365ConnectorCardActionQuery())
+                {
+                    activity.Text = "ConnectorAction";
+                    await Conversation.SendAsync(activity, () => new RootDialog());
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
+                }
             }
             else
             {
-                HandleSystemMessage(activity);
+                await HandleSystemMessage(activity);
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
-        private Activity HandleSystemMessage(Activity message)
+        private async Task<Activity> HandleSystemMessage(Activity message)
         {
             if (message.Type == ActivityTypes.DeleteUserData)
             {
@@ -43,6 +54,18 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 // Handle conversation state changes, like members being added and removed
                 // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
                 // Not available in all channels
+
+                for (int i = 0; i < message.MembersAdded.Count; i++)
+                {
+                    if (message.MembersAdded[i].Id == message.Recipient.Id)
+                    {
+                        // Bot is added. Let's send welcome message.
+                        message.Text = "Hi";
+                        await Conversation.SendAsync(message, () => new RootDialog());
+                        break;
+                    }
+                }
+
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
             {
