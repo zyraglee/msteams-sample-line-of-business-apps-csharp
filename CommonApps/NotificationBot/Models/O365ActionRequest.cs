@@ -9,5 +9,7 @@ namespace SimpleEchoBot.Models
     {
         public string Value { get; set; }
         public string ActionId { get; set; }
+        public string Members { get; set; }
+        
     }
 }

@@ -1,14 +1,14 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Net.Http;
 using Microsoft.Bot.Connector.Teams.Models;
 using System.Collections.Generic;
-using Microsoft.Bot.Connector.Teams;
 using SimpleEchoBot.Models;
 using AdaptiveCards;
+using Microsoft.Bot.Connector.Teams;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -33,11 +33,18 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             }
             else
             {
+                ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                var channelData = message.GetChannelData<TeamsChannelData>();
+                IList<ChannelAccount> members = null;
+                if (channelData.Team != null)
+                {
+                    members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+                }
+
                 Activity reply = message.CreateReply();
                 var actionId = Guid.NewGuid().ToString();
-                reply.Attachments.Add(GetWelcomeMessage(actionId));
+                reply.Attachments.Add(GetWelcomeMessage(actionId, members));
 
-                ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
                 var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(reply);
                 context.ConversationData.SetValue(actionId, msgToUpdate.Id);
                 privateStorage.Add(actionId, msgToUpdate.Id);
@@ -52,6 +59,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             O365ConnectorActionRequest actionInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<O365ConnectorActionRequest>(o365CardQuery.Body);
 
             Activity reply = message.CreateReply();
+
             switch (actionInfo.Value)
             {
                 case "Weather":
@@ -71,7 +79,11 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 default:
                     break;
             }
+
+            MicrosoftAppCredentials.TrustServiceUrl(message.ServiceUrl, DateTime.MaxValue);
             ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+
+            reply.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
 
             var lastMessageId = context.ConversationData.GetValueOrDefault<string>(actionInfo.ActionId);
             if (lastMessageId == null && privateStorage.ContainsKey(actionInfo.ActionId))
@@ -87,6 +99,78 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             else
             {
                 await connector.Conversations.SendToConversationAsync(reply);
+            }
+
+            if (!string.IsNullOrEmpty(actionInfo.Members)) // Send private messages.
+            {
+                // Send private message to these users.
+                var members = actionInfo.Members.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var memberId in members)
+                {
+                    // Create or get existing chat conversation with user
+                    try
+                    {
+                        await SendNotification(context, reply, memberId, actionInfo.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        private static async Task SendNotification(IDialogContext context, Activity reply, string memberId, string notificationType)
+        {
+            var userId = memberId.Trim();
+            var botId = context.Activity.Recipient.Id;
+            var botName = context.Activity.Recipient.Name;
+
+            var channelData = context.Activity.GetChannelData<TeamsChannelData>();
+            var connectorClient = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
+
+            var parameters = new ConversationParameters
+            {
+                Bot = new ChannelAccount(botId, botName),
+                Members = new ChannelAccount[] { new ChannelAccount(userId) },
+                ChannelData = new TeamsChannelData
+                {
+                    Tenant = channelData.Tenant,
+                }
+            };
+
+            var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
+            var replyMessage = Activity.CreateMessageActivity();
+            replyMessage.From = new ChannelAccount(botId, botName);
+            replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
+            replyMessage.ChannelData = new TeamsChannelData() {  Notification = new NotificationInfo(true) };
+
+            switch (notificationType)
+            {
+                case "Weather":
+                    reply.Summary = "Here are weather updates";
+                    break;
+                case "OperationsDelay":
+                    reply.Summary = "Operation delay due to bad weather";
+                    break;
+                case "SocialEvents":
+                    reply.Summary = "Here are few social events";
+                    break;
+                default:
+                    break;
+            }
+
+            replyMessage.Attachments = reply.Attachments;
+
+            replyMessage.AttachmentLayout = reply.AttachmentLayout;
+
+            try
+            {
+                await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
@@ -195,11 +279,10 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             return null;
         }
 
-        public static Attachment GetWelcomeMessage(string actionId)
+        public static Attachment GetWelcomeMessage(string actionId, IList<ChannelAccount> members)
         {
             var section = new O365ConnectorCardSection("Please select the type of notification you want to receive", null, null, null, null);
-
-            var zoneWiseCard = new O365ConnectorCardActionCard(
+            var notificationCardAction = new O365ConnectorCardActionCard(
                 O365ConnectorCardActionCard.Type,
                 "Select Notification",
                 "notificationType",
@@ -226,8 +309,37 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                         O365ConnectorCardHttpPOST.Type,
                         "Show notification",
                         "notificationType",
-                        @"{""Value"":""{{notificationType.value}}"",  ""ActionId"":"""+ actionId + @""" }")
+                        @"{""Value"":""{{notificationType.value}}"",  ""ActionId"":"""+ actionId + @"""  "+ (members==null?"":@",""Members"":""{{members.value}}""") + "}")
                 });
+
+            if (members != null)
+            {
+                var memberSelection = new O365ConnectorCardMultichoiceInput(
+                    O365ConnectorCardMultichoiceInput.Type,
+                    "members",
+                    false,
+                    "Select Members",
+                    null, new List<O365ConnectorCardMultichoiceInputChoice>()
+                    ,
+                    "compact"
+                    , true);
+                foreach (var member in members)
+                {
+                    var nameParts = member.Name.Split(' ');
+                    var fullName = string.Empty;
+                    for (int i = 0; i < nameParts.Length && i < 2; i++)
+                    {
+                        if (!string.IsNullOrEmpty(fullName))
+                            fullName += " ";
+                        fullName += nameParts[i].Trim();
+                    }
+
+                    memberSelection.Choices.Add(new O365ConnectorCardMultichoiceInputChoice(fullName, member.Id));
+                }
+
+                notificationCardAction.Inputs.Add(memberSelection);
+            }
+
 
             O365ConnectorCard card = new O365ConnectorCard()
             {
@@ -237,7 +349,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>
                 {
-                    zoneWiseCard
+                    notificationCardAction
                 }
             };
             return card.ToAttachment();
