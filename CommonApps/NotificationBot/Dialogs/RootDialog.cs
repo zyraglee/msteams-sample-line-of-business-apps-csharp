@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
@@ -38,16 +39,11 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 if (channelData.Team != null)
                 {
                     members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
-
                 }
 
                 Activity reply = message.CreateReply();
                 var actionId = Guid.NewGuid().ToString();
                 reply.Attachments.Add(GetWelcomeMessage(actionId, members));
-
-
-
-
 
                 var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(reply);
                 context.ConversationData.SetValue(actionId, msgToUpdate.Id);
@@ -105,32 +101,28 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 await connector.Conversations.SendToConversationAsync(reply);
             }
 
-            new Task(() =>
-           {
-               if (!string.IsNullOrEmpty(actionInfo.Members))
-               {
-                   // Send private message to these users.
-                   var members = actionInfo.Members.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                   foreach (var memberId in members)
-                   {
-                       // Create or get existing chat conversation with user
-                       try
-                       {
-                           SendNotification(context, reply, memberId);
-                       }
-                       catch (Exception ex)
-                       {
-                           Console.WriteLine(ex);
-                       }
-                   }
-               }
-           }).Start();
-
+            if (!string.IsNullOrEmpty(actionInfo.Members)) // Send private messages.
+            {
+                // Send private message to these users.
+                var members = actionInfo.Members.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var memberId in members)
+                {
+                    // Create or get existing chat conversation with user
+                    try
+                    {
+                        await SendNotification(context, reply, memberId, actionInfo.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
         }
 
-        private static async Task SendNotification(IDialogContext context, Activity reply, string memberId)
+        private static async Task SendNotification(IDialogContext context, Activity reply, string memberId, string notificationType)
         {
-            var userId = memberId;
+            var userId = memberId.Trim();
             var botId = context.Activity.Recipient.Id;
             var botName = context.Activity.Recipient.Name;
 
@@ -144,25 +136,40 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 ChannelData = new TeamsChannelData
                 {
                     Tenant = channelData.Tenant,
-                    Notification = new NotificationInfo(true)
                 }
             };
 
             var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
-
             var replyMessage = Activity.CreateMessageActivity();
             replyMessage.From = new ChannelAccount(botId, botName);
             replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
+            replyMessage.ChannelData = new TeamsChannelData() {  Notification = new NotificationInfo(true) };
+
+            switch (notificationType)
+            {
+                case "Weather":
+                    reply.Summary = "Here are weather updates";
+                    break;
+                case "OperationsDelay":
+                    reply.Summary = "Operation delay due to bad weather";
+                    break;
+                case "SocialEvents":
+                    reply.Summary = "Here are few social events";
+                    break;
+                default:
+                    break;
+            }
+
             replyMessage.Attachments = reply.Attachments;
+
             replyMessage.AttachmentLayout = reply.AttachmentLayout;
 
             try
             {
-                await connectorClient.Conversations.SendToConversationAsync((Activity)replyMessage);
+                await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine(ex);
             }
         }
@@ -310,7 +317,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 var memberSelection = new O365ConnectorCardMultichoiceInput(
                     O365ConnectorCardMultichoiceInput.Type,
                     "members",
-                    true,
+                    false,
                     "Select Members",
                     null, new List<O365ConnectorCardMultichoiceInputChoice>()
                     ,
@@ -318,7 +325,16 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                     , true);
                 foreach (var member in members)
                 {
-                    memberSelection.Choices.Add(new O365ConnectorCardMultichoiceInputChoice(member.Name, member.Id));
+                    var nameParts = member.Name.Split(' ');
+                    var fullName = string.Empty;
+                    for (int i = 0; i < nameParts.Length && i < 2; i++)
+                    {
+                        if (!string.IsNullOrEmpty(fullName))
+                            fullName += " ";
+                        fullName += nameParts[i].Trim();
+                    }
+
+                    memberSelection.Choices.Add(new O365ConnectorCardMultichoiceInputChoice(fullName, member.Id));
                 }
 
                 notificationCardAction.Inputs.Add(memberSelection);
