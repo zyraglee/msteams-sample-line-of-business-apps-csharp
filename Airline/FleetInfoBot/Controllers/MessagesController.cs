@@ -12,12 +12,16 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Model;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
 using System.Linq;
 using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using System.Configuration;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        
+        
+
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
@@ -53,24 +57,46 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             var connectorClient = new ConnectorClient(new Uri(activity.ServiceUrl));
             O365ConnectorCardActionQuery o365CardQuery = activity.GetO365ConnectorCardActionQueryData();
             Activity replyActivity = activity.CreateReply();
-            switch (o365CardQuery.ActionId)
+            try
             {
-                case Constants.ShowAirCraftDetails:
+                if (o365CardQuery.ActionId == Constants.ShowAirCraftDetails)
+                {
                     AirCraftDetails aircraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
                     await ShowAircraftDetails(aircraftInfo, replyActivity);
-                    break;
-                case Constants.Assignaircraft:
-                    AirCraftDetails assignairCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
-                    await AttachAssignairCraft(assignairCraftInfo, replyActivity);
-                    break;
-                case Constants.MarkGrounded:
-                    var Flightnumber1 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await MarkGroundedAirCraft(Flightnumber1.Value, replyActivity);
-                    break;
-                default:
-                    break;
+                    
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                }
+                else
+                    await Conversation.SendAsync(activity, () => new EchoBot());
             }
-            await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
+            catch (Exception e)
+            {
+                activity.CreateReply(e.Message.ToString());
+            }
+
+            //switch (o365CardQuery.ActionId)
+            //{
+            //    case Constants.ShowAirCraftDetails:
+            //        AirCraftDetails aircraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
+            //        await ShowAircraftDetails(aircraftInfo, replyActivity);
+            //        break;
+            //    case Constants.Assignaircraft:
+            //        AirCraftDetails assignairCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
+            //        await AttachAssignairCraft(assignairCraftInfo, replyActivity);
+            //        break;
+            //    case Constants.MarkGrounded:
+            //        AirCraftDetails groundedAirCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
+            //        await MarkGroundedAirCraft(groundedAirCraftInfo, replyActivity);
+            //        break;
+            //    case Constants.Available:
+            //        AirCraftDetails freeAirCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
+            //        await MarkFreeAirCraft(freeAirCraftInfo, replyActivity);
+            //        break;
+            //    default:
+            //        break;
+            //}
+            //await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -90,12 +116,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 }
                 else
                 {
-                    replyActivity.Text = $"Aircrafts not avilibile for selected base location with the flight number";
+                    replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
                 }
             }
             else
             {
-                replyActivity.Text = $"Aircrafts not avilibile for selected base location with the flight number";
+                replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
             }
         }
 
@@ -115,12 +141,70 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
         private static async Task AttachAssignairCraft(AirCraftDetails aircardInfo, Activity replyActivity)
         {
-            replyActivity.Text = $"Flight {aircardInfo.FlightNumber} has been assigned Aircraft Id: {aircardInfo.AircraftId}"; 
+
+
+            var aircraftInfo = await DocumentDBRepository<AirCraftInfo>.GetItemsAsync(d => d.FlightNumber == aircardInfo.FlightNumber && d.AircraftId == aircardInfo.AircraftId);
+            
+            if (aircraftInfo.Count() > 0)
+            {
+                try
+                {
+                    var list = aircraftInfo.FirstOrDefault();
+                    
+                    list.Status = Status.Assigned;
+                    var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
+                    
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
+                }
+                catch (Exception e)
+                {
+                    replyActivity.Text = e.Message.ToString();
+                }
+            }
+         }
+
+        private static async Task MarkGroundedAirCraft(AirCraftDetails aircardInfo, Activity replyActivity)
+        {
+            var aircraftInfo = await DocumentDBRepository<AirCraftInfo>.GetItemsAsync(d => d.FlightNumber == aircardInfo.FlightNumber && d.AircraftId == aircardInfo.AircraftId);
+
+            if (aircraftInfo.Count() > 0)
+            {
+                try
+                {
+                    var list = aircraftInfo.FirstOrDefault();
+
+                    list.Status = Status.Grounded;
+                    var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been grounded";
+                }
+                catch (Exception e)
+                {
+                    replyActivity.Text = e.Message.ToString();
+                }
+            }
+           
         }
 
-        private static async Task MarkGroundedAirCraft(string flightnumber, Activity replyActivity)
+        private static async Task MarkFreeAirCraft(AirCraftDetails aircardInfo, Activity replyActivity)
         {
-            replyActivity.Text = $"Aircraft {flightnumber} has been grounded";
+            var aircraftInfo = await DocumentDBRepository<AirCraftInfo>.GetItemsAsync(d => d.FlightNumber == aircardInfo.FlightNumber && d.AircraftId == aircardInfo.AircraftId);
+
+            if (aircraftInfo.Count() > 0)
+            {
+                try
+                {
+                    var list = aircraftInfo.FirstOrDefault();
+
+                    list.Status = Status.Available;
+                    var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} is available";
+                }
+                catch (Exception e)
+                {
+                    replyActivity.Text = e.Message.ToString();
+                }
+            }
+
         }
 
         private static async Task CreateDataRecords()

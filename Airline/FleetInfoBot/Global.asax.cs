@@ -20,12 +20,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+       
+       
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            DocumentDBRepository<AirCraftInfo>.Initialize(); // Initialize DB
+            DocumentDBRepository<AirCraftInfo>.Initialize();// Initialize DB
             Conversation.UpdateContainer(
                builder =>
                {
