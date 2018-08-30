@@ -11,5 +11,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
         public const string Rebook = "Rebook the passenger";
         public const string Assignaircraft = "Assign the new aircraft";
         public const string MarkGrounded = "MarkGrounded";
+        public const string Available = "Available";
     }
 }

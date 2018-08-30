@@ -228,10 +228,13 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Manifest\contoso20x20.png" />
-    <Content Include="Manifest\contoso96x96.png" />
+    <Content Include="Manifest\Airline-Fleet-Bot-02.png" />
+    <Content Include="Manifest\Outline-Fleet-Bot-09.png" />
+    <Content Include="Resources\Airline-Fleet-Bot-02.png" />
     <Content Include="Scripts\teamsapp.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
