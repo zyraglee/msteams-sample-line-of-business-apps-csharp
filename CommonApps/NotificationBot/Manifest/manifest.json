@@ -19,7 +19,7 @@
     "full": "This sample notification allows demonstration of notifications based on industries. You can extend this to add more content and capabilities."
   },
   "icons": {
-    "outline": "color.png",
+    "outline": "outline.png",
     "color": "color.png"
   },
   "accentColor": "#60A18E",
