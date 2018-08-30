@@ -16,14 +16,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
     public static class DocumentDBRepository<T> where T : class
     {
         private static readonly string DatabaseId = ConfigurationManager.AppSettings["database"];
-        private static readonly string CollectionId = ConfigurationManager.AppSettings["collection"];
-        
+        private static readonly string CollectionId = ConfigurationManager.AppSettings["AirCraftInfoCollection"];
         private static DocumentClient client;
 
         public static void Initialize()
         {
             client = new DocumentClient(new Uri(ConfigurationManager.AppSettings["endpoint"]), ConfigurationManager.AppSettings["authKey"]);
-            
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
         }
@@ -69,7 +67,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
             }
         }
 
-        public static async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate) 
+        public static async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate)
         {
             IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
@@ -84,21 +82,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
 
             return results;
         }
-
-        //public static async Task<IEnumerable<T>> GetItemsAsync()
-        //{
-        //    IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
-        //        UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId))
-        //        .AsDocumentQuery();
-
-        //    List<T> results = new List<T>();
-        //    while (query.HasMoreResults)
-        //    {
-        //        results.AddRange(await query.ExecuteNextAsync<T>());
-        //    }
-
-        //    return results;
-        //}
 
         public static async Task<Document> CreateItemAsync(T item)
         {
@@ -118,18 +101,16 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
                    .First();
         }
 
-        
-
 
         public static void DeleteDocumentAsync(string id)
         {
             var passengertodelete =
                client.CreateDocumentQuery<AirCraftInfo>(ConfigurationManager.AppSettings["collection"])
-                     .Where(d => d.FlightNumber == id)
+                     .Where(d => d.AircraftId == id)
                      .AsEnumerable()
                      .First();
 
-            Document doc = GetDocument(client, passengertodelete.FlightNumber);
+            Document doc = GetDocument(client, passengertodelete.AircraftId);
 
             Task deleteEmployee = client.DeleteDocumentAsync(doc.SelfLink);
             Task.WaitAll(deleteEmployee);
