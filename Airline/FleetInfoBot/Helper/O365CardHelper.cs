@@ -16,35 +16,29 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
         {
             var listCard = new ListCard();
             listCard.content = new Content();
-            //listCard.content.title = "The following flights are avilibile at Base Location " + JourneyDate.ToShortDateString();
             var list = new List<Item>();
-
-            foreach (var aircraft in aircraftDetails)
+           foreach (var aircraft in aircraftDetails)
             {
-                //DateTime journeydate = TimeZoneInfo.ConvertTimeToUtc(JourneyDate.Date);
-                //DateTime dabasedate = TimeZoneInfo.ConvertTimeToUtc(flight.JourneyDate.Date);
-                //if (journeydate.Date>DateTime.Now.Date)
-                //{
-                listCard.content.title = "The following aircrafts are available at " + aircraft.BaseLocation;
-
-                var item = new Item();
-                item.icon = "https://airlinebaggage.azurewebsites.net/resources/Flight.png";
-                item.type = "resultItem";
-                item.id = aircraft.FlightNumber;
-                item.title = "Aircraft ID: " + aircraft.AircraftId + "   |" + " Type: " + aircraft.FlightType;
-                item.subtitle = "Model: " + aircraft.Model + "   |" + " Capacity: " + aircraft.Capacity;
+                listCard.content.title = "The following aircrafts are available at " + aircraft.BaseLocation; 
+                    
+                    var item = new Item();
+                    item.icon = "https://fleetinfobot.azurewebsites.net/resources/Airline-Fleet-Bot-02.png";
+                    item.type = "resultItem";
+                    item.id = aircraft.FlightNumber;
+                    item.title = "Aircraft ID: " + aircraft.AircraftId + "   |" + " Type: " + aircraft.FlightType;
+                    item.subtitle = "Model: " + aircraft.Model + "   |" + " Capacity: " + aircraft.Capacity;
 
                 item.tap = new Tap()
-                {
-                    type = "imBack",
-                    title = "Aircraft",
-                    value = "Show Aircraft by Id " + " (" + aircraft.AircraftId + ")"
-                };
-                list.Add(item);
-                //}
-
+                    {
+                        type = "imBack",
+                        title = "Aircraft",
+                        value = "Show aircraft by Id " + " (" + aircraft.AircraftId + ")"
+                    };
+                    list.Add(item);
+                
+               
             }
-
+           
             listCard.content.items = list.ToArray();
 
             Attachment attachment = new Attachment();
@@ -52,74 +46,51 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
             attachment.Content = listCard.content;
             return attachment;
         }
-        public static O365ConnectorCard GetO365ConnectorCardResult(AirCraftInfo flight)
+        public static O365ConnectorCard GetO365ConnectorCardResult(AirCraftInfo flight, string actionId)
         {
             var section = new O365ConnectorCardSection
             {
                 ActivityTitle = $"Aircraft Id: **{flight.AircraftId}**",
                 ActivitySubtitle = $"Model: **{flight.Model}**",
-                ActivityImage = "https://airlinebaggage.azurewebsites.net/resources/Flight.png",
+                ActivityImage = "https://fleetinfobot.azurewebsites.net/resources/Airline-Fleet-Bot-02.png",
                 Facts = new List<O365ConnectorCardFact>
                     {
 
                         new O365ConnectorCardFact("Base location", flight.BaseLocation),
                         new O365ConnectorCardFact("Capacity", flight.Capacity),
                         new O365ConnectorCardFact("Flight type",flight.FlightType),
-                        //new O365ConnectorCardFact("Flight Number",flight.FlightNumber)
+                        new O365ConnectorCardFact("Status",flight.Status.ToString())
 
                     }
             };
-            //var MarkGrounded = new O365ConnectorCardActionCard(
-            //    O365ConnectorCardActionCard.Type,
-            //    "Mark as grounded",
-            //    "FlightNumber",
-            //    new List<O365ConnectorCardInputBase>
-            //    {
-            //        new O365ConnectorCardTextInput(
-            //            O365ConnectorCardTextInput.Type,
-            //            "flightNumberInput",
-            //            true,
-            //            "Enter Aircraft Id",
-            //            null,
-            //            false,
-            //            null)
 
-            //    },
-            //    new List<O365ConnectorCardActionBase>
-            //    {
-            //        new O365ConnectorCardHttpPOST(
-            //            O365ConnectorCardHttpPOST.Type,
-            //            "Mark as grounded",
-            //            Constants.MarkGrounded,
-            //            @"{""Value"":""{{flightNumberInput.value}}""}")
-            //           //@"{""PNRValue"":""{{pnrNumberInput.value}}"", ""NewFlightValue"":""{{flightNumberInput.value}}""}"),
+            var actions = new List<O365ConnectorCardActionBase>();
 
-            //         //@"{""CardsType"":""{{CardsType.value}}"", ""Teams"":""{{Teams.value}}"", ""Apps"":""{{Apps.value}}"", ""OfficeProduct"":""{{OfficeProduct.value}}""}")
-
-
-            //    });
-
+            switch (flight.Status)
+            {
+                case Status.Available:
+                    actions.Add(new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type, "Assign the new aircraft", Constants.Assignaircraft, $"{{'FlightNumber':'{flight.FlightNumber}','AircraftId':'{flight.AircraftId}', 'ActionId':'{actionId}'}}"));
+                    actions.Add(new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type, "Mark as grounded", Constants.MarkGrounded, $"{{'FlightNumber':'{flight.FlightNumber}','AircraftId':'{flight.AircraftId}','ActionId':'{actionId}'}}"));
+                    break;
+                case Status.Assigned:
+                    actions.Add(new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type, "Mark as grounded", Constants.MarkGrounded, $"{{'FlightNumber':'{flight.FlightNumber}','AircraftId':'{flight.AircraftId}', 'ActionId':'{actionId}'}}"));
+                    break;
+                case Status.Grounded:
+                    actions.Add(new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type, "Mark as available", Constants.Available, $"{{'FlightNumber':'{flight.FlightNumber}','AircraftId':'{flight.AircraftId}', 'ActionId':'{actionId}'}}"));
+                    break;
+                default:
+                    break;
+            }
             O365ConnectorCard card = new O365ConnectorCard()
             {
                 Title = "Assign an Aircraft",
                 ThemeColor = "#E67A9E",
                 Sections = new List<O365ConnectorCardSection> { section },
-                PotentialAction = new List<O365ConnectorCardActionBase>
-                {
-                     new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Assign the new aircraft",Constants.Assignaircraft,$"{{'FlightNumber':'{flight.FlightNumber}','AircraftId':'{flight.AircraftId}'}}"),
-                     new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Mark as grounded",Constants.MarkGrounded,$"{{'Value':'{flight.AircraftId}'}}"),
-                    // @"{""FlightNumber"":""{{flightNumberInput.value}}"", ""BaseLocation"":""{{baselocationInput.value}}""}")
-                }
-
-
+                PotentialAction = actions
             };
             return card;
         }
     }
-
-
-
-
 
     public class O365BodyValue
     {
@@ -132,6 +103,18 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
         public string BaseLocation { get; set; }
 
         public string AircraftId { get; set; }
+
+        public string ActionId { get; set; }
+
+        public string Value { get; set; }
     }
+
+    //public class O365ConnectorActionRequest
+    //{
+    //    public string Value { get; set; }
+    //    public string ActionId { get; set; }
+    //    public string Members { get; set; }
+
+    //}
 
 }
