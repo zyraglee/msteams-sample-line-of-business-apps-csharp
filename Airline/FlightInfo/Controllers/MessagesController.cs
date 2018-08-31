@@ -60,8 +60,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     await ShowFlightInfo(flightInfo, replyActivity);
                     break;
                 case Constants.Rebook:
-                    var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await AttachRebookPassenger(PNRno.Value, replyActivity);
+                    RebookClass rebookFlight = Newtonsoft.Json.JsonConvert.DeserializeObject<RebookClass>(o365CardQuery.Body);
+                    await AttachRebookPassenger(rebookFlight.flightNumberInput, rebookFlight.pnrNumberInput, replyActivity);
                     break;
                 default:
                     break;
@@ -101,9 +101,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             }
         }
 
-        private static async Task AttachRebookPassenger(string Pnrnumber, Activity replyActivity)
+        private static async Task AttachRebookPassenger(string flightnumber, string Pnrnumber, Activity replyActivity)
         {
-            replyActivity.Text = "Your ticket is rebooked with PNR Number: " + Pnrnumber;
+            replyActivity.Text = $"Passenger with PNR number: {Pnrnumber} has been rebooked on flight number: {flightnumber}";
         }
 
         private static async Task CreateDataRecords()
