@@ -26,7 +26,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
         {
 
             var message = await argument;
-            if (message.Text != null && message.Text.Contains("Show Flights by Number"))
+            if (message.Text != null && message.Text.Contains("Show details of flight"))
             {
 
                 var reply = context.MakeMessage();
@@ -90,7 +90,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
             var section = new O365ConnectorCardSection
             {
-                ActivityTitle = "Your one stop for all flight Details",
+                ActivityTitle = "Your one stop for all flight details",
                 
             };
             
@@ -105,7 +105,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         O365ConnectorCardMultichoiceInput.Type,
                         "From",
                         true,
-                        "From",
+                        "From Ex: Seattle",
                         null,
                         list,
                         "compact",
@@ -114,7 +114,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         O365ConnectorCardMultichoiceInput.Type,
                         "To",
                         true,
-                        "To",
+                        "To Ex: Newark",
                         null,
                         list,
                         "compact",
@@ -123,7 +123,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         O365ConnectorCardDateInput.Type,
                         "journeyDate",
                         true,
-                        "Journey Date",
+                        "Journey Date Ex: 30 Dec 2018",
                         null,
                         false)
                },
@@ -138,80 +138,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         @"{""From"":""{{From.value}}"", ""To"":""{{To.value}}"" , ""JourneyDate"":""{{journeyDate.value}}"" }")
                  });
 
-            var multichoiceCard = new O365ConnectorCardActionCard(
-                O365ConnectorCardActionCard.Type,
-                "Multiple Choice",
-                "Multiple Choice Card",
-                new List<O365ConnectorCardInputBase>
-                {
-                    new O365ConnectorCardMultichoiceInput(
-                        O365ConnectorCardMultichoiceInput.Type,
-                        "CardsType",
-                        true,
-                        "Pick multiple options",
-                        null,
-                        new List<O365ConnectorCardMultichoiceInputChoice>
-                        {
-                            new O365ConnectorCardMultichoiceInputChoice("Hero Card", "Hero Card"),
-                            new O365ConnectorCardMultichoiceInputChoice("Thumbnail Card", "Thumbnail Card"),
-                            new O365ConnectorCardMultichoiceInputChoice("O365 Connector Card", "O365 Connector Card")
-                        },
-                        "expanded",
-                        true),
-                    new O365ConnectorCardMultichoiceInput(
-                        O365ConnectorCardMultichoiceInput.Type,
-                        "Teams",
-                        true,
-                        "Pick multiple options",
-                        null,
-                        new List<O365ConnectorCardMultichoiceInputChoice>
-                        {
-                            new O365ConnectorCardMultichoiceInputChoice("Bot", "Bot"),
-                            new O365ConnectorCardMultichoiceInputChoice("Tab", "Tab"),
-                            new O365ConnectorCardMultichoiceInputChoice("Connector", "Connector"),
-                            new O365ConnectorCardMultichoiceInputChoice("Compose Extension", "Compose Extension")
-                        },
-                        "compact",
-                        true),
-                    new O365ConnectorCardMultichoiceInput(
-                        O365ConnectorCardMultichoiceInput.Type,
-                        "Apps",
-                        false,
-                        "Pick an App",
-                        null,
-                        new List<O365ConnectorCardMultichoiceInputChoice>
-                        {
-                            new O365ConnectorCardMultichoiceInputChoice("VSTS", "VSTS"),
-                            new O365ConnectorCardMultichoiceInputChoice("Wiki", "Wiki"),
-                            new O365ConnectorCardMultichoiceInputChoice("Github", "Github")
-                        },
-                        "expanded",
-                        false),
-                    new O365ConnectorCardMultichoiceInput(
-                        O365ConnectorCardMultichoiceInput.Type,
-                        "OfficeProduct",
-                        false,
-                        "Pick an Office Product",
-                        null,
-                        new List<O365ConnectorCardMultichoiceInputChoice>
-                        {
-                            new O365ConnectorCardMultichoiceInputChoice("Outlook", "Outlook"),
-                            new O365ConnectorCardMultichoiceInputChoice("MS Teams", "MS Teams"),
-                            new O365ConnectorCardMultichoiceInputChoice("Skype", "Skype")
-                        },
-                        "compact",
-                        false)
-            },
-
-            new List<O365ConnectorCardActionBase>
-                  {
-                   new O365ConnectorCardHttpPOST(
-                        O365ConnectorCardHttpPOST.Type,
-                        "Send",
-                        "multichoice",
-                        @"{""CardsType"":""{{CardsType.value}}"", ""Teams"":""{{Teams.value}}"", ""Apps"":""{{Apps.value}}"", ""OfficeProduct"":""{{OfficeProduct.value}}""}")
-                 });
-
+            
             O365ConnectorCard card = new O365ConnectorCard()
             {
                 ThemeColor = "#E67A9E",
