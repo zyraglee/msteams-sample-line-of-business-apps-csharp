@@ -19,8 +19,8 @@
     "full": "This is an app to search for passenger baggage information using a bot."
   },
   "icons": {
-    "outline": "baggage20x20.png",
-    "color": "baggage96x96.png"
+    "outline": "Outline-Baggage-Bot-07.png",
+    "color": "Airline-Baggage-Bot-01.png"
   },
   "accentColor": "#60A18E",
   "bots": [

@@ -62,48 +62,79 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             // Get O365 connector card query data.
             O365ConnectorCardActionQuery o365CardQuery = activity.GetO365ConnectorCardActionQueryData();
             Activity replyActivity = activity.CreateReply();
-            switch (o365CardQuery.ActionId)
+            try
             {
-                case Constants.PNR:
-                    var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await AttachBaggagebyPNR(PNRno.Value, replyActivity);
-                    break;
-                case Constants.TicketNumber:
-                    var Ticketno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await AttachBaggageInformationTicket(Ticketno.Value, replyActivity);
-                    break;
-                case Constants.Name:
+                if (o365CardQuery.ActionId == Constants.Name)
+                {
                     var Name = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
                     await AttachBaggageInformationName(Name.Value, replyActivity);
-                    
-                    break; 
-                case Constants.DetailsofCheckedBaggage:
-                    var PNRno1 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body).Value;
-                    await AttachBaggageInformation(PNRno1, replyActivity);
-                    break;
-                case Constants.CurrentStatus:
-                    var PNRno2 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await AttachBaggageInformation(PNRno2.Value, replyActivity);
-                    break;
-                case Constants.RebookBaggage:
-                    RebookClass NewFlightTicketNumber = Newtonsoft.Json.JsonConvert.DeserializeObject<RebookClass>(o365CardQuery.Body);
-                    //Newtonsoft.Json.Linq.JObject results = JObject.Parse (o365CardQuery.Body);
-                    //var flightNumber = results["flightNumberInput"].ToString();
-                    //var pnrNumber = results["pnrNumberInput"].ToString();
-                    await AttachRebookInformation(NewFlightTicketNumber.flightNumberInput,replyActivity);
-                    break;
-                case Constants.ReportMissing:
-                    await AttachReportMissing(replyActivity);
-                    break;
-                default:
-                    break;
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                }
+                //else if(o365CardQuery.ActionId == Constants.PNR)
+                //{
+                //    var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+                //    await AttachBaggagebyPNR(PNRno.Value, replyActivity);
+                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                //    await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                //}
+                //else if(o365CardQuery.ActionId == Constants.TicketNumber)
+                //{
+                //    var Ticketno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+                //    await AttachBaggageInformationTicket(Ticketno.Value, replyActivity);
+                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                //    await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                //}
+                else
+                    await Conversation.SendAsync(activity, () => new EchoBot());
+            }
+            catch (Exception e)
+            {
+                activity.CreateReply(e.Message.ToString());
             }
 
-            await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
+            //switch (o365CardQuery.ActionId)
+            //{
+            //    case Constants.PNR:
+            //        var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+            //        await AttachBaggagebyPNR(PNRno.Value, replyActivity);
+            //        break;
+            //    case Constants.TicketNumber:
+            //        var Ticketno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+            //        await AttachBaggageInformationTicket(Ticketno.Value, replyActivity);
+            //        break;
+            //    case Constants.Name:
+            //        var Name = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+            //        await AttachBaggageInformationName(Name.Value, replyActivity);
+
+            //        break;
+            //    case Constants.DetailsofCheckedBaggage:
+            //        var PNRno1 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body).Value;
+            //        await AttachBaggageInformation(PNRno1, replyActivity);
+            //        break;
+            //    case Constants.CurrentStatus:
+            //        var PNRno2 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
+            //        await AttachBaggageInformation(PNRno2.Value, replyActivity);
+            //        break;
+            //    case Constants.RebookBaggage:
+            //        RebookClass NewFlightTicketNumber = Newtonsoft.Json.JsonConvert.DeserializeObject<RebookClass>(o365CardQuery.Body);
+            //        //Newtonsoft.Json.Linq.JObject results = JObject.Parse (o365CardQuery.Body);
+            //        //var flightNumber = results["flightNumberInput"].ToString();
+            //        //var pnrNumber = results["pnrNumberInput"].ToString();
+            //        await AttachRebookInformation(NewFlightTicketNumber.flightNumberInput, replyActivity);
+            //        break;
+            //    case Constants.ReportMissing:
+            //        await AttachReportMissing(replyActivity);
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            //await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-
+        
         private static async Task AttachRebookInformation(string FlightNumber, Activity replyActivity)
         {
 
@@ -111,6 +142,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         }
         private static async Task AttachBaggagebyPNR(string PNR,Activity replyActivity)
         {
+            
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.PNR.ToLower() == PNR.ToLower());
             if (list.Count() == 0)
             {
@@ -120,7 +152,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             else
             {
                 var BaggagebyPNR = O365CardHelper.GetO365ConnectorCard(list.FirstOrDefault());
-                     
                 replyActivity.Attachments.Add(BaggagebyPNR.ToAttachment());
             }
         }
@@ -194,6 +225,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
         private static async Task AttachBaggageInformationTicket(string Ticket, Activity replyActivity)
         {
+          
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.TicketNo.ToLower() == Ticket.ToLower());
             if (list.Count() == 0)
             {
@@ -208,10 +240,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
         private static async Task AttachBaggageInformationName(string Name, Activity replyActivity)
         {
-           
-            
+
+
             // var list = listobj.Where(l => l.Name.Contains(Name));
-            
+            var actionId = Guid.NewGuid().ToString();
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.Name.ToLower().Contains(Name.ToLower()));
             int count = list.Count();
             if (list.Count()>1)
