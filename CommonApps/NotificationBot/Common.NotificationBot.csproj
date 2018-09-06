@@ -202,6 +202,7 @@
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
     <Content Include="Manifest\color.png" />
+    <Content Include="Manifest\outline.png" />
     <Content Include="Public\Resources\seattle-social-tennis-club.png" />
     <Content Include="Public\Resources\silverdale-active-ladies.png" />
     <Content Include="Public\Resources\tenderfootadventures.png" />
@@ -235,6 +236,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Manifest\Notification App.zip" />
     <None Include="Properties\PublishProfiles\notificationbotdemo - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
