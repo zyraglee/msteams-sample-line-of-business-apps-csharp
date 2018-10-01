@@ -338,7 +338,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             
             var IndustryInfo = new O365ConnectorCardActionCard(
                 O365ConnectorCardActionCard.Type,
-                "Show Invenotry",
+                "Show Inventory",
                 "Multiple Choice Card",
                 new List<O365ConnectorCardInputBase>
                 {
@@ -367,7 +367,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             O365ConnectorCard card = new O365ConnectorCard()
             {
                 ThemeColor = "#E67A9E",
-                Title = "Invenotry Information",
+                Title = "Inventory Information",
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>
                 {
