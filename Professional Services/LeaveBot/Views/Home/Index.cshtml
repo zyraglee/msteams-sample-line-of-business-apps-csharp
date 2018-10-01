@@ -1,0 +1,231 @@
+﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <title></title>
+    <style>
+        .vr {
+            width: 100%;
+            position: absolute;
+        }
+
+
+
+        .split-left {
+            height: 100%;
+            width: 30%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            left: 0;
+        }
+
+        .split-right {
+            height: 100%;
+            width: 70%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            right: 0;
+        }
+
+        table {
+            width: 100%;
+            border: -70px black;
+            border-width: 20px;
+            border-collapse: collapse;
+            border-left: none;
+            border-right: none;
+        }
+
+        .no td {
+            border: 0;
+            border-style: hidden;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        .centered img {
+            width: 100px;
+            border-radius: 50%;
+            float: left;
+        }
+
+        .heading {
+            background-color: white;
+            padding: 20px 10px;
+            border-bottom: 1px black
+        }
+
+        .body {
+            background-color: #f5f5f5;
+            padding: 10px;
+        }
+
+        .panel-group {
+            width: 90%;
+            border: 10px solid transparent;
+            display: block;
+            margin: 10 auto;
+            border: 1px solid transparent;
+            border-top: 4px solid green;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="split-left">
+            <div>
+                <div class="centered">
+                    <img src="D:\LOBApps\Latstcode\LeaveBot\Leave Page\pic.jpg" alt="Avatar man" hspace="15" ;>
+                    <span style="font-size:20px"><b>Chris Naidoo</b><br /></span>
+                    UX Designer<br /><br />
+                    <span><b>12</b></span><span style="opacity:0.5">days OOF in </span><span><b>9</b></span><span style="opacity:0.5">months</span><br /><br /><br />
+                    <input style="display:block;margin:0 auto;background-color:blueviolet;color:white" type="submit" value="Apply Leave" />
+                </div>
+            </div>
+            <div>
+                <p style="font-size:15px">Notifications</p>
+                <div class="panel-group">
+                    <div class="heading">Babak shammas has approved your Leave<br /><span style="opacity:0.7">Enjoy</span></div>
+                    <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="#">Chat with Babak</a></span></div>
+                </div>
+            </div>
+            <div>
+                <div class="panel-group">
+                    <div class="heading">Babak shammas has approved your Leave<br /><span style="opacity:0.7">Enjoy</span></div>
+                    <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="#">Chat with Babak</a></span></div>
+                </div>
+            </div>
+            <div>
+                <div class="panel-group">
+                    <div class="heading">Babak shammas has approved your Leave<br /><span style="opacity:0.7">Enjoy</span></div>
+                    <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="#">Chat with Babak</a></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="split-right">
+            <p style="font-weight:900"> Balance Status</p>
+            <table rules="rows" cellpadding="10">
+
+                <tr style="border-top:0;border-bottom:0;opacity:0.5">
+                    <th>Type</th>
+                    <th>Remaining</th>
+                    <th>Used</th>
+                    <th>Allowance</th>
+                    <th> </th>
+                </tr>
+
+                <tr>
+                    <td><b>Paid Leaves</b></td>
+                    <td style="color:purple">19</td>
+                    <td style="color:red">1</td>
+                    <td>20</td>
+                    <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.5">Last Used in March</td>
+                </tr>
+                <tr>
+                    <td><b>Sick Leaves</b></td>
+                    <td style="color:purple">5</td>
+                    <td style="color:red">7</td>
+                    <td>12</td>
+                    <td style="font-family:'Monotype Corsiva';opacity:0.5">Last Used in August</td>
+                </tr>
+                <tr>
+                    <td><b>Carried over from last year<br /></b>Recommended to utilise for vacations</td>
+                    <td style="color:purple">2</td>
+                    <td style="color:red">4</td>
+                    <td>6</td>
+                    <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.5">Recently used this month</td>
+                </tr>
+                <tr style="opacity:0.5">
+                    <td>Maternity Leaves</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>-</td>
+                </tr>
+                <tr style="opacity:0.5">
+                    <td>Paternity Leaves</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>-</td>
+                </tr>
+                <tr style="opacity:0.5">
+                    <td>Caregiver Leaves</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>-</td>
+                </tr>
+            </table>
+            <br />
+            <br />
+
+            <p style="font-weight:900"> Leave reports</p>
+            <table rules="rows">
+
+
+                <tr>
+                    <td>
+                        Thu,Sep13-Mon,Sep17,2018<br />
+                        <span style="color:mediumpurple">PL.</span><span style="font-size:small"> i am visiting home over the weekend.Will be vailable...></span>
+                    </td>
+                    <td style="opacity:0.5">2 days OOF</td>
+                    <td style="color:yellow">Pending</td>
+                    <td> <span class="glyphicon glyphicon-pencil"></span></td>
+                    <td> <span class="glyphicon glyphicon-trash"></span></td>
+
+                </tr>
+                <tr>
+                    <td>
+                        Wed,Aug 1,2018<br />
+                        <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
+                    </td>
+                    <td style="opacity:0.5">1 day OOF</td>
+                    <td style="color:forestgreen">Approved</td>
+                    <td> </td>
+                    <td> </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        Mon,May4-Thu,May 7,,2018<br />
+                        <span style="color:mediumpurple">SL.</span><p style="font-size:small"> Sickness</p>
+                    </td>
+                    <td style="opacity:0.5">2 days OOF</td>
+                    <td style="color:forestgreen">Pending</td>
+                    <td> </td>
+                    <td> </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        Fri,Apr 7-Mon,Apr 10,2018<br />
+                        <span style="color:mediumpurple">PL.</span><span style="font-size:small"> Vacation</span>
+                    </td>
+                    <td style="opacity:0.5">2 days OOF</td>
+                    <td style="color:red">Declined</td>
+                    <td> </td>
+                    <td> </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
