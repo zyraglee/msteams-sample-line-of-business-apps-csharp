@@ -9,9 +9,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
     {
         public const string Industry = "Industry";
         public const string Rebook = "Rebook the passenger";
-        public const string newInventoryCount = "Add Invenotry";
+        public const string newInventoryCount = "Add Inventory";
         public const string BlockInventory = "Lock Inventory";
-        public const string RetireInventory = "Inactive Invenotry";
+        public const string RetireInventory = "Inactive Inventory";
         public const string RequestNewStock = "Request New Stock";
     }
 }
