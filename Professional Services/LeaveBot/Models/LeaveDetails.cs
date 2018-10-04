@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 {
-    public class LeaveDetails 
+    public class LeaveDetails
     {
         [JsonIgnore]
         public const string TYPE = "LeaveDetails";
@@ -57,8 +57,13 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
     public enum LeaveType
     {
-        PersonalLeave,
-        SickLeave
+        PaidLeave,
+        SickLeave,
+        OptionalLeave,
+        CarriedLeave,
+        MaternityLeave,
+        PaternityLeave,
+        Caregiver,
         // Arun - Add types
     }
 

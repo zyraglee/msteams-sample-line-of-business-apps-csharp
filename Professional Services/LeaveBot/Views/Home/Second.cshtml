@@ -1,6 +1,174 @@
-﻿<div class="font-semibold font-title">
-    This is our second tab
-</div>
-<p>
-    Welcome to Microsoft Teams Hello World sample app (C#)
-</p>
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        body {
+            font-family: "Lato", sans-serif;
+            background-color: #edeff2;
+        }
+
+        .tab button:hover {
+            background-color: mediumpurple;
+        }
+
+        .tab {
+            height: 100%;
+            width: 25%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 40px;
+            left: 0;
+            background-color: white;
+            margin-top: 10px;
+        }
+
+
+
+            .tab button {
+                display: block;
+                background-color: white;
+                padding: 22px 54px;
+                width: 100%;
+                border: none;
+                outline: none;
+                text-align: left;
+                cursor: pointer;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+
+
+        `
+
+        .tab button.active {
+            background-color: #red;
+        }
+
+
+        .tabcontent {
+            height: 100%;
+            width: 74.6%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            right: 0;
+            padding-left: 10px;
+            background-color: white;
+            margin-top: 10px;
+        }
+
+            .tabcontent p {
+                float: left;
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 17px;
+                padding-left: 10px;
+            }
+
+        td {
+            font-size: 17px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab">
+        <strong style="padding-left:30px;font-size:20px;">Help</strong>
+        <button class="tablinks" onclick="openFunc(event, 'What Can You Do'); myColor()" id="defaultOpen" style="margin-top:5px">What Can You Do??</button>
+        <button class="tablinks" id="defaultOpen1" onclick="openFunc(event, 'FAQs'); myColor1() ">FAQs</button>
+
+    </div>
+
+    <div id="What Can You Do" class="tabcontent">
+        <h3 style="padding-left:10px">What Can you do??</h3>
+        <h4 style="padding-left:10px">You can..</h4><br />
+        <p>
+            <table border="0" cellpadding="5" cellspacing="5">
+                <tr>
+                    <td>Submit a request</td>
+                </tr>
+                <tr>
+                    <td>Delete a request</td>
+                </tr>
+                <tr>
+                    <td> Approve a request</td>
+                </tr>
+                <tr>
+                    <td>View your previous submitted requests</td>
+                </tr>
+                <tr>
+                    <td>Check balance status</td>
+                </tr>
+                <tr>
+                    <td>View public holidays</td>
+                </tr>
+                <tr>
+                    <td>View personal dashboard </td>
+                </tr>
+
+            </table>
+
+        </p>
+    </div>
+
+    <div id="FAQs" class="tabcontent">
+        <h3 style="padding-left:10px">FAQs</h3>
+        <p>
+            <span style="font-size:22px;color:blue">What is the leave board?<br /></span><br />
+
+            It is a onestop shop for you to see everything related to your leave queries.
+            View the requests you have submitted. Get status on the balance.
+            You can also get cool tips from our leave application. If you are a manager,
+            you will also see all the pending requests in one shot here.<br /><br /><br />
+            <span style="font-size:22px;color:blue"> What is a long holiday in the calendar view?<br /></span><br />
+
+            It means that the public holiday falls either on a Friday or Monday and that it will be a long weekend. So have some fun!
+        </p>
+    </div>
+
+
+
+    <script type="text/javascript">
+        function myColor() {
+            document.getElementById("defaultOpen").style.background = "mediumpurple";
+            document.getElementById("defaultOpen1").style.background = "white";
+        };
+        function myColor1() {
+            document.getElementById("defaultOpen1").style.background = "mediumpurple";
+            document.getElementById("defaultOpen").style.background = "white";
+        };
+
+
+
+        function openFunc(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+
+        document.getElementById("defaultOpen").click();
+    </script>
+
+</body>
+</html> 

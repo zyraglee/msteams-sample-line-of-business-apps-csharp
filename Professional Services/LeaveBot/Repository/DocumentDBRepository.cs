@@ -19,12 +19,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
         private static readonly string CollectionId = ConfigurationManager.AppSettings["collection"];
         private static DocumentClient client;
 
-        public static async Task<K> GetItemAsync<K>(string id) where K : class
+        public static async Task<T> GetItemAsync<T>(string id) where T : class
         {
             try
             {
                 Document document = await client.ReadDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
-                return (K)(dynamic)document;
+                return (T)(dynamic)document;
             }
             catch (DocumentClientException e)
             {
@@ -39,29 +39,29 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
             }
         }
 
-        public static async Task<IEnumerable<K>> GetItemsAsync<K>(Expression<Func<K, bool>> predicate) where K : class
+        public static async Task<IEnumerable<T>> GetItemsAsync<T>(Expression<Func<T, bool>> predicate) where T : class
         {
-            IDocumentQuery<K> query = client.CreateDocumentQuery<K>(
+            IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId),
                 new FeedOptions { MaxItemCount = -1 })
                 .Where(predicate)
                 .AsDocumentQuery();
 
-            List<K> results = new List<K>();
+            List<T> results = new List<T>();
             while (query.HasMoreResults)
             {
-                results.AddRange(await query.ExecuteNextAsync<K>());
+                results.AddRange(await query.ExecuteNextAsync<T>());
             }
 
             return results;
         }
 
-        public static async Task<Document> CreateItemAsync<K>(K item)
+        public static async Task<Document> CreateItemAsync<T>(T item)
         {
             return await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId), item);
         }
 
-        public static async Task<Document> UpdateItemAsync<K>(string id, K item)
+        public static async Task<Document> UpdateItemAsync<T>(string id, T item)
         {
             return await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id), item);
         }

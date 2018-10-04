@@ -1,82 +1,84 @@
 ﻿{
-  "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.0",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.3/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.3",
   "version": "1.0.0",
-  "id": " 00000000-0000-0000-0000-000000000000",
-  "packageName": "com.contoso.helloworld",
+  "id": "57af17b5-0742-4dc8-b16f-c72cb30134cc",
+  "packageName": "com.industrydemo.leavebot",
   "developer": {
-    "name": "Contoso",
+    "name": "Industry Demo Team",
     "websiteUrl": "https://www.microsoft.com",
     "privacyUrl": "https://www.microsoft.com/privacy",
     "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
   },
   "name": {
-    "short": "Hello World",
-    "full": "Hello World App for Microsoft Teams"
+    "short": "Leave App",
+    "full": "Leave App for Microsoft Teams"
   },
   "description": {
-    "short": "Hello World App for Microsoft Teams",
-    "full": "This sample app provides a very simple app for Microsoft Teams. You can extend this to add more content and capabilities."
+    "short": "Leave App for Microsoft Teams",
+    "full": "This sample leave app which demos leave approval flow. You can extend this to add more content and capabilities."
   },
   "icons": {
-    "outline": "contoso20x20.png",
-    "color": "contoso96x96.png"
+    "outline": "color.png",
+    "color": "outline.png"
   },
   "accentColor": "#60A18E",
   "staticTabs": [
     {
-      "entityId": "com.contoso.helloworld.hellotab",
-      "name": "Hello Tab",
-      "contentUrl": "https://yourteamsapp.ngrok.io/hello",
+      "entityId": "com.contoso.LeaveBot.leaveboard",
+      "name": "Leave Board",
+      "contentUrl": "https://leavebotdemo.azurewebsites.net",
       "scopes": [
         "personal"
       ]
-    }
-  ],
-  "configurableTabs": [
+    },
     {
-      "configurationUrl": "https://yourteamsapp.ngrok.io/configure",
-      "canUpdateConfiguration": true,
+      "entityId": "com.contoso.LeaveBot.holidays",
+      "name": "Public Holidays",
+      "contentUrl": "https://leavebotdemo.azurewebsites.net/First",
       "scopes": [
-        "team"
+        "personal"
+      ]
+    },
+    {
+      "entityId": "com.contoso.LeaveBot.help",
+      "name": "Help",
+      "contentUrl": "https://leavebotdemo.azurewebsites.net/Second",
+      "scopes": [
+        "personal"
       ]
     }
   ],
   "bots": [
     {
-      "botId": "00000000-0000-0000-0000-000000000000",
+      "botId": "57af17b5-0742-4dc8-b16f-c72cb30134cc",
       "needsChannelSelector": false,
       "isNotificationOnly": false,
       "scopes": [
-        "team",
         "personal"
-      ]
-    }
-  ],
-  "composeExtensions": [
-    {
-      "botId": "00000000-0000-0000-0000-000000000000",
-      "scopes": [
-        "personal",
-        "team"
       ],
-      "commands": [
+      "commandLists": [
         {
-          "id": "getRandomText",
-          "description": "Gets some random text and images that you can insert in messages for fun.",
-          "title": "Get some random text for fun",
-          "initialRun": true,
-          "parameters": [
+          "scopes": [
+            "personal"
+          ],
+          "commands": [
             {
-              "name": "cardTitle",
-              "description": "Card title to use",
-              "title": "Card title"
+              "title": "help",
+              "description": "Disaplys options available with Leave Bot"
+            },
+            {
+              "title": "set manager",
+              "description": "Set the manager who would approve your leaves."
             }
           ]
         }
       ]
     }
   ],
-  "permissions": [],
-  "validDomains": []
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [ "token.botframework.com" ]
 }

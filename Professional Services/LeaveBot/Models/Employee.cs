@@ -33,6 +33,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
+        [JsonIgnore]
+        public string DisplayName { get { return (Name??string.Empty).Split(' ').First(); } }
+
         [JsonProperty(PropertyName = "demoManagerEmailId")]
         public string DemoManagerEmailId { get; set; }
 
@@ -43,9 +46,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
     public class LeaveBalance
     {
-        public int PersonalLeave { get; set; }
         public int SickLeave { get; set; }
         public int OptionalLeave { get; set; }
+        public int PaidLeave { get; set; }
+        public int CarriedLeave { get; set; }
+        public int MaternityLeave { get; set; }
+        public int PaternityLeave { get; set; }
+        public int Caregiver { get; set; }
+
         // Add if needed
     }
 
