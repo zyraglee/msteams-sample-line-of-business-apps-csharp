@@ -1,0 +1,369 @@
+﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveDetails>
+@*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <title></title>
+
+
+
+    <style>
+        body {
+            font-size: 25px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .vl {
+            border-width: -50px;
+            opacity: 0.2;
+            border-left: 1px solid black;
+            height: 100%;
+            position: absolute;
+            left: 29%;
+            margin-left: -3px;
+            top: 0;
+        }
+
+
+
+        .split-left {
+            height: 100%;
+            width: 30%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            left: 0;
+            font-size: 12px;
+        }
+
+        .split-right {
+            height: 100%;
+            width: 70%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            right: 0;
+        }
+
+        table {
+            width: 100%;
+            border: -70px black;
+            border-width: 20px;
+            border-collapse: collapse;
+            border-left: none;
+            border-right: none;
+            font-size: 14px;
+        }
+
+        .no td {
+            border: 0;
+            border-style: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        tr {
+            border-bottom: 1px solid rgba(0,0,0,.15);
+            padding: 10px;
+        }
+
+        .centered img {
+            width: 100px;
+            border-radius: 50%;
+            float: left;
+        }
+
+        .heading {
+            background-color: white;
+            padding: 15px 10px;
+            border-bottom: 1px black
+        }
+
+        .body {
+            background-color: #f5f5f5;
+            padding: 8px;
+        }
+
+        .panel-group {
+            width: 90%;
+            opacity: 1.5;
+            border: 10px solid transparent;
+            display: block;
+            margin: 10 auto;
+            border: 1px solid transparent;
+            border-top: 4px solid green;
+        }
+
+        .panel-group2 {
+            width: 90%;
+            opacity: 3.6;
+            opacity: 1.5;
+            border: 10px solid transparent;
+            display: block;
+            margin: 10 auto;
+            border: 1px solid transparent;
+            border-top: 4px solid purple;
+        }
+
+        .dot {
+            height: 40px;
+            width: 40px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            float: left;
+        }
+
+        .boxed {
+            border: 1px solid rgba(0,0,0,.15);
+            font-size: 14px;
+            padding: 1px;
+        }
+
+        .colored {
+            border: 1px solid goldenrod;
+            padding: 0px;
+            width: 20px;
+        }
+
+        .bor {
+            border-bottom: 1px solid #000;
+            border-width: -50px;
+            opacity: 0.5;
+        }
+
+        .vb {
+            padding-top: 20px;
+            padding-left: 120px;
+        }
+
+        .vls {
+            padding-top: 5px;
+            padding-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <script src='https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js'></script>
+    <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+
+    <script type="text/javascript">
+        //alert(url);
+        var url = window.location.search;
+        url = url.replace("?", ''); // remove the ?
+        //alert(url); //
+        if (!url) {
+            microsoftTeams.initialize();
+            microsoftTeams.getContext(function (context) {
+                context.userPrincipalName;
+                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
+                    
+
+            })
+        }
+
+    </script>
+    @if (Model != null)
+    {
+        <div>
+            <div class="split-left">
+                <div>
+                    <div class="centered">
+
+                        <img src=@Model.Item1.PhotoPath @*alt=@Model.Item1.Name @*hspace="15"*@ ;>
+                    </div>
+                    <div class="vb">
+                        <span style="font-size:20px"><b>@Model.Item1.Name</b></span>
+                        <br />Sr Software Engineer<br />
+                        <span><b>12</b></span><span style="opacity:0.5"> days OOF in </span><span><b>9</b></span><span style="opacity:0.5"> months</span><br /><br /><br />
+                        <input style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" type="submit" value="Apply Leave" />
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div>
+                    <p style="font-size:15px">Notifications</p>
+                    <div class="panel-group">
+                        <div class="heading">
+                            <div class="cent">
+                                <span class="dot"><img class="dot" src=@Model.Item1.PhotoPath /></span>
+                            </div>
+                            <div class="vls">
+                                @Model.Item1.Name has approved your Leave<br /><span style="opacity:0.7;text-align:center;">Enjoy</span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="#">Chat with @Model.Item1.Name</a></span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel-group2">
+                        <div class="heading">
+                            <div>
+                                <span class="dot" hspace="20"><img class="dot" src=https://ba0c0509.ngrok.io/resources/color.png /></span>
+                                Leave Bot<br /><span style="opacity:0.7">Tip</span>
+                            </div>
+                            <br />
+                            <br />
+
+
+                            You can Utilise the carried over leaves from last year for you recently applied Leave...
+
+                        </div>
+                        <div class="body"> <span><a href="#">Change Leave type</a></span></div>
+                    </div>
+                </div>
+                <br />
+                <br />
+
+                <div class="panel-group2">
+                    <div class="heading">
+                        <div>
+                            <span class="dot" hspace="20"><img class="dot" src=https://ba0c0509.ngrok.io/resources/color.png /></span>
+                            Leave Bot<br />
+                        </div>
+                        <br />
+                        <br />
+                        <br />
+                        Upcoming Long holiday from Oct 14 to Oct 16
+
+                    </div>
+                </div>
+            </div>
+            <div class="vl"></div>
+            <div class="split-right">
+                <p style="font-weight:700;font-size:14px;"> Balance Status</p>
+                <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                <table rules="rows" cellpadding="10">
+
+                    <tr style="opacity:0.5;border-bottom:1px solid rgba(255,255,255)">
+                        <th>Type</th>
+                        <th>Remaining</th>
+                        <th>Used</th>
+                        <th>Allowance</th>
+                        <th> </th>
+                    </tr>
+
+                    <tr>
+                        <td><b style="font-weight:300px">Paid Leave<b></td>
+                        <td style="color:purple">@Model.Item1.LeaveBalance.PaidLeave</td>
+                        <td style="color:red">@(20-Model.Item1.LeaveBalance.PaidLeave)</td>
+                        <td>20</td>
+                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in March</td>
+
+                    </tr>
+
+                    <tr>
+                        <td><b>Sick Leaves</b></td>
+                        <td style="color:purple">@Model.Item1.LeaveBalance.SickLeave</td>
+                        <td style="color:red">@(12-Model.Item1.LeaveBalance.SickLeave)</td>
+                        <td>12</td>
+                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in August</td>
+                    </tr>
+                    <tr>
+                        <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
+                        <td style="color:purple">@Model.Item1.LeaveBalance.CarriedLeave</td>
+                        <td style="color:red">@(10-Model.Item1.LeaveBalance.CarriedLeave)</td>
+                        <td>10</td>
+                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>
+                    </tr>
+                    <tr style="opacity:0.5">
+                        <td>Maternity Leaves</td>
+                        <td>@Model.Item1.LeaveBalance.MaternityLeave</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>-</td>
+                    </tr>
+                    <tr style="opacity:0.5">
+                        <td>Paternity Leaves</td>
+                        <td>@Model.Item1.LeaveBalance.PaternityLeave</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>-</td>
+                    </tr>
+                    <tr style="opacity:0.5">
+                        <td>Caregiver Leaves</td>
+                        <td>@Model.Item1.LeaveBalance.Caregiver</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+                <br />
+                <br />
+
+                <p style="font-weight:700;font-size:14px;"> Leave reports</p>
+                <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                <table rules="rows">
+                    <tr>
+                        <td>
+                            Thu,Sep13-Mon,Sep17,2018<br />
+                            <span style="color:mediumpurple">PL.</span><span style="font-size:small"> i am visiting home over the<br /> weekend.Will be available...></span>
+                        </td>
+                        <td style="opacity:0.5">2 days OOF</td>
+                        <td style="color:goldenrod">Pending</td>
+                        <td> <span class="glyphicon glyphicon-pencil"></span></td>
+                        <td> <span class="glyphicon glyphicon-trash"></span></td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Wed,Aug 1,2018<br />
+                            <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
+                        </td>
+                        <td style="opacity:0.5">1 day OOF</td>
+                        <td style="color:forestgreen">Approved</td>
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Mon,May4-Thu,May 7,,2018<br />
+                            <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
+                        </td>
+                        <td style="opacity:0.5">2 days OOF</td>
+                        <td style="color:forestgreen">Pending</td>
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Fri,Apr 7-Mon,Apr 10,2018<br />
+                            <span style="color:mediumpurple">PL.</span><span style="font-size:small"> Vacation</span>
+                        </td>
+                        <td style="opacity:0.5">2 days OOF</td>
+                        <td style="color:red">Declined</td>
+                        <td> </td>
+                        <td> </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        
+    }
+</body>
+</html>
