@@ -3,15 +3,33 @@ using System.Web.Mvc;
 using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using System;
 using System.Threading.Tasks;
-
+using System.Collections.Generic;
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     public class HomeController : Controller
     {
         [Route("")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string Emailid)
         {
-            return View();
+            if (Emailid != null)
+            {
+                var readEmployee = await DocumentDBRepository.GetItemAsync<Employee>(Emailid);
+                string[] name = readEmployee.Name.Split();
+                readEmployee.Name = name[0];
+
+                var readLeave = await DocumentDBRepository.GetItemAsync<LeaveDetails>("someuniqueId12345687653243");
+
+                readEmployee.LeaveBalance.OptionalLeave = 100;
+
+                var upatedEmp = await DocumentDBRepository.UpdateItemAsync<Employee>(readEmployee.EmailId, readEmployee);
+
+                return View(Tuple.Create(readEmployee, readLeave));
+            }
+            else
+            {
+                return View();
+            }
+            //return View(readEmployee);
         }
 
         [Route("hello")]
@@ -26,12 +44,16 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 DemoManagerEmailId = "v-washai@microsoft.com",
                 LeaveBalance = new LeaveBalance
                 {
+                    PaidLeave = 20,
+                    SickLeave = 10,
                     OptionalLeave = 2,
-                    PersonalLeave = 20,
-                    SickLeave = 10
+                    CarriedLeave = 2,
+                    MaternityLeave = 0,
+                    PaternityLeave = 0,
+                    Caregiver = 0
                 },
                 ManagerEmailId = "v-washai@microsft.com",
-                PhotoPath = @"D:\test\updatedpath\photo.png",
+                PhotoPath = @"D:\Microsoft\Test\1.png",
             };
             var employeeDoc = await DocumentDBRepository.CreateItemAsync(emp);
 
@@ -40,7 +62,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 AppliedByEmailId = "v-washai@micso.com",
                 LeaveId = "someuniqueId123456876543",
                 EmployeeComment = "Vacation",
-                LeaveType = LeaveType.PersonalLeave,
+                LeaveType = LeaveType.PaidLeave,
                 StartDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
                 EndDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
                 Status = LeaveStatus.PendingApproval,
@@ -62,13 +84,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
             var upatedEmp = await DocumentDBRepository.UpdateItemAsync<Employee>(readEmployee.EmailId, readEmployee);
 
-            return View("Index");
+            return View(Tuple.Create(readEmployee,readLeave));
         }
 
         [Route("first")]
         public ActionResult First()
         {
-            return View();
+            List<PublicHoliday> holidayList = PublicHolidaysList.HolidayList;
+            return View(holidayList);
         }
 
         [Route("second")]
