@@ -55,7 +55,8 @@
       "needsChannelSelector": false,
       "isNotificationOnly": false,
       "scopes": [
-        "personal"
+        "personal",
+        "team"
       ],
       "commandLists": [
         {
