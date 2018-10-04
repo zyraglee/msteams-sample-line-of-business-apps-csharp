@@ -4,6 +4,7 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     public class HomeController : Controller
@@ -13,17 +14,40 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         {
             if (Emailid != null)
             {
+                //Emailid = "v-washai@microsoft.com";
                 var readEmployee = await DocumentDBRepository.GetItemAsync<Employee>(Emailid);
-                string[] name = readEmployee.Name.Split();
-                readEmployee.Name = name[0];
+                if (readEmployee != null)
+                {
+                    string[] name = readEmployee.Name.Split();
+                    readEmployee.Name = name[0];
+                }
 
-                var readLeave = await DocumentDBRepository.GetItemAsync<LeaveDetails>("someuniqueId12345687653243");
+                List<LeaveDetails> leaveDetails = null;
+                //List<string> lastMonth = null;
+                var readLeave = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(e => e.Type == LeaveDetails.TYPE && e.AppliedByEmailId == Emailid);
+                if (readLeave != null)
+                {
+                    readEmployee.Totalleaves = 0;
+                    foreach (var item in readLeave)
+                    {
+                        TimeSpan diff = item.EndDate.Date.Subtract(item.StartDate.Date);
+                        item.DaysDiff = Convert.ToInt32(diff.TotalDays);
+                        item.startDay = item.StartDate.Date.ToString("dddd");
+                        item.EndDay = item.EndDate.Date.ToString("dddd");
 
-                readEmployee.LeaveBalance.OptionalLeave = 100;
+                        item.StartDateval = item.StartDate.Date.ToString("MMM d");
+                        item.EndDateVal = item.EndDate.Date.ToString("MMM d");
+                        if (item.Status == LeaveStatus.Approved)
+                            readEmployee.Totalleaves += item.DaysDiff;
 
+                        //lastMonth.Add(item.EndDate.Date.ToString("MMM"));
+                    }
+                    leaveDetails = readLeave.ToList();
+                    //readEmployee.lastUsed = lastMonth[0].ToString();
+                }
                 var upatedEmp = await DocumentDBRepository.UpdateItemAsync<Employee>(readEmployee.EmailId, readEmployee);
 
-                return View(Tuple.Create(readEmployee, readLeave));
+                return View(Tuple.Create(readEmployee, leaveDetails));
             }
             else
             {

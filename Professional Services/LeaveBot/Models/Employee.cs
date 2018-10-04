@@ -7,7 +7,7 @@ using System.Web;
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 {
 
-    public class Employee
+    public class Employee:LeaveExtended
     {
         [JsonIgnore]
         public const string TYPE = "Employee";

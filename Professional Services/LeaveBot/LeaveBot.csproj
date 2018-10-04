@@ -252,6 +252,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Manifest\color.png" />
     <Content Include="Manifest\outline.png" />
+    <Content Include="Resources\leaveicon.png" />
     <Content Include="Scripts\teamsapp.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
