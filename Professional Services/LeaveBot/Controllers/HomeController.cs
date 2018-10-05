@@ -22,9 +22,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     readEmployee.Name = name[0];
                 }
 
-                List<LeaveDetails> leaveDetails = null;
+                List<LeaveExtended> leaveDetails = null;
                 //List<string> lastMonth = null;
-                var readLeave = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(e => e.Type == LeaveDetails.TYPE && e.AppliedByEmailId == Emailid);
+                var readLeave = await DocumentDBRepository.GetItemsAsync<LeaveExtended>(e => e.Type == LeaveDetails.TYPE && e.AppliedByEmailId == Emailid);
                 if (readLeave != null)
                 {
                     readEmployee.Totalleaves = 0;
