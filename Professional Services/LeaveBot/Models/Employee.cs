@@ -39,6 +39,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonIgnore]
         public int Totalleaves { get; set; }
 
+        [JsonIgnore]
+        public bool IsManager { get; set; }
+
+        [JsonIgnore]
+        public string ManagerName { get; set; }
+
         [JsonProperty(PropertyName = "demoManagerEmailId")]
         public string DemoManagerEmailId { get; set; }
 
