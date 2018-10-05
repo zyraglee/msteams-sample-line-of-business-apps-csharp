@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 {
-    public class LeaveDetails: LeaveExtended
+    public class LeaveDetails
     {
         [JsonIgnore]
         public const string TYPE = "LeaveDetails";
@@ -76,7 +76,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         // Arun - Add types
     }
 
-    public class LeaveExtended
+    public class LeaveExtended : LeaveDetails
     {
         public int DaysDiff { get; set; }
 
