@@ -39,7 +39,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
 
         public static String GetAdaptiveCardJson()
         {
-            var path = System.Web.Hosting.HostingEnvironment.MapPath(@"~\Cards\LeaveSent.json");
+            var path = System.Web.Hosting.HostingEnvironment.MapPath(@"~\Cards\AdaptiveCard.json");
             return File.ReadAllText(path);
         }
 
