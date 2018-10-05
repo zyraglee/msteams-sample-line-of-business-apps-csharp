@@ -20,6 +20,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "appliedByEmailId")]
         public string AppliedByEmailId { get; set; }
 
+        [JsonProperty(PropertyName = "managerEmailId")]
+        public string ManagerEmailId { get; set; }
+
         [JsonProperty(PropertyName = "startDate")]
         public LeaveDate StartDate { get; set; }
 
