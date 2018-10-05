@@ -117,7 +117,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             }
         }
 
-        private static async Task<bool> IsManager(Employee employee)
+        public static async Task<bool> IsManager(Employee employee)
         {
             var allEmployees = await DocumentDBRepository.GetItemsAsync<Employee>(l => l.Type == Employee.TYPE);
             return allEmployees.Any(s => s.ManagerEmailId == employee.EmailId);

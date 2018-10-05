@@ -5,21 +5,41 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     public class HomeController : Controller
     {
         [Route("")]
         public async Task<ActionResult> Index(string Emailid)
+
         {
+            //Emailid = "v-washai@microsoft.com";
             if (Emailid != null)
             {
-                //Emailid = "v-washai@microsoft.com";
+                
                 var readEmployee = await DocumentDBRepository.GetItemAsync<Employee>(Emailid);
+                DateTime nextholiday;
+                foreach(var item in PublicHolidaysList.HolidayList)
+                {
+                    if(item.Date.Date>DateTime.Now.Date)
+                    {
+                        nextholiday = item.Date.Date;
+                    }
+                }
                 if (readEmployee != null)
                 {
-                    string[] name = readEmployee.Name.Split();
-                    readEmployee.Name = name[0];
+                    readEmployee.IsManager = await RootDialog.IsManager(readEmployee);
+
+                    var managername = await DocumentDBRepository.GetItemAsync<Employee>(readEmployee.ManagerEmailId);
+                    if(managername!=null)
+                    {
+                        readEmployee.ManagerName = managername.DisplayName;
+                    }
+                }
+                else
+                {
+                    return View();
                 }
 
                 List<LeaveExtended> leaveDetails = null;
@@ -43,11 +63,36 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                         //lastMonth.Add(item.EndDate.Date.ToString("MMM"));
                     }
                     leaveDetails = readLeave.ToList();
+                    
                     //readEmployee.lastUsed = lastMonth[0].ToString();
                 }
-                var upatedEmp = await DocumentDBRepository.UpdateItemAsync<Employee>(readEmployee.EmailId, readEmployee);
-
-                return View(Tuple.Create(readEmployee, leaveDetails));
+                
+                List<ManagerDetails> mrgLeavedata = null;
+                var managerleave = await DocumentDBRepository.GetItemsAsync<ManagerDetails>(e => e.Type == LeaveDetails.TYPE && e.ManagerEmailId == Emailid && e.Status==0);
+                if(managerleave!=null)
+                {
+                    foreach(var item in managerleave)
+                    {
+                        TimeSpan diff1 = item.EndDate.Date.Subtract(item.StartDate.Date);
+                        item.mgrDaysdiff = Convert.ToInt32(diff1.TotalDays);
+                        item.mgrstartDay = item.StartDate.Date.ToString("dddd");
+                        item.mgrEndDay = item.EndDate.Date.ToString("dddd");
+                        item.mgrStartDateval = item.StartDate.Date.ToString("MMM d");
+                        item.mgrEndDateVal = item.EndDate.Date.ToString("MMM d");
+                        var managerresource = await DocumentDBRepository.GetItemsAsync<Employee>(e => e.Type == Employee.TYPE && e.EmailId == item.AppliedByEmailId);
+                        if(managerresource!=null)
+                        {
+                            foreach (var name in managerresource)
+                            {
+                                item.ResourceName = name.DisplayName;
+                            }
+                        }
+                    }
+                    mrgLeavedata = managerleave.ToList();
+                }
+                
+                
+                return View(Tuple.Create(readEmployee, leaveDetails, mrgLeavedata));
             }
             else
             {
