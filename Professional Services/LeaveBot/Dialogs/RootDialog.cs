@@ -100,7 +100,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 {
                     await SendSetManagerCard(context);
                 }
-                else if (message.ToLowerInvariant().Equals("signout"))
+                else if (message.ToLowerInvariant().Equals("reset"))
                 {
                     // Sign the user out from AAD
                     await Signout(userEmailId, context);
@@ -222,7 +222,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             return (activityValue.ToString().Contains(Constants.SetManager)
                 || activityValue.ToString().Contains(Constants.ApproveLeave)
                 || activityValue.ToString().Contains(Constants.RejectLeave)
-                || activityValue.ToString().Contains(Constants.LeaveBalance));
+                || activityValue.ToString().Contains(Constants.LeaveBalance)
+                || activityValue.ToString().Contains(Constants.Holidays));
         }
 
         private static async Task HandleLeaveApprovalOrRejection(IDialogContext context, Activity activity, string type)
@@ -544,8 +545,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         /// </summary>
         public static async Task Signout(string emailId, IDialogContext context)
         {
-            Console.WriteLine(emailId);// Use this to clean the DB.
             await context.SignOutUserAsync(ApplicationSettings.ConnectionName);
+            await DocumentDBRepository.DeleteItemAsync(emailId);
+            context.ConversationData.Clear();
             await context.PostAsync($"You have been signed out.");
         }
 
