@@ -88,12 +88,38 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         public string StartDateval { get; set; }
 
         public string EndDateVal { get; set; }
-        public List<LeaveDetails> leavesData { get; set; }
+        public List<LeaveExtended> leavesData { get; set; }
 
-        public int Totalleaves { get; set; }
+        public int mgrTotalleaves { get; set; }
 
         public string lastUsed { get; set; }
 
         public string BaseUri { get; set; }
+
+       
+
+        
+    }
+
+    public class ManagerDetails:LeaveDetails
+    {
+        public bool IsManager { get; set; }
+
+        public int mgrDaysdiff { get; set; }
+        public string mgrstartDay { get; set; }
+        public string mgrEndDay { get; set; }
+        public string mgrStartDateval { get; set; }
+
+        public string nextholiday { get; set; }
+
+        public string mgrEndDateVal { get; set; }
+        public List<LeaveExtended> mgrLeaveData
+        {
+            get; set;
+        }
+
+        public string resourceEmailid { get; set; }
+
+        public string ResourceName { get; set; }
     }
 }
