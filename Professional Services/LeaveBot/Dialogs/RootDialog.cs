@@ -96,7 +96,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             }
             else
             {
-                if (message.ToLowerInvariant().Equals("set manager"))
+                if (message.ToLowerInvariant().Contains("set manager"))
                 {
                     await SendSetManagerCard(context);
                 }
@@ -125,10 +125,20 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 
         private async Task HandleActions(IDialogContext context, Activity activity, Employee employee)
         {
-            var type = JsonConvert.DeserializeObject<InputDetails>(activity.Value.ToString());
+            string type = string.Empty;
+            if (activity.Name == Constants.EditLeave) // Edit request
+            {
+                var editRequest = JsonConvert.DeserializeObject<EditRequest>(activity.Value.ToString());
+                type = editRequest.data.Type;
+            }
+            else
+            {
+                var details = JsonConvert.DeserializeObject<InputDetails>(activity.Value.ToString());
+                type = details.Type;
+            }
             var reply = activity.CreateReply();
 
-            switch (type.Type)
+            switch (type)
             {
                 case Constants.ApplyForOtherLeave:
                 case Constants.ApplyForPersonalLeave:
@@ -136,7 +146,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 case Constants.ApplyForVacation:
 
 
-                    await ApplyForVacation(context, activity, employee);
+                    await ApplyForVacation(context, activity, employee, type);
 
                     break;
 
@@ -154,7 +164,16 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     await ShowPendingApprovals(context, activity, employee);
                     break;
                 case Constants.LeaveRequest:
-                    reply.Attachments.Add(EchoBot.LeaveRequest());
+                    try
+                    {
+                        reply.Attachments.Add(EchoBot.LeaveRequest());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+
+                    }
+
                     await context.PostAsync(reply);
                     break;
                 case Constants.LeaveBalance:
@@ -175,7 +194,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         private async Task ShowPendingApprovals(IDialogContext context, Activity activity, Employee employee)
         {
             var pendingLeaves = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(l => l.Type == LeaveDetails.TYPE);
-            pendingLeaves = pendingLeaves.Where(l => l.ManagerEmailId == employee.EmailId && l.Status == LeaveStatus.PendingApproval);
+            pendingLeaves = pendingLeaves.Where(l => l.ManagerEmailId == employee.EmailId && l.Status == LeaveStatus.Pending);
             if (pendingLeaves.Count() == 0)
             {
                 var reply = activity.CreateReply();
@@ -206,20 +225,25 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 || activityValue.ToString().Contains(Constants.LeaveBalance));
         }
 
-        private static async Task HandleLeaveApprovalOrRejection(IDialogContext context, Activity activity, InputDetails type)
+        private static async Task HandleLeaveApprovalOrRejection(IDialogContext context, Activity activity, string type)
         {
             var managerResponse = JsonConvert.DeserializeObject<ManagerResponse>(activity.Value.ToString());
             var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(managerResponse.LeaveId);
             var appliedByEmployee = await DocumentDBRepository.GetItemAsync<Employee>(leaveDetails.AppliedByEmailId);
 
             // Check the leave type and reduce in DB.
-            leaveDetails.Status = type.Type == Constants.ApproveLeave ? LeaveStatus.Approved : LeaveStatus.Rejected;
+            leaveDetails.Status = type == Constants.ApproveLeave ? LeaveStatus.Approved : LeaveStatus.Rejected;
             leaveDetails.ManagerComment = managerResponse.ManagerComment;
             await DocumentDBRepository.UpdateItemAsync(leaveDetails.LeaveId, leaveDetails);
 
             var conunt = EchoBot.GetDayCount(leaveDetails);
+            var msg = $"Your {conunt} days leave has been {leaveDetails.Status.ToString()}. Manager Comments: {leaveDetails.ManagerComment}";
 
-            await SendNotification(context, appliedByEmployee.UserUniqueId, $"Your {conunt} days leave has been {leaveDetails.Status.ToString()}. Manager Comments: {leaveDetails.ManagerComment}", null);
+            var employeeView = EchoBot.EmployeeViewCard(appliedByEmployee, leaveDetails);
+
+            MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
+
+            await SendNotification(context, appliedByEmployee.UserUniqueId, null, employeeView, managerMessageIds.Employee);
         }
 
         private async Task SetEmployeeManager(IDialogContext context, Activity activity, Employee employee)
@@ -231,7 +255,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             await UpdateEmployeeInDB(context, employee);
         }
 
-        private static async Task ApplyForVacation(IDialogContext context, Activity activity, Employee employee)
+        private static async Task ApplyForVacation(IDialogContext context, Activity activity, Employee employee, string leaveCategory)
         {
             if (string.IsNullOrEmpty(employee.ManagerEmailId) && string.IsNullOrEmpty(employee.DemoManagerEmailId))
             {
@@ -250,42 +274,129 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             }
             else
             {
-                var vacationDetails = JsonConvert.DeserializeObject<VacationDetails>(activity.Value.ToString());
-
-                var leave = new LeaveDetails()
+                VacationDetails vacationDetails = null;
+                if (activity.Name == Constants.EditLeave) // Edit request
                 {
-                    AppliedByEmailId = employee.EmailId,
-                    EmployeeComment = vacationDetails.LeaveReason,
-                    StartDate = new LeaveDate()
-                    {
-                        Date = DateTime.Parse(vacationDetails.FromDate),
-                        Type = (DayType)Enum.Parse(typeof(DayType), vacationDetails.FromDuration)
-                    },
-                    EndDate = new LeaveDate()
-                    {
-                        Date = DateTime.Parse(vacationDetails.ToDate),
-                        Type = (DayType)Enum.Parse(typeof(DayType), vacationDetails.ToDuration)
-                    },
-                    LeaveId = Guid.NewGuid().ToString(),
-                    LeaveType = (LeaveType)Enum.Parse(typeof(LeaveType), vacationDetails.LeaveType),
-                    Status = LeaveStatus.PendingApproval,
-                    ManagerEmailId = employee.ManagerEmailId // Added for easy reporting.
+                    var editRequest = JsonConvert.DeserializeObject<EditRequest>(activity.Value.ToString());
+                    vacationDetails = editRequest.data;
+                }
+                else
+                    vacationDetails = JsonConvert.DeserializeObject<VacationDetails>(activity.Value.ToString());
+
+                LeaveDetails leaveDetails;
+                if (!string.IsNullOrEmpty(vacationDetails.LeaveId))
+                {
+                    // Edit request
+                    leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(vacationDetails.LeaveId);
+                }
+                else
+                {
+                    leaveDetails = new LeaveDetails();
+                    leaveDetails.LeaveId = Guid.NewGuid().ToString();
+                }
+                leaveDetails.AppliedByEmailId = employee.EmailId;
+                leaveDetails.EmployeeComment = vacationDetails.LeaveReason;
+                leaveDetails.StartDate = new LeaveDate()
+                {
+                    Date = DateTime.Parse(vacationDetails.FromDate),
+                    Type = (DayType)Enum.Parse(typeof(DayType), vacationDetails.FromDuration)
                 };
-                await DocumentDBRepository.CreateItemAsync<LeaveDetails>(leave);
-
-
-                var attachment = EchoBot.ManagerViewCard(employee, leave);
-                var status = await SendNotification(context, managerId, null, attachment);
-                if (status)
+                leaveDetails.EndDate = new LeaveDate()
                 {
-                    var employeeView = EchoBot.EmployeeViewCard(employee, leave);
+                    Date = DateTime.Parse(vacationDetails.ToDate),
+                    Type = (DayType)Enum.Parse(typeof(DayType), vacationDetails.ToDuration)
+                };
+
+                leaveDetails.LeaveType = (LeaveType)Enum.Parse(typeof(LeaveType), vacationDetails.LeaveType);
+                leaveDetails.Status = LeaveStatus.Pending;
+                leaveDetails.ManagerEmailId = employee.ManagerEmailId;// Added for easy reporting.
+
+                switch (leaveCategory)
+                {
+                    case Constants.ApplyForPersonalLeave:
+                        leaveDetails.LeaveCategory = LeaveCategory.Personal;
+                        break;
+                    case Constants.ApplyForSickLeave:
+                        leaveDetails.LeaveCategory = LeaveCategory.Sickness;
+                        break;
+                    case Constants.ApplyForVacation:
+                        leaveDetails.LeaveCategory = LeaveCategory.Vacation;
+                        break;
+                    case Constants.ApplyForOtherLeave:
+                    default:
+                        leaveDetails.LeaveCategory = LeaveCategory.Other;
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(vacationDetails.LeaveId))
+                {
+                    // Edit request
+                    await DocumentDBRepository.UpdateItemAsync<LeaveDetails>(leaveDetails.LeaveId, leaveDetails);
+                }
+                else
+                {
+                    await DocumentDBRepository.CreateItemAsync<LeaveDetails>(leaveDetails);
+                }
+
+                var attachment = EchoBot.ManagerViewCard(employee, leaveDetails);
+
+                MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
+
+                // Manger Updates.
+                var conversationId = await SendNotification(context, managerId, null, attachment, managerMessageIds.Manager);
+                if(!String.IsNullOrEmpty(conversationId))
+                {
+                    managerMessageIds.Manager = conversationId;
+                    context.ConversationData.SetValue(leaveDetails.LeaveId, managerMessageIds);
+                }
+
+                if (!String.IsNullOrEmpty(conversationId))
+                {
+
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    MessageIds messageIds = GetMessageId(context, leaveDetails.LeaveId);
+                    var employeeCardReply = activity.CreateReply();
+                    var employeeView = EchoBot.EmployeeViewCard(employee, leaveDetails);
+                    employeeCardReply.Attachments.Add(employeeView);
+
+                    if (!string.IsNullOrEmpty(messageIds.Employee))
+                    {
+                        // Update existing item.
+                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, messageIds.Employee, employeeCardReply);
+                        //var reply = activity.CreateReply();
+                        //reply.Text = "We have also notified manager with the updates.";
+                        //await context.PostAsync(reply);
+                    }
+                    else
+                    {
+                        var reply = activity.CreateReply();
+                        reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below";
+                        await context.PostAsync(reply);
+
+                        var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
+                        messageIds.Employee = msgToUpdate.Id;
+                        context.ConversationData.SetValue<MessageIds>(leaveDetails.LeaveId, messageIds);
+                    }
+
+                }
+                else
+                {
                     var reply = activity.CreateReply();
-                    reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below";
-                    reply.Attachments.Add(employeeView);
+                    reply.Text = "Failed to send notification to your manger. Please try again later.";
                     await context.PostAsync(reply);
                 }
 
             }
+        }
+
+        private static MessageIds GetMessageId(IDialogContext context, string leaveId)
+        {
+            MessageIds messageIds = new MessageIds();
+            if (context.ConversationData.ContainsKey(leaveId))
+            {
+                messageIds = context.ConversationData.GetValue<MessageIds>(leaveId);
+            }
+            return messageIds;
         }
 
         private static async Task SendSetManagerCard(IDialogContext context)
@@ -294,7 +405,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             var card = EchoBot.SetManagerCard(); // WelcomeLeaveCard(employee.Name.Split(' ').First());
 
             var msg = context.MakeMessage();
-            msg.Text = "Please set your manager so that you can utilize leave app.";
+            msg.Text = "Please set your manager so that we can send leaves for approval.";
             msg.Attachments.Add(card);
             await context.PostAsync(msg);
         }
@@ -438,8 +549,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             await context.PostAsync($"You have been signed out.");
         }
 
-
-        private static async Task<bool> SendNotification(IDialogContext context, string managerUniqueId, string messageText, Bot.Connector.Attachment attachment)
+        private static async Task<string> SendNotification(IDialogContext context, string managerUniqueId, string messageText, Bot.Connector.Attachment attachment, string updateMessageId)
         {
             var userId = managerUniqueId.Trim();
             var botId = context.Activity.Recipient.Id;
@@ -469,7 +579,16 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 if (attachment != null)
                     replyMessage.Attachments.Add(attachment);//  EchoBot.ManagerViewCard(employee, leaveDetails));
 
-                await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
+                if (string.IsNullOrEmpty(updateMessageId))
+                {
+                    var resourceResponse = await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
+                    return resourceResponse.Id;
+                }
+                else
+                {
+                    await connectorClient.Conversations.UpdateActivityAsync(conversationResource.Id, updateMessageId, (Activity)replyMessage);
+                    return updateMessageId; // Just return the same Id.
+                }
             }
             catch (Exception ex)
             {
@@ -477,9 +596,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;
                 await context.PostAsync(msg);
-                return false;
+                return null;
             }
-            return true;
         }
 
     }
