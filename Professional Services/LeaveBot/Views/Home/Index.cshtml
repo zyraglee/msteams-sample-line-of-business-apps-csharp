@@ -1,4 +1,4 @@
-﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveDetails>>
+﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveExtended>>
 @*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -173,9 +173,7 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = https://leavebotdemo.azurewebsites.net/? Emailid = " + context.userPrincipalName;
-
-
+                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
             })
         }
 
