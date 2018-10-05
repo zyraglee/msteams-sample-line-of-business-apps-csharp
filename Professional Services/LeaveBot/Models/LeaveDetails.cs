@@ -41,6 +41,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "status")]
         public LeaveStatus Status { get; set; }
 
+        [JsonProperty(PropertyName = "leaveCategory")]
+        public LeaveCategory LeaveCategory { get; set; }
+
     }
 
     public class LeaveDate
@@ -58,6 +61,15 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         HalfDay
     }
 
+    public enum LeaveCategory
+    {
+        Vacation,
+        Sickness,
+        Personal,
+        Other
+    }
+    
+
     public enum LeaveType
     {
         PaidLeave,
@@ -72,7 +84,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
     public enum LeaveStatus
     {
-        PendingApproval,
+        Pending,
         Approved,
         Rejected,
         Withdrawn

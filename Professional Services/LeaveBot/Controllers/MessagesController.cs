@@ -9,6 +9,10 @@ using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
+using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
@@ -21,25 +25,66 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             if (activity != null && activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new RootDialog());
+                return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
             }
             else if (activity.Type == ActivityTypes.Invoke)
             {
-                if (activity.IsO365ConnectorCardActionQuery())
+                if (activity.Name == "signin/verifyState")
                 {
-                    activity.Text = "ConnectorAction";
                     await Conversation.SendAsync(activity, () => new RootDialog());
-                    return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
                 }
-                else if (activity.Name == "signin/verifyState")
+                else
                 {
-                    await Conversation.SendAsync(activity, () => new RootDialog());
+                    return await HandleInvokeMessages(activity);
                 }
             }
             else
             {
                 await HandleSystemMessage(activity);
+                
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
+        }
+
+
+        private async Task<HttpResponseMessage> HandleInvokeMessages(Activity activity)
+        {
+            var activityValue = activity.Value.ToString();
+            if (activity.Name == "task/fetch")
+            {
+                var action = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<EditLeaveDetails>>(activityValue);
+
+                var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(action.Data.LeaveId);
+
+                // TODO: Convert this to helpers once available.
+                JObject taskEnvelope = new JObject();
+
+                JObject taskObj = new JObject();
+                JObject taskInfo = new JObject();
+
+                taskObj["type"] = "continue";
+                taskObj["value"] = taskInfo;
+
+                taskInfo["card"] = JObject.FromObject(EchoBot.LeaveRequest(leaveDetails));
+                taskInfo["title"] = "Edit Leave";
+
+                taskInfo["height"] = 330;
+                taskInfo["width"] = 550;
+
+                taskEnvelope["task"] = taskObj;
+                
+                return Request.CreateResponse(HttpStatusCode.OK, taskEnvelope);
+
+            }
+            else if (activity.Name == "task/submit")
+            {
+                activity.Name = Constants.EditLeave;
+                await Conversation.SendAsync(activity, () => new RootDialog());
+                //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                //Activity reply = activity.CreateReply("Received = " + activity.Value.ToString());
+                //connector.Conversations.ReplyToActivity(reply);
+            }
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
 
         private async Task<Activity> HandleSystemMessage(Activity message)

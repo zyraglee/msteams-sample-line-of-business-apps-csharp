@@ -8,6 +8,7 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using System;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using TaskModule;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web
 {
@@ -42,24 +43,24 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 {
                      new AdaptiveSubmitAction()
                               {
-                                  Title="Make a leave request",
+                                  Title="Leave Request",
                                   DataJson= @"{'Type':'" + Constants.LeaveRequest+"'}"
 
                               },
                      new AdaptiveSubmitAction()
                      {
-                         Title="View Leave Balance",
+                         Title="Leave Balance",
                           DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"
                      },
                      new AdaptiveSubmitAction()
                      {
-                         Title="View List of Public Holidays",
+                         Title="Public Holidays",
                           DataJson= @"{'Type':'" + Constants.Holidays+"'}"
                      },
-                     new AdaptiveSubmitAction()
+                     new AdaptiveOpenUrlAction()
                      {
                          Title="See how it works",
-
+                         Url = new Uri(DeeplinkHelper.HelpDeeplink)
                      }
                 }
             };
@@ -68,7 +69,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 WelcomeCard.Actions.Insert(2,
                     new AdaptiveSubmitAction()
                     {
-                        Title = "Show Pending Approvals",
+                        Title = "Pending Approvals",
                         DataJson = @"{'Type':'" + Constants.ShowPendingApprovals + "'}"
                     });
 
@@ -87,7 +88,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 Body = new List<AdaptiveElement>()
                           {
                               new AdaptiveTextBlock(){Text="Enter Manager Email Id:"},
-                              new AdaptiveTextInput(){Id="txtManager", IsMultiline=false, IsRequired=true, Placeholder="Manager Email Id"}
+                              new AdaptiveTextInput(){Id="txtManager", IsMultiline=false, Style = AdaptiveTextInputStyle.Email, IsRequired=true, Placeholder="Manager Email Id"}
                           },
                 Actions = new List<AdaptiveAction>()
                           {
@@ -106,11 +107,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             };
         }
 
-        public static Attachment LeaveRequest()
+        public static Attachment LeaveRequest(LeaveDetails leaveDetails = null)
         {
             var durations = new List<AdaptiveChoice>();
-            durations.Add(new AdaptiveChoice() { Title = "FullDay", Value = "FullDay" });
-            durations.Add(new AdaptiveChoice() { Title = "HalfDay", Value = "HalfDay" });
+            durations.Add(new AdaptiveChoice() { Title = "FullDay", Value = DayType.FullDay.ToString() });
+            durations.Add(new AdaptiveChoice() { Title = "HalfDay", Value = DayType.HalfDay.ToString() });
 
             var paidLeave = new AdaptiveChoice() { Title = "Paid Leave", Value = LeaveType.PaidLeave.ToString() };
             var sickLeave = new AdaptiveChoice() { Title = "Sick Leave", Value = LeaveType.SickLeave.ToString() };
@@ -141,7 +142,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
                                     new AdaptiveTextBlock(){Text="From", Weight=AdaptiveTextWeight.Lighter,Size=AdaptiveTextSize.Medium,Wrap=true },
-                                    new AdaptiveDateInput(){Id="FromDate",Placeholder="From Date"}
+                                    new AdaptiveDateInput(){Id="FromDate",Placeholder="From Date", Value = leaveDetails?.StartDate.Date.ToUniversalTime().ToString("u") }
 
 
                                 }
@@ -154,7 +155,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
                                    new AdaptiveTextBlock(){Text="Duration", Weight=AdaptiveTextWeight.Lighter,Size=AdaptiveTextSize.Medium,Wrap=true },
-                                    new AdaptiveChoiceSetInput(){Id="FromDuration", Choices=new List<AdaptiveChoice>(durations), IsMultiSelect=false,Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay"}
+                                    new AdaptiveChoiceSetInput(){Id="FromDuration",  Choices=new List<AdaptiveChoice>(durations), IsMultiSelect=false,Style=AdaptiveChoiceInputStyle.Compact,
+                                        Value =leaveDetails!=null? leaveDetails.StartDate.Type.ToString() : DayType.FullDay.ToString() }
 
                                 }
 
@@ -180,7 +182,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
                                     new AdaptiveTextBlock(){Text="To", Weight=AdaptiveTextWeight.Lighter,Size=AdaptiveTextSize.Medium,Wrap=true },
-                                    new AdaptiveDateInput(){Id="ToDate",Placeholder="To Date"}
+                                    new AdaptiveDateInput(){Id="ToDate",Placeholder="To Date", Value = leaveDetails?.EndDate.Date.ToUniversalTime().ToString("u")}
 
 
                                 }
@@ -193,7 +195,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
                                    new AdaptiveTextBlock(){Text="Duration", Weight=AdaptiveTextWeight.Lighter,Size=AdaptiveTextSize.Medium,Wrap=true },
-                                    new AdaptiveChoiceSetInput(){Id="ToDuration", Choices=new List<AdaptiveChoice>(durations), IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay"}
+                                    new AdaptiveChoiceSetInput(){Id="ToDuration", Choices=new List<AdaptiveChoice>(durations), IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact,
+                                        Value =leaveDetails!=null? leaveDetails.EndDate.Type.ToString() : DayType.FullDay.ToString()}
 
                                 }
 
@@ -260,15 +263,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                     }
                                 }
                              ,
-                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>{paidLeave, optionalLeave, carriedOverLeave  } , IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay", IsRequired=true},
-                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)"}
+                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>{paidLeave, optionalLeave, carriedOverLeave  } , IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact,
+                                  Value  = leaveDetails?.LeaveCategory== LeaveCategory.Vacation?leaveDetails.LeaveType.ToString():"" , IsRequired=true},
+                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)",
+                              Value = leaveDetails?.LeaveCategory== LeaveCategory.Vacation?leaveDetails.EmployeeComment:""}
                           },
                           Actions=new List<AdaptiveAction>()
                           {
                               new AdaptiveSubmitAction()
                               {
                                   Title="Submit",
-                                  DataJson= @"{'Type':'" + Constants.ApplyForVacation+"'}"
+                                  DataJson= @"{'Type':'" + Constants.ApplyForVacation+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
                        }
@@ -316,15 +321,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                     }
                                 }
                                ,
-                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>(){ sickLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay", IsRequired=true},
-                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)"}
+                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>(){ sickLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact,
+                                  Value  = leaveDetails?.LeaveCategory== LeaveCategory.Sickness?leaveDetails.LeaveType.ToString():"" , IsRequired=true},
+                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)",
+                               Value = leaveDetails?.LeaveCategory== LeaveCategory.Sickness?leaveDetails.EmployeeComment:""}
                           },
                           Actions=new List<AdaptiveAction>()
                           {
                               new AdaptiveSubmitAction()
                               {
                                   Title="Sickness",
-                                  DataJson= @"{'Type':'" + Constants.ApplyForSickLeave+"'}"
+                                  DataJson= @"{'Type':'" + Constants.ApplyForSickLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
                        }
@@ -366,19 +373,19 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                     }
 
                                 },
-
-
                                     }
                                 },
-                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>() { paidLeave, optionalLeave, carriedOverLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay", IsRequired=true},
-                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)"}
+                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>() { paidLeave, optionalLeave, carriedOverLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact,
+                                  Value =leaveDetails?.LeaveCategory== LeaveCategory.Personal?leaveDetails.LeaveType.ToString():"", IsRequired=true},
+                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)",
+                                  Value = leaveDetails?.LeaveCategory== LeaveCategory.Personal?leaveDetails.EmployeeComment:""}
                           },
                           Actions=new List<AdaptiveAction>()
                           {
                               new AdaptiveSubmitAction()
                               {
                                   Title="Personal",
-                                  DataJson= @"{'Type':'" + Constants.ApplyForPersonalLeave+"'}"
+                                  DataJson=   @"{'Type':'" + Constants.ApplyForPersonalLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
                        }
@@ -386,20 +393,21 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                      new AdaptiveShowCardAction()
                     {
                         Title="Other",
-
-                         Card=new AdaptiveCard()
+                        Card=new AdaptiveCard()
                        {
                           Body=new List<AdaptiveElement>()
                           {
-                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)"},
-                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>() { optionalLeave, maternityLeave, paternityLeave, caregiverLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact, Value="FullDay", IsRequired=true},
+                              new AdaptiveTextInput(){Id="LeaveReason", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)",
+                              Value = leaveDetails?.LeaveCategory== LeaveCategory.Other?leaveDetails.EmployeeComment:""},
+                              new AdaptiveChoiceSetInput(){Id="LeaveType", Choices=new List<AdaptiveChoice>() { optionalLeave, maternityLeave, paternityLeave, caregiverLeave }, IsMultiSelect=false, Style=AdaptiveChoiceInputStyle.Compact,
+                                  Value =leaveDetails?.LeaveCategory== LeaveCategory.Other?leaveDetails.LeaveType.ToString():"", IsRequired=true},
                           },
                           Actions=new List<AdaptiveAction>()
                           {
                               new AdaptiveSubmitAction()
                               {
                                   Title="Other",
-                                  DataJson= @"{'Type':'" + Constants.ApplyForOtherLeave+"'}"
+                                  DataJson= @"{'Type':'" + Constants.ApplyForOtherLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
                        }
@@ -407,6 +415,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
                 },
             };
+            if (leaveDetails != null)
+            {
+                // Provide Withdraw option
+            }
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
@@ -545,119 +557,168 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
             var leaveType = GetShortDisplayText(leaveDetails.LeaveType);
             Uri photoUri = null;
+
             if (employee.PhotoPath != null)
                 photoUri = new Uri(employee.PhotoPath);
 
-            var json = AdaptiveCardHelper.GetAdaptiveCardJson();
-            json = json.Replace("{StartDay}", startDay);
-            json = json.Replace("{EndDay}", endDay);
+            var statusColor = AdaptiveTextColor.Warning;
+            switch (leaveDetails.Status)
+            {
+                case LeaveStatus.Pending:
+                    statusColor = AdaptiveTextColor.Warning;
+                    break;
+                case LeaveStatus.Approved:
+                    statusColor = AdaptiveTextColor.Good;
+                    break;
+                case LeaveStatus.Rejected:
+                    statusColor = AdaptiveTextColor.Attention;
+                    break;
+                case LeaveStatus.Withdrawn:
+                    statusColor = AdaptiveTextColor.Accent;
+                    break;
+                default:
+                    break;
+            }
+            //var json = AdaptiveCardHelper.GetAdaptiveCardJson();
+            //json = json.Replace("{StartDay}", startDay);
+            //json = json.Replace("{EndDay}", endDay);
 
-            json = json.Replace("{StartDate}", startDate);
-            json = json.Replace("{EndDate}", endDate);
+            //json = json.Replace("{StartDate}", startDate);
+            //json = json.Replace("{EndDate}", endDate);
 
-            json = json.Replace("{DayCount}", dayCount.ToString());
+            //json = json.Replace("{DayCount}", dayCount.ToString());
 
-            json = json.Replace("{LeaveType}", leaveType);
+            //json = json.Replace("{LeaveType}", leaveType);
 
-            json = json.Replace("{LeaveReason}", leaveDetails.EmployeeComment);
+            //json = json.Replace("{LeaveReason}", leaveDetails.EmployeeComment);
 
-            json = json.Replace("{Status}", "Pending");
+            //json = json.Replace("{Status}", "Pending");
 
-            var card = AdaptiveCardHelper.GetAdaptiveCardFromJosn(json);
-            //var card3 = new AdaptiveCard()
-            //{
-            //    Body = new List<AdaptiveElement>()
-            //    {
-            //        new AdaptiveContainer
-            //        {
-            //            Items=new List<AdaptiveElement>()
-            //            {
-            //                 new AdaptiveColumnSet()
-            //        {
-            //            Columns=new List<AdaptiveColumn>()
-            //            {
-            //                new AdaptiveColumn()
-            //                {
-            //                    Width=AdaptiveColumnWidth.Auto,
-            //                    Items=new List<AdaptiveElement>()
-            //                    {
+            // var card = AdaptiveCardHelper.GetAdaptiveCardFromJosn(json);
 
-            //                        new AdaptiveImage(){Size=AdaptiveImageSize.Large,Url=photoUri,
-            //                            Style =AdaptiveImageStyle.Person}
-            //                    }
+            var container = new AdaptiveContainer
+            {
+                Items = new List<AdaptiveElement>()
+                        {
+                             new AdaptiveColumnSet()
+                             {
+                                 Columns = new List<AdaptiveColumn>()
+                                 {
+                                     new AdaptiveColumn()
+                                     {
+                                         Spacing=AdaptiveSpacing.Large,
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=$"{startDate}   - {endDate}",Size=AdaptiveTextSize.Default,Wrap=true},
+                                             new AdaptiveTextBlock(){Text=$"{dayCount} days OOF",Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Medium,Wrap=true},
+                                         }
+                                     }
+                                 }
+                             },
 
-            //                },
-            //                new AdaptiveColumn()
-            //                {
+                             new AdaptiveColumnSet()
+                             {
+                                 Columns = new List<AdaptiveColumn>()
+                                 {
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=$"{leaveType} : ", Weight=AdaptiveTextWeight.Bolder, Color = AdaptiveTextColor.Accent, Size=AdaptiveTextSize.Medium, Spacing = AdaptiveSpacing.Medium, Wrap=true},
+                                         }
+                                     },
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=leaveDetails.EmployeeComment,HorizontalAlignment=AdaptiveHorizontalAlignment.Left,Wrap=true }
+                                         }
+                                     }
+                                 }
+                             }
+                             ,
+                             new AdaptiveColumnSet()
+                             {
+                                 Columns = new List<AdaptiveColumn>()
+                                 {
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=$"Approval Status:",Weight=AdaptiveTextWeight.Bolder, Size=AdaptiveTextSize.Medium,Wrap=true},
+                                         }
+                                     },
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=leaveDetails.Status.ToString(),
+                                                 Color = statusColor,
+                                                 HorizontalAlignment =AdaptiveHorizontalAlignment.Left,Wrap=true }
+                                         }
+                                     }
+                                 }
+                             }
+                        }
+            };
 
-            //                    Spacing=AdaptiveSpacing.Large,
-            //                    Width=AdaptiveColumnWidth.Stretch,
-            //                    Items=new List<AdaptiveElement>()
-            //                    {
-            //                        new AdaptiveTextBlock(){Text=$"{employee.DisplayName} has requsted for Paid leave for {dayCount} Days", Size=AdaptiveTextSize.Medium,Wrap=true},
+            var card3 = new AdaptiveCard()
+            {
+                Body = new List<AdaptiveElement>()
+                {
+                    container
+                },
+                Actions = new List<AdaptiveAction>()
+                {
+                    new AdaptiveSubmitAction()
+                    {
+                        Title = "Edit",
+                        Data = new AdaptiveCardValue<EditLeaveDetails>() { Data =  new EditLeaveDetails() { Type = Constants.EditLeave, LeaveId = leaveDetails.LeaveId }  }
+                    }
+                },
+            };
 
-            //                         new AdaptiveTextBlock(){Text=$"{startDay}   {endDay}", Size=AdaptiveTextSize.Default,Wrap=true},
-            //                         new AdaptiveTextBlock(){Text=$"{startDate}   - {endDate}, {leaveDetails.EndDate.Date.Year}",Size=AdaptiveTextSize.Default,Wrap=true},
-            //                         new AdaptiveTextBlock(){Text=$"Reason:{leaveType}",Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Medium,Wrap=true},
-            //                        new AdaptiveTextBlock(){Text=leaveDetails.EmployeeComment,HorizontalAlignment=AdaptiveHorizontalAlignment.Left,Wrap=true }
+            if(!string.IsNullOrEmpty( leaveDetails.ManagerComment))
+            {
+                container.Items.Add(
+                     new AdaptiveColumnSet()
+                     {
+                         Columns = new List<AdaptiveColumn>()
+                                 {
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=$"Manager Comment:",Weight=AdaptiveTextWeight.Bolder, Size=AdaptiveTextSize.Medium,Wrap=true},
+                                         }
+                                     },
+                                     new AdaptiveColumn()
+                                     {
+                                         Width=AdaptiveColumnWidth.Stretch,
+                                         Items = new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text=leaveDetails.ManagerComment.ToString(),
+                                                 Color = statusColor,
+                                                 HorizontalAlignment =AdaptiveHorizontalAlignment.Left,Wrap=true }
+                                         }
+                                     }
+                                 }
+                     }
+                    );
+            }
 
-            //                    }
+            return new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card3
+            };
 
-            //                }
-            //            }
-
-            //        },
-            //            }
-            //        }
-
-            //    },
-            //    Actions = new List<AdaptiveAction>()
-            //    {
-            //        new AdaptiveShowCardAction()
-            //        {
-            //            Title="Approve",
-
-            //             Card=new AdaptiveCard()
-            //           {
-            //              Body=new List<AdaptiveElement>()
-            //              {
-            //                  new AdaptiveTextInput(){Id="ManagerComment", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Comments (Optional)"}
-            //              },
-            //              Actions=new List<AdaptiveAction>()
-            //              {
-            //                  new AdaptiveSubmitAction()
-            //                  {
-            //                      Title="Approve",
-            //                      DataJson= @"{'Type':'" + Constants.ApproveLeave+"', 'LeaveId':'" + leaveDetails.LeaveId+"'}"
-
-            //                  }
-            //              }
-            //           }
-            //        },
-            //        new AdaptiveShowCardAction()
-            //        {
-            //            Title="Reject",
-
-            //             Card=new AdaptiveCard()
-            //           {
-            //              Body=new List<AdaptiveElement>()
-            //              {
-            //                  new AdaptiveTextInput(){Id="ManagerComment", IsMultiline=true,MaxLength=300, IsRequired=true, Placeholder="Write a reason (Optional)"}
-            //              },
-            //              Actions=new List<AdaptiveAction>()
-            //              {
-            //                  new AdaptiveSubmitAction()
-            //                  {
-            //                      Title="Reject",
-            //                      DataJson= @"{'Type':'" + Constants.RejectLeave+"', 'LeaveId':'" + leaveDetails.LeaveId +"'}"
-            //                  }
-            //              }
-            //           }
-            //        }
-
-            //    },
-            //};
-            return card;
         }
 
         public static double GetDayCount(LeaveDetails leaveDetails)
@@ -731,7 +792,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
                             new AdaptiveTextBlock()
                             {
-                                Text="Here's your balance status",
+                                Text="Here's your balance ",
                                 Size=AdaptiveTextSize.Large
                             },
 
@@ -845,16 +906,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Spacing=AdaptiveSpacing.ExtraLarge,
                                 Items=new List<AdaptiveElement>()
                                 {
-
-
                                      new AdaptiveTextBlock(){Text=employee.LeaveBalance.SickLeave.ToString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Color=AdaptiveTextColor.Accent}
-
-
                                 }
-
                             }
-
-
                         },
 
 
@@ -875,26 +929,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 {
 
                                       new AdaptiveTextBlock(){Text="Carried over from last year Recommended to utilise for vacations", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
-
-
-
                                 }
-
-                            },
+                           },
                             new AdaptiveColumn()
                             {
-
                                 Width="50",
                                 Spacing=AdaptiveSpacing.ExtraLarge,
                                 Items=new List<AdaptiveElement>()
                                 {
                                      new AdaptiveTextBlock(){Text=employee.LeaveBalance.OptionalLeave.ToString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Color=AdaptiveTextColor.Accent},
-
                                 }
-
                             }
-
-
                         },
                     }
                         }
@@ -903,12 +948,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 Actions = new List<AdaptiveAction>()
                 {
 
-                    new AdaptiveSubmitAction()
+                    new AdaptiveOpenUrlAction()
                     {
-                        Title="View Details"
+                        Title="View Details",
+                        Url = new Uri(DeeplinkHelper.LeaveBoardDeeplink)
                     }
-
-
                 },
             };
             return new Attachment()
@@ -1103,23 +1147,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
                     },
 
-
-
-                        }
+                       }
                     }
-
-
                 },
                 Actions = new List<AdaptiveAction>()
                 {
 
-                    new AdaptiveSubmitAction()
+                    new AdaptiveOpenUrlAction()
                     {
-                        Title="View Details"
-
+                        Title="View Details",
+                        Url = new Uri(DeeplinkHelper.PublicHolidaysDeeplink)
                     }
-
-
                 },
             };
             return new Attachment()
@@ -1146,6 +1184,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
         public const string LeaveBalance = "View Leave Balance";
         public const string Holidays = "View List of Public Holidays";
+
+        public const string EditLeave = "EditLeave";
+        public const string Withdraw = "Withdraw";
     }
 
     public class InputDetails
@@ -1154,33 +1195,48 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
     }
 
-    public class SetManagerDetails
+    public class SetManagerDetails : InputDetails
     {
-        public string Type { get; set; }
         public string txtManager { get; set; }
     }
 
-
-    public class VacationDetails
+    public class MessageIds
     {
-        public string Type { get; set; }
+        public string Employee { get; set; }
+        public string Manager { get; set; }
+    }
+
+
+    public class VacationDetails : InputDetails
+    {
         public string FromDate { get; set; }
         public string FromDuration { get; set; }
         public string ToDate { get; set; }
         public string ToDuration { get; set; }
         public string LeaveType { get; set; }
         public string LeaveReason { get; set; }
+
+        public string LeaveId { get; set; }
+
     }
 
 
 
-    public class ManagerResponse
+    public class EditRequest
     {
-        public string Type { get; set; }
+        public VacationDetails data { get; set; }
+    }
+
+
+    public class ManagerResponse : InputDetails
+    {
         public string LeaveId { get; set; }
         public string ManagerComment { get; set; }
     }
 
-
+    public class EditLeaveDetails : InputDetails
+    {
+        public string LeaveId { get; set; }
+    }
 
 }
