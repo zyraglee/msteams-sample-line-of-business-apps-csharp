@@ -134,7 +134,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 LeaveType = LeaveType.PaidLeave,
                 StartDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
                 EndDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
-                Status = LeaveStatus.PendingApproval,
+                Status = LeaveStatus.Pending,
                 ManagerComment = "You can tkae the leave"
             };
 
