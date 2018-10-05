@@ -23,6 +23,7 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 using Microsoft.Graph;
+using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 {
@@ -41,9 +42,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         /// <summary>
         /// This is the name of the OAuth Connection Setting that is configured for this bot
         /// </summary>
-        private static string ConnectionName = ConfigurationManager.AppSettings["ConnectionName"];
-        private static string BaseUri = ConfigurationManager.AppSettings["BaseUri"];
-
         public async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
@@ -82,7 +80,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 if (employee != null)
                     context.ConversationData.SetValue<Employee>(ProfileKey, employee);
             }
-
             if (employee == null)
             {
                 // If Bot Service does not have a token, send an OAuth card to sign in.
@@ -95,48 +92,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             }
             else if (activity.Value != null)
             {
-                var type = JsonConvert.DeserializeObject<InputDetails>(activity.Value.ToString());
-                var reply = activity.CreateReply();
-
-                switch (type.Type)
-                {
-                    case Constants.ApplyForOtherLeave:
-                    case Constants.ApplyForPersonalLeave:
-                    case Constants.ApplyForSickLeave:
-                    case Constants.ApplyForVacation:
-
-
-                        await ApplyForVacation(context, activity, employee);
-
-                        break;
-
-                    case Constants.RejectLeave:
-                    case Constants.ApproveLeave:
-
-                        await HandleLeaveApprovalOrRejection(context, activity, type);
-                        //await SetEmployeeManager(context, activity, employee);
-                        break;
-                    case Constants.SetManager:
-                        await SetEmployeeManager(context, activity, employee);
-                        break;
-
-                    case Constants.LeaveRequest:
-                        reply.Attachments.Add(EchoBot.LeaveRequest());
-                        await context.PostAsync(reply);
-                        break;
-                    case Constants.LeaveBalance:
-                        reply.Attachments.Add(EchoBot.ViewLeaveBalance(employee));
-                        await context.PostAsync(reply);
-                        break;
-                    case Constants.Holidays:
-                        reply.Attachments.Add(EchoBot.PublicHolidays());
-                        await context.PostAsync(reply);
-                        break;
-                    default:
-                        reply = activity.CreateReply("It will redirect to the tab");
-                        await context.PostAsync(reply);
-                        break;
-                }
+                await HandleActions(context, activity, employee);
             }
             else
             {
@@ -152,10 +108,90 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 else
                 {
                     var reply = activity.CreateReply();
-                    reply.Attachments.Add(EchoBot.WelcomeLeaveCard(employee.DisplayName));
+                    bool isManager = await IsManager(employee);
+
+                    reply.Attachments.Add(EchoBot.WelcomeLeaveCard(employee.DisplayName, isManager));
 
                     await context.PostAsync(reply);
                 }
+            }
+        }
+
+        private static async Task<bool> IsManager(Employee employee)
+        {
+            var allEmployees = await DocumentDBRepository.GetItemsAsync<Employee>(l => l.Type == Employee.TYPE);
+            return allEmployees.Any(s => s.ManagerEmailId == employee.EmailId);
+        }
+
+        private async Task HandleActions(IDialogContext context, Activity activity, Employee employee)
+        {
+            var type = JsonConvert.DeserializeObject<InputDetails>(activity.Value.ToString());
+            var reply = activity.CreateReply();
+
+            switch (type.Type)
+            {
+                case Constants.ApplyForOtherLeave:
+                case Constants.ApplyForPersonalLeave:
+                case Constants.ApplyForSickLeave:
+                case Constants.ApplyForVacation:
+
+
+                    await ApplyForVacation(context, activity, employee);
+
+                    break;
+
+                case Constants.RejectLeave:
+                case Constants.ApproveLeave:
+
+                    await HandleLeaveApprovalOrRejection(context, activity, type);
+                    //await SetEmployeeManager(context, activity, employee);
+                    break;
+                case Constants.SetManager:
+                    await SetEmployeeManager(context, activity, employee);
+                    break;
+
+                case Constants.ShowPendingApprovals:
+                    await ShowPendingApprovals(context, activity, employee);
+                    break;
+                case Constants.LeaveRequest:
+                    reply.Attachments.Add(EchoBot.LeaveRequest());
+                    await context.PostAsync(reply);
+                    break;
+                case Constants.LeaveBalance:
+                    reply.Attachments.Add(EchoBot.ViewLeaveBalance(employee));
+                    await context.PostAsync(reply);
+                    break;
+                case Constants.Holidays:
+                    reply.Attachments.Add(EchoBot.PublicHolidays());
+                    await context.PostAsync(reply);
+                    break;
+                default:
+                    reply = activity.CreateReply("It will redirect to the tab");
+                    await context.PostAsync(reply);
+                    break;
+            }
+        }
+
+        private async Task ShowPendingApprovals(IDialogContext context, Activity activity, Employee employee)
+        {
+            var pendingLeaves = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(l => l.Type == LeaveDetails.TYPE);
+            pendingLeaves = pendingLeaves.Where(l => l.ManagerEmailId == employee.EmailId && l.Status == LeaveStatus.PendingApproval);
+            if (pendingLeaves.Count() == 0)
+            {
+                var reply = activity.CreateReply();
+                reply.Text = "No pending leaves for approval.";
+                await context.PostAsync(reply);
+            }
+            else
+            {
+                var reply = activity.CreateReply();
+                reply.Text = "Here are all the leaves pending for approval:";
+                foreach (var leave in pendingLeaves)
+                {
+                    var attachment = EchoBot.ManagerViewCard(employee, leave);
+                    reply.Attachments.Add(attachment);
+                }
+                await context.PostAsync(reply);
             }
         }
 
@@ -232,19 +268,23 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     },
                     LeaveId = Guid.NewGuid().ToString(),
                     LeaveType = (LeaveType)Enum.Parse(typeof(LeaveType), vacationDetails.LeaveType),
-                    Status = LeaveStatus.PendingApproval
+                    Status = LeaveStatus.PendingApproval,
+                    ManagerEmailId = employee.ManagerEmailId // Added for easy reporting.
                 };
                 await DocumentDBRepository.CreateItemAsync<LeaveDetails>(leave);
 
-                try
+
+                var attachment = EchoBot.ManagerViewCard(employee, leave);
+                var status = await SendNotification(context, managerId, null, attachment);
+                if (status)
                 {
-                    var attachment = EchoBot.ManagerViewCard(employee, leave);
-                    await SendNotification(context, managerId, null, attachment);
+                    var employeeView = EchoBot.EmployeeViewCard(employee, leave);
+                    var reply = activity.CreateReply();
+                    reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below";
+                    reply.Attachments.Add(employeeView);
+                    await context.PostAsync(reply);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+
             }
         }
 
@@ -286,7 +326,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 
         private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
         {
-            var reply = await context.Activity.CreateOAuthReplyAsync(ConnectionName, "In order to use Leave Bot we need your basic deatils, Please sign in", "Sign In", true).ConfigureAwait(false);
+            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName, "In order to use Leave Bot we need your basic deatils, Please sign in", "Sign In", true).ConfigureAwait(false);
             await context.PostAsync(reply);
 
             context.Wait(WaitForToken);
@@ -309,7 +349,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                                                                 : ((dynamic)(activity.Value)).state.ToString();
                 if (!string.IsNullOrEmpty(input))
                 {
-                    tokenResponse = await context.GetUserTokenAsync(ConnectionName, input.Trim());
+                    tokenResponse = await context.GetUserTokenAsync(ApplicationSettings.ConnectionName, input.Trim());
                     if (tokenResponse != null)
                     {
                         try
@@ -353,7 +393,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     photo.Seek(0, SeekOrigin.Begin);
                     photo.CopyTo(fileStream);
                 }
-                profilePhotoUrl = BaseUri + "/ProfilePhotos/" + fileName;
+                profilePhotoUrl = ApplicationSettings.BaseUrl + "/ProfilePhotos/" + fileName;
             }
             catch (Exception ex)
             {
@@ -394,12 +434,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         public static async Task Signout(string emailId, IDialogContext context)
         {
             Console.WriteLine(emailId);// Use this to clean the DB.
-            await context.SignOutUserAsync(ConnectionName);
+            await context.SignOutUserAsync(ApplicationSettings.ConnectionName);
             await context.PostAsync($"You have been signed out.");
         }
 
 
-        private static async Task SendNotification(IDialogContext context, string managerUniqueId, string messageText, Bot.Connector.Attachment attachment)
+        private static async Task<bool> SendNotification(IDialogContext context, string managerUniqueId, string messageText, Bot.Connector.Attachment attachment)
         {
             var userId = managerUniqueId.Trim();
             var botId = context.Activity.Recipient.Id;
@@ -418,24 +458,28 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 }
             };
 
-            var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
-            var replyMessage = Activity.CreateMessageActivity();
-            replyMessage.From = new ChannelAccount(botId, botName);
-            replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
-            replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
-            replyMessage.Text = messageText;
-            if (attachment != null)
-                replyMessage.Attachments.Add(attachment);//  EchoBot.ManagerViewCard(employee, leaveDetails));
             try
             {
+                var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
+                var replyMessage = Activity.CreateMessageActivity();
+                replyMessage.From = new ChannelAccount(botId, botName);
+                replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
+                replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
+                replyMessage.Text = messageText;
+                if (attachment != null)
+                    replyMessage.Attachments.Add(attachment);//  EchoBot.ManagerViewCard(employee, leaveDetails));
+
                 await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
             }
             catch (Exception ex)
             {
+                // Handle the error.
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;
                 await context.PostAsync(msg);
+                return false;
             }
+            return true;
         }
 
     }
