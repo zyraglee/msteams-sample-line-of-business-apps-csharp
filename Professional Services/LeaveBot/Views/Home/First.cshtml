@@ -75,49 +75,49 @@
             <br />
             <p style="color:black;font-size:20px;">
                 Public Holidays 2018
-                <span style="float:right;padding-right:60px;" class="glyphicon glyphicon-calendar"></span>
-                <span style="float:right;padding-right:70px;" class="glyphicon glyphicon-list"></span>
+                @*<span style="float:right;padding-right:60px;" class="glyphicon glyphicon-calendar"></span>
+                    <span style="float:right;padding-right:70px;" class="glyphicon glyphicon-list"></span>*@
             </p>
 
         </div>
         <div class="panel-group">
             <div class="body">
-    <table rules="none" border="0" cellpadding="20" cellspacing="20">
-        <thead>
-            <tr style="opacity:0.7">
-                <th style="padding:15px">
-                    Date
-                </th>
-                <th style="padding:15px">
-                    Day
-                </th>
-                <th style="padding:15px">
-                    Event
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
-            {
-                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
-                    <td>
-                        @item.Date.ToString("dd MMMM yyyy")
-                    </td>
-                    <td>
-                        @item.Date.DayOfWeek
-                    </td>
-                    <td>
-                        @item.Title
-                    </td>
+                <table rules="none" border="0" cellpadding="20" cellspacing="20">
+                    <thead>
+                        <tr style="opacity:0.7">
+                            <th style="padding:15px">
+                                Date
+                            </th>
+                            <th style="padding:15px">
+                                Day
+                            </th>
+                            <th style="padding:15px">
+                                Event
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
+                        {
+                            <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
+                                <td>
+                                    @item.Date.ToString("dd MMMM yyyy")
+                                </td>
+                                <td>
+                                    @item.Date.DayOfWeek
+                                </td>
+                                <td>
+                                    @item.Title
+                                </td>
 
-                </tr>
+                            </tr>
 
-            }
+                        }
 
-        </tbody>
-    </table>
-</div>
-            
+                    </tbody>
+                </table>
+            </div>
+
 
         </div>
     </div>
