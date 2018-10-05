@@ -79,4 +79,21 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         // Arun - Add types
     }
 
+    public class LeaveExtended : LeaveDetails
+    {
+        public int DaysDiff { get; set; }
+
+        public string startDay { get; set; }
+        public string EndDay { get; set; }
+        public string StartDateval { get; set; }
+
+        public string EndDateVal { get; set; }
+        public List<LeaveDetails> leavesData { get; set; }
+
+        public int Totalleaves { get; set; }
+
+        public string lastUsed { get; set; }
+
+        public string BaseUri { get; set; }
+    }
 }

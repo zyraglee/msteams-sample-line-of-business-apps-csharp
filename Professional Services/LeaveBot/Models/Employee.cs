@@ -36,6 +36,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonIgnore]
         public string DisplayName { get { return (Name??string.Empty).Split(' ').First(); } }
 
+        [JsonIgnore]
+        public int Totalleaves { get; set; }
+
         [JsonProperty(PropertyName = "demoManagerEmailId")]
         public string DemoManagerEmailId { get; set; }
 

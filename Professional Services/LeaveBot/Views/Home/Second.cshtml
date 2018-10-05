@@ -31,29 +31,18 @@
             margin-top: 10px;
         }
 
-
-
             .tab button {
                 display: block;
                 background-color: white;
-                padding: 22px 54px;
+                padding: 20px 50px;
                 width: 100%;
                 border: none;
                 outline: none;
                 text-align: left;
                 cursor: pointer;
                 transition: 0.3s;
-                font-size: 17px;
+                font-size: 15px;
             }
-
-
-
-        `
-
-        .tab button.active {
-            background-color: #red;
-        }
-
 
         .tabcontent {
             height: 100%;
@@ -70,15 +59,39 @@
         }
 
             .tabcontent p {
-                float: left;
+                top: 0;
                 font-family: 'Times New Roman', Times, serif;
                 font-size: 17px;
                 padding-left: 10px;
+                display: block;
+                margin-block-start: 0.5em;
+                margin-block-end: 0.5em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
             }
 
         td {
             font-size: 17px;
             font-family: 'Times New Roman', Times, serif;
+        }
+
+        h4 {
+            display: block;
+            margin-block-start: 0.33em;
+            margin-block-end: 0.33em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+        }
+
+        h3 {
+            display: block;
+            font-size: 1.17em;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -92,47 +105,46 @@
 
     <div id="What Can You Do" class="tabcontent">
         <h3 style="padding-left:10px">What Can you do??</h3>
-        <h4 style="padding-left:10px">You can..</h4><br />
-        <p>
-            <table border="0" cellpadding="5" cellspacing="5">
-                <tr>
-                    <td>Submit a request</td>
-                </tr>
-                <tr>
-                    <td>Delete a request</td>
-                </tr>
-                <tr>
-                    <td> Approve a request</td>
-                </tr>
-                <tr>
-                    <td>View your previous submitted requests</td>
-                </tr>
-                <tr>
-                    <td>Check balance status</td>
-                </tr>
-                <tr>
-                    <td>View public holidays</td>
-                </tr>
-                <tr>
-                    <td>View personal dashboard </td>
-                </tr>
+        <h4 style="padding-left:10px">You can..</h4>
 
-            </table>
+        <table border="0" cellpadding="5" cellspacing="5">
+            <tr>
+                <td>Submit a request</td>
+            </tr>
+            <tr>
+                <td>Delete a request</td>
+            </tr>
+            <tr>
+                <td> Approve a request</td>
+            </tr>
+            <tr>
+                <td>View your previous submitted requests</td>
+            </tr>
+            <tr>
+                <td>Check balance status</td>
+            </tr>
+            <tr>
+                <td>View public holidays</td>
+            </tr>
+            <tr>
+                <td>View personal dashboard </td>
+            </tr>
 
-        </p>
+        </table>
+
+
+
     </div>
 
     <div id="FAQs" class="tabcontent">
         <h3 style="padding-left:10px">FAQs</h3>
         <p>
-            <span style="font-size:22px;color:blue">What is the leave board?<br /></span><br />
-
+            <span style="font-size:20px;color:blue">What is the leave board?<br /></span>
             It is a onestop shop for you to see everything related to your leave queries.
             View the requests you have submitted. Get status on the balance.
             You can also get cool tips from our leave application. If you are a manager,
-            you will also see all the pending requests in one shot here.<br /><br /><br />
-            <span style="font-size:22px;color:blue"> What is a long holiday in the calendar view?<br /></span><br />
-
+            you will also see all the pending requests in one shot here.<br /><br />
+            <span style="font-size:20px;color:blue"> What is a long holiday in the calendar view?<br /></span>
             It means that the public holiday falls either on a Friday or Monday and that it will be a long weekend. So have some fun!
         </p>
     </div>

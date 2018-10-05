@@ -1,4 +1,4 @@
-﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveDetails>
+﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveDetails>>
 @*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -173,8 +173,8 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
-                    
+                window.location = https://leavebotdemo.azurewebsites.net/? Emailid = " + context.userPrincipalName;
+
 
             })
         }
@@ -190,9 +190,9 @@
                         <img src=@Model.Item1.PhotoPath @*alt=@Model.Item1.Name @*hspace="15"*@ ;>
                     </div>
                     <div class="vb">
-                        <span style="font-size:20px"><b>@Model.Item1.Name</b></span>
+                        <span style="font-size:20px"><b>@Model.Item1.Name</b></span><br />
                         <br />Sr Software Engineer<br />
-                        <span><b>12</b></span><span style="opacity:0.5"> days OOF in </span><span><b>9</b></span><span style="opacity:0.5"> months</span><br /><br /><br />
+                        <span><b>@Model.Item1.Totalleaves</b></span><span style="opacity:0.5"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="opacity:0.5"> months</span><br /><br /><br />
                         <input style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" type="submit" value="Apply Leave" />
                     </div>
                 </div>
@@ -218,7 +218,7 @@
                     <div class="panel-group2">
                         <div class="heading">
                             <div>
-                                <span class="dot" hspace="20"><img class="dot" src=https://ba0c0509.ngrok.io/resources/color.png /></span>
+                                <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
                                 Leave Bot<br /><span style="opacity:0.7">Tip</span>
                             </div>
                             <br />
@@ -237,7 +237,7 @@
                 <div class="panel-group2">
                     <div class="heading">
                         <div>
-                            <span class="dot" hspace="20"><img class="dot" src=https://ba0c0509.ngrok.io/resources/color.png /></span>
+                            <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/color.png /></span>
                             Leave Bot<br />
                         </div>
                         <br />
@@ -265,25 +265,26 @@
                     <tr>
                         <td><b style="font-weight:300px">Paid Leave<b></td>
                         <td style="color:purple">@Model.Item1.LeaveBalance.PaidLeave</td>
-                        <td style="color:red">@(20-Model.Item1.LeaveBalance.PaidLeave)</td>
+                        <td style="color:red">@(20 - Model.Item1.LeaveBalance.PaidLeave)</td>
                         <td>20</td>
-                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in March</td>
+
+                        @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in March</td>*@
 
                     </tr>
 
                     <tr>
                         <td><b>Sick Leaves</b></td>
                         <td style="color:purple">@Model.Item1.LeaveBalance.SickLeave</td>
-                        <td style="color:red">@(12-Model.Item1.LeaveBalance.SickLeave)</td>
+                        <td style="color:red">@(12 - Model.Item1.LeaveBalance.SickLeave)</td>
                         <td>12</td>
-                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in August</td>
+                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Last Used in @Model.Item1.lastUsed</td>
                     </tr>
                     <tr>
                         <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
                         <td style="color:purple">@Model.Item1.LeaveBalance.CarriedLeave</td>
-                        <td style="color:red">@(10-Model.Item1.LeaveBalance.CarriedLeave)</td>
+                        <td style="color:red">@(10 - Model.Item1.LeaveBalance.CarriedLeave)</td>
                         <td>10</td>
-                        <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>
+                        @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
                     </tr>
                     <tr style="opacity:0.5">
                         <td>Maternity Leaves</td>
@@ -313,57 +314,62 @@
                 <p style="font-weight:700;font-size:14px;"> Leave reports</p>
                 <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
                 <table rules="rows">
-                    <tr>
-                        <td>
-                            Thu,Sep13-Mon,Sep17,2018<br />
-                            <span style="color:mediumpurple">PL.</span><span style="font-size:small"> i am visiting home over the<br /> weekend.Will be available...></span>
-                        </td>
-                        <td style="opacity:0.5">2 days OOF</td>
-                        <td style="color:goldenrod">Pending</td>
-                        <td> <span class="glyphicon glyphicon-pencil"></span></td>
-                        <td> <span class="glyphicon glyphicon-trash"></span></td>
+                    <tbody>
 
-                    </tr>
-                    <tr>
-                        <td>
-                            Wed,Aug 1,2018<br />
-                            <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
-                        </td>
-                        <td style="opacity:0.5">1 day OOF</td>
-                        <td style="color:forestgreen">Approved</td>
-                        <td> </td>
-                        <td> </td>
+                        @foreach (var item in Model.Item2)
+                        {
+                            <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
+                                <td>
+                                    @item.startDay, @item.StartDateval-@item.EndDay, @item.EndDateVal, @item.EndDate.Date.Year <br />
+                                    <br />
+                                    <span style="color:mediumpurple"> @item.LeaveType  </span> <span style="font-size:small"> @item.EmployeeComment</span>
 
-                    </tr>
-                    <tr>
-                        <td>
-                            Mon,May4-Thu,May 7,,2018<br />
-                            <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
-                        </td>
-                        <td style="opacity:0.5">2 days OOF</td>
-                        <td style="color:forestgreen">Pending</td>
-                        <td> </td>
-                        <td> </td>
+                                </td>
+                                <td>
+                                    @item.DaysDiff Days OOF
+                                </td>
+                                @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                {
+                                    <td style="color:forestgreen">Approved</td>
+                                    <td></td>
+                                    <td></td>
+                                }
+                                else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.PendingApproval)
+                                {
+                                    <td style="color:goldenrod">
 
-                    </tr>
-                    <tr>
-                        <td>
-                            Fri,Apr 7-Mon,Apr 10,2018<br />
-                            <span style="color:mediumpurple">PL.</span><span style="font-size:small"> Vacation</span>
-                        </td>
-                        <td style="opacity:0.5">2 days OOF</td>
-                        <td style="color:red">Declined</td>
-                        <td> </td>
-                        <td> </td>
+                                        @item.Status
+                                    </td>
+                                    <td> <span class="glyphicon glyphicon-pencil"></span></td>
+                                    <td> <span class="glyphicon glyphicon-trash"></span></td>
+                                }
+                                else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                {
+                                    <td style="color:red">Declined</td>
+                                    <td></td>
+                                    <td></td>
+                                }
 
-                    </tr>
+
+
+                            </tr>
+
+                        }
+
+
+                    </tbody>
+
+
+
+
+
                 </table>
             </div>
         </div>
     }
     else
     {
-        
+
     }
 </body>
 </html>

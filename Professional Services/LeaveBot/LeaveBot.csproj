@@ -258,6 +258,7 @@
     <Content Include="Resources\Like.png" />
     <Content Include="Resources\Vacation-01.png" />
     <Content Include="Resources\WelcomeBanner.png" />
+    <Content Include="Resources\leaveicon.png" />
     <Content Include="Scripts\teamsapp.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
