@@ -229,7 +229,7 @@
                             You can Utilise the carried over leaves from last year for you recently applied Leave...
 
                         </div>
-                        <div class="body"> <span><a href="#">Change Leave type</a></span></div>
+                        <div class="body"> @*<span><a href="#">Change Leave type</a></span>*@</div>
                     </div>
                 </div>
                 <br />
@@ -238,57 +238,72 @@
                 <div class="panel-group2">
                     <div class="heading">
                         <div>
-                            
+
                             <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
                             <div class="vls">Leave Bot<br /></div>
-                            </div>
                         </div>
-                        <br />
-                       
-                        Upcoming Long holiday from Oct 14 to Oct 16
-
                     </div>
+                    <br />
+                    @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
+                    {
+                        if (item.Date.Day > DateTime.Now.Day)
+                        {
+                            <span>Upcoming holiday is @item.Title on @item.Date.Day.@item.Date.Month.@item.Date.Year</span>
+                            break;
+                        }
+                    }
+                </div>
                 </div>
            
             <div class="vl"></div>
             <div class="split-right">
                 @if (Model.Item1.IsManager == true)
                 {
-                    <p style="font-weight:700;font-size:14px;"> Pending Requests</p>
-                    <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
-                    <table rules="rows">
-                        <tbody>
-                            @foreach (var item in Model.Item3)
-                            {
-                            <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
-                               <td><b style="font-weight:300px">@item.ResourceName</b></td>
-                               <td>
-                                   @item.mgrstartDay, @item.mgrStartDateval-@item.mgrEndDay, @item.mgrEndDateVal, @item.EndDate.Date.Year <br />
-                                   <br />
-                                   <span style="color:mediumpurple"> @item.LeaveType  </span> <br/>
-                                   <span style="font-size:small"> @item.EmployeeComment</span>
+                    if (Model.Item3.Count > 0)
+                    {
+                        <p style="font-weight:700;font-size:14px;"> Pending Requests</p>
+                        <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                        <table rules="rows">
+                            <tbody>
+                                @foreach (var item in Model.Item3)
+                                {
+                                    <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
+                                        <td><b style="font-weight:300px">@item.ResourceName</b></td>
+                                        <td>
+                                            @item.mgrstartDay, @item.mgrStartDateval-@item.mgrEndDay, @item.mgrEndDateVal, @item.EndDate.Date.Year <br />
+                                            <br />
+                                            <span style="color:mediumpurple"> @item.LeaveType  </span> <br />
+                                            <span style="font-size:small"> @item.EmployeeComment</span>
 
-                               </td>
-                                <td>
-                                    @item.mgrDaysdiff Days OOF
-                                </td>
-                                <td>
-                                    <a href="#">
-                                        <span style="color:green" class="glyphicon glyphicon-ok"></span>
-                                        Approve
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="#">
-                                        <span style="color:red" class="glyphicon glyphicon-remove"></span>Decline
-                                    </a>
-                                </td>
-                            </tr>
-                                    }
+                                        </td>
+                                        <td>
+                                            @item.mgrDaysdiff Days OOF
+                                        </td>
+                                        <td>
+                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc">
+                                                <span style="color:green" class="glyphicon glyphicon-ok"></span>
+                                                Approve
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc">
+                                                <span style="color:red" class="glyphicon glyphicon-remove"></span>Decline
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
-                       
-                    </table>
+
+                        </table>
+                    }
+                    else
+                    {
+                        <p style="font-weight:700;font-size:14px;"> No Pending requests</p>
+                    }
                 }
+                <br />
+                <br />
+
                 <p style="font-weight:700;font-size:14px;"> Balance Status</p>
                 <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
                 <table rules="rows" cellpadding="10">
@@ -322,7 +337,7 @@
                         <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
                         <td style="color:purple">@Model.Item1.LeaveBalance.CarriedLeave</td>
                         <td style="color:red">@(10 - Model.Item1.LeaveBalance.CarriedLeave)</td>
-                        <td>10</td>
+                        <td>20</td>
                         @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
                     </tr>
                     <tr style="opacity:0.5">
@@ -374,14 +389,14 @@
                                         <td></td>
                                         <td></td>
                                     }
-                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.PendingApproval)
+                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
                                     {
                                         <td style="color:goldenrod">
 
                                             @item.Status
                                         </td>
-                                        <td> <span class="glyphicon glyphicon-pencil"></span></td>
-                                        <td> <span class="glyphicon glyphicon-trash"></span></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc"><span class="glyphicon glyphicon-trash"></span></a></td>
                                     }
                                     else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
                                     {
