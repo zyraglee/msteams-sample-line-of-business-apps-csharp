@@ -18,6 +18,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "id")]
         public string EmailId { get; set; }
 
+        [JsonProperty(PropertyName = "azureADId")]
+        public string AzureADId { get; set; }
+
         [JsonProperty(PropertyName = "userUniqueId")]
         public string UserUniqueId { get; set; }
 
