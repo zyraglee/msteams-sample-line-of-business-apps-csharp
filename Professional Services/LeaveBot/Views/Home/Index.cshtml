@@ -175,7 +175,7 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = "https://385143f0.ngrok.io/?Emailid=" + context.userPrincipalName;
+                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
 
             })
         }
@@ -263,7 +263,7 @@
                             </div>
                         </div>
                         <br />
-                        <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="#">Chat with @Model.Item1.ManagerName</a></span></div>
+                        <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="https://teams.microsoft.com/l/chat/0/0?users=19:@Model.Item1.AzureADId" target="_blank">Chat with @Model.Item1.ManagerName</a></span></div>
                     </div>
                 </div>
 
