@@ -442,6 +442,24 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             if (employee.PhotoPath != null)
                 photoUri = new Uri(employee.PhotoPath);
 
+            string leaveMessage = string.Empty;
+
+            switch (leaveDetails.Status)
+            {
+                case LeaveStatus.Pending:
+                    leaveMessage = $"{employee.DisplayName} has requsted for {leaveType} for {dayCount} days";
+                    break;
+                case LeaveStatus.Rejected:
+                case LeaveStatus.Approved:
+                    leaveMessage = $"{employee.DisplayName}'s {dayCount} days {leaveType} is {leaveDetails.Status.ToString()}";
+                    break;
+                case LeaveStatus.Withdrawn:
+                    leaveMessage = $"{employee.DisplayName} has withdrawn this leave.";
+                    break;
+                default:
+                    break;
+            } 
+
             var card3 = new AdaptiveCard()
             {
                 Body = new List<AdaptiveElement>()
@@ -471,11 +489,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Width=AdaptiveColumnWidth.Stretch,
                                 Items=new List<AdaptiveElement>()
                                 {
-                                    new AdaptiveTextBlock(){Text=leaveDetails.Status == LeaveStatus.Withdrawn?
-                                        $"{employee.DisplayName} has withdrawn this leave."
-                                        : $"{employee.DisplayName} has requsted for {leaveType} for {dayCount} Days"
-
-                                    , Size=AdaptiveTextSize.Medium,Wrap=true},
+                                    new AdaptiveTextBlock(){
+                                    Text =leaveMessage,
+                                    Size=AdaptiveTextSize.Medium,Wrap=true},
 
                                      new AdaptiveTextBlock(){Text=$"{startDay}   {endDay}", Size=AdaptiveTextSize.Default,Wrap=true},
                                      new AdaptiveTextBlock(){Text=$"{startDate}   - {endDate}, {leaveDetails.EndDate.Date.Year}",Size=AdaptiveTextSize.Default,Wrap=true},
@@ -537,7 +553,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     }
                 },
             };
-            if (leaveDetails.Status == LeaveStatus.Withdrawn)
+            if (leaveDetails.Status == LeaveStatus.Withdrawn || leaveDetails.Status == LeaveStatus.Approved || leaveDetails.Status == LeaveStatus.Rejected)
                 card3.Actions = null;
 
             return new Attachment()
@@ -676,7 +692,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 },
             };
 
-            if(!string.IsNullOrEmpty( leaveDetails.ManagerComment))
+            if (!string.IsNullOrEmpty(leaveDetails.ManagerComment))
             {
                 container.Items.Add(
                      new AdaptiveColumnSet()
@@ -744,7 +760,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 case LeaveType.PaternityLeave:
                     return "Paternity Leave";
                 case LeaveType.Caregiver:
-                    return "Caregiver";
+                    return "Caregiver Leave";
                 default:
                     break;
             }
