@@ -35,6 +35,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     if(managername!=null)
                     {
                         readEmployee.ManagerName = managername.DisplayName;
+                        readEmployee.AzureADId = managername.AzureADId;
                     }
                 }
                 else
@@ -54,7 +55,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                         item.DaysDiff = Convert.ToInt32(diff.TotalDays);
                         item.startDay = item.StartDate.Date.ToString("dddd");
                         item.EndDay = item.EndDate.Date.ToString("dddd");
-
+                        
                         item.StartDateval = item.StartDate.Date.ToString("MMM d");
                         item.EndDateVal = item.EndDate.Date.ToString("MMM d");
                         if (item.Status == LeaveStatus.Approved)
