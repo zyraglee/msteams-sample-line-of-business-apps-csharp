@@ -19,6 +19,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 
                 var readEmployee = await DocumentDBRepository.GetItemAsync<Employee>(Emailid);
+                DateTime nextholiday;
+                foreach(var item in PublicHolidaysList.HolidayList)
+                {
+                    if(item.Date.Date>DateTime.Now.Date)
+                    {
+                        nextholiday = item.Date.Date;
+                    }
+                }
                 if (readEmployee != null)
                 {
                     readEmployee.IsManager = await RootDialog.IsManager(readEmployee);
