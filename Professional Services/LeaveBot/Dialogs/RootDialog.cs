@@ -88,7 +88,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             else if ((string.IsNullOrEmpty(employee.ManagerEmailId) && string.IsNullOrEmpty(employee.DemoManagerEmailId))
                 && (!IsValidActionWithoutManager(activity.Value)))
             {
-                await SendSetManagerCard(context);
+
+                await SendSetManagerCard(context, activity, employee, message);
             }
             else if (activity.Value != null)
             {
@@ -98,7 +99,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             {
                 if (message.ToLowerInvariant().Contains("set manager"))
                 {
-                    await SendSetManagerCard(context);
+                    await SendSetManagerCard(context, activity, employee, message);
                 }
                 else if (message.ToLowerInvariant().Equals("reset"))
                 {
@@ -144,17 +145,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 case Constants.ApplyForPersonalLeave:
                 case Constants.ApplyForSickLeave:
                 case Constants.ApplyForVacation:
-
-
                     await ApplyForVacation(context, activity, employee, type);
+                    break;
 
+                case Constants.Withdraw:
+                    await WithdrawLeave(context, activity, employee, type);
                     break;
 
                 case Constants.RejectLeave:
                 case Constants.ApproveLeave:
 
                     await HandleLeaveApprovalOrRejection(context, activity, type);
-                    //await SetEmployeeManager(context, activity, employee);
                     break;
                 case Constants.SetManager:
                     await SetEmployeeManager(context, activity, employee);
@@ -250,10 +251,77 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         private async Task SetEmployeeManager(IDialogContext context, Activity activity, Employee employee)
         {
             var details = JsonConvert.DeserializeObject<SetManagerDetails>(activity.Value.ToString());
-            // reply.Attachments.Add(EchoBot.LeaveRequest());
+            await SetEmaployeeManager(context, activity, employee, details.txtManager.ToLower());
+        }
 
-            employee.ManagerEmailId = details.txtManager.ToLower();
+        private static async Task SetEmaployeeManager(IDialogContext context, Activity activity, Employee employee, string emailId)
+        {
+            employee.ManagerEmailId = emailId;
             await UpdateEmployeeInDB(context, employee);
+
+            var reply = activity.CreateReply();
+            reply.Text = "Your manager is set successfully. Manger Email Id: " + emailId;
+            await context.PostAsync(reply);
+        }
+
+        private static async Task WithdrawLeave(IDialogContext context, Activity activity, Employee employee, string leaveCategory)
+        {
+            var managerId = await GetManagerId(employee);
+            if (managerId == null)
+            {
+                var reply = activity.CreateReply();
+                reply.Text = "Unable to fetch your manager details. Please make sure that your manager has installed the Leave App.";
+                await context.PostAsync(reply);
+            }
+            else
+            {
+                EditLeaveDetails vacationDetails = JsonConvert.DeserializeObject<EditLeaveDetails>(activity.Value.ToString());
+                LeaveDetails leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(vacationDetails.LeaveId);
+
+                leaveDetails.Status = LeaveStatus.Withdrawn;
+                var attachment = EchoBot.ManagerViewCard(employee, leaveDetails);
+
+                MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
+
+                // Manger Updates.
+                var conversationId = await SendNotification(context, managerId, null, attachment, managerMessageIds.Manager);
+                if (!String.IsNullOrEmpty(conversationId))
+                {
+                    managerMessageIds.Manager = conversationId;
+                    context.ConversationData.SetValue(leaveDetails.LeaveId, managerMessageIds);
+                }
+
+                if (!String.IsNullOrEmpty(conversationId))
+                {
+
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    MessageIds messageIds = GetMessageId(context, leaveDetails.LeaveId);
+
+                    var employeeCardReply = activity.CreateReply();
+                    var employeeView = EchoBot.EmployeeViewCard(employee, leaveDetails);
+                    employeeCardReply.Attachments.Add(employeeView);
+
+                    if (!string.IsNullOrEmpty(messageIds.Employee))
+                    {
+                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, messageIds.Employee, employeeCardReply);
+                    }
+                    else
+                    {
+                        var reply = activity.CreateReply();
+                        reply.Text = "Your leave request has been successfully withdrawn!";
+                        await context.PostAsync(reply);
+                        var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
+                        context.ConversationData.RemoveValue(leaveDetails.LeaveId);
+                    }
+                }
+                else
+                {
+                    var reply = activity.CreateReply();
+                    reply.Text = "Failed to send notification to your manger. Please try again later.";
+                    await context.PostAsync(reply);
+                }
+
+            }
         }
 
         private static async Task ApplyForVacation(IDialogContext context, Activity activity, Employee employee, string leaveCategory)
@@ -345,7 +413,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 
                 // Manger Updates.
                 var conversationId = await SendNotification(context, managerId, null, attachment, managerMessageIds.Manager);
-                if(!String.IsNullOrEmpty(conversationId))
+                if (!String.IsNullOrEmpty(conversationId))
                 {
                     managerMessageIds.Manager = conversationId;
                     context.ConversationData.SetValue(leaveDetails.LeaveId, managerMessageIds);
@@ -400,10 +468,19 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             return messageIds;
         }
 
-        private static async Task SendSetManagerCard(IDialogContext context)
+        private static async Task SendSetManagerCard(IDialogContext context, Activity activity, Employee employee, string message)
         {
             //Ask for manager details.
             var card = EchoBot.SetManagerCard(); // WelcomeLeaveCard(employee.Name.Split(' ').First());
+            if (message.Contains("@"))
+            {
+                var emailId = ExtractEmails(message).FirstOrDefault();
+                if (!string.IsNullOrEmpty(emailId))
+                {
+                    await SetEmaployeeManager(context, activity, employee, emailId);
+                    return;
+                }
+            }
 
             var msg = context.MakeMessage();
             msg.Text = "Please set your manager so that we can send leaves for approval.";
@@ -411,7 +488,28 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             await context.PostAsync(msg);
         }
 
-        private async Task UpdateEmployeeInDB(IDialogContext context, Employee employee)
+        public static List<string> ExtractEmails(string str)
+        {
+            string RegexPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
+
+            // Find matches
+            System.Text.RegularExpressions.MatchCollection matches
+                = System.Text.RegularExpressions.Regex.Matches(str, RegexPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            List<string> MatchList = new List<string>(matches.Count);
+
+            // add each match
+            int c = 0;
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                MatchList.Add(match.ToString());
+                c++;
+            }
+
+            return MatchList;
+        }
+
+        private static async Task UpdateEmployeeInDB(IDialogContext context, Employee employee)
         {
             await DocumentDBRepository.UpdateItemAsync(employee.EmailId, employee);
             context.ConversationData.SetValue<Employee>(ProfileKey, employee);
@@ -528,6 +626,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     PaidLeave = 20,
                     SickLeave = 10
                 },
+                AzureADId = me.Id,
                 PhotoPath = profilePhotoUrl,
             };
             var employeeDoc = await DocumentDBRepository.CreateItemAsync(employee);
@@ -545,10 +644,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         /// </summary>
         public static async Task Signout(string emailId, IDialogContext context)
         {
+            context.ConversationData.Clear();
             await context.SignOutUserAsync(ApplicationSettings.ConnectionName);
             await DocumentDBRepository.DeleteItemAsync(emailId);
-            context.ConversationData.Clear();
-            await context.PostAsync($"You have been signed out.");
+
+            var pendingLeaves = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(l => l.Type == LeaveDetails.TYPE);
+            foreach (var leave in pendingLeaves.Where(l => l.AppliedByEmailId == emailId))
+            {
+                await DocumentDBRepository.DeleteItemAsync(leave.LeaveId);
+            }
+
+            await context.PostAsync($"We have cleared everything related to you.");
         }
 
         private static async Task<string> SendNotification(IDialogContext context, string managerUniqueId, string messageText, Bot.Connector.Attachment attachment, string updateMessageId)

@@ -45,7 +45,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                               {
                                   Title="Leave Request",
                                   DataJson= @"{'Type':'" + Constants.LeaveRequest+"'}"
-
                               },
                      new AdaptiveSubmitAction()
                      {
@@ -59,7 +58,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                      },
                      new AdaptiveOpenUrlAction()
                      {
-                         Title="See how it works",
+                         Title="Help",
                          Url = new Uri(DeeplinkHelper.HelpDeeplink)
                      }
                 }
@@ -330,7 +329,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                           {
                               new AdaptiveSubmitAction()
                               {
-                                  Title="Sickness",
+                                  Title="Submit",
                                   DataJson= @"{'Type':'" + Constants.ApplyForSickLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
@@ -384,7 +383,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                           {
                               new AdaptiveSubmitAction()
                               {
-                                  Title="Personal",
+                                  Title="Submit",
                                   DataJson=   @"{'Type':'" + Constants.ApplyForPersonalLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
@@ -406,7 +405,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                           {
                               new AdaptiveSubmitAction()
                               {
-                                  Title="Other",
+                                  Title="Submit",
                                   DataJson= @"{'Type':'" + Constants.ApplyForOtherLeave+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                               }
                           }
@@ -468,12 +467,15 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                             },
                             new AdaptiveColumn()
                             {
-
                                 Spacing=AdaptiveSpacing.Large,
                                 Width=AdaptiveColumnWidth.Stretch,
                                 Items=new List<AdaptiveElement>()
                                 {
-                                    new AdaptiveTextBlock(){Text=$"{employee.DisplayName} has requsted for Paid leave for {dayCount} Days", Size=AdaptiveTextSize.Medium,Wrap=true},
+                                    new AdaptiveTextBlock(){Text=leaveDetails.Status == LeaveStatus.Withdrawn?
+                                        $"{employee.DisplayName} has withdrawn this leave."
+                                        : $"{employee.DisplayName} has requsted for {leaveType} for {dayCount} Days"
+
+                                    , Size=AdaptiveTextSize.Medium,Wrap=true},
 
                                      new AdaptiveTextBlock(){Text=$"{startDay}   {endDay}", Size=AdaptiveTextSize.Default,Wrap=true},
                                      new AdaptiveTextBlock(){Text=$"{startDate}   - {endDate}, {leaveDetails.EndDate.Date.Year}",Size=AdaptiveTextSize.Default,Wrap=true},
@@ -533,9 +535,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                           }
                        }
                     }
-
                 },
             };
+            if (leaveDetails.Status == LeaveStatus.Withdrawn)
+                card3.Actions = null;
+
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
@@ -579,22 +583,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 default:
                     break;
             }
-            //var json = AdaptiveCardHelper.GetAdaptiveCardJson();
-            //json = json.Replace("{StartDay}", startDay);
-            //json = json.Replace("{EndDay}", endDay);
-
-            //json = json.Replace("{StartDate}", startDate);
-            //json = json.Replace("{EndDate}", endDate);
-
-            //json = json.Replace("{DayCount}", dayCount.ToString());
-
-            //json = json.Replace("{LeaveType}", leaveType);
-
-            //json = json.Replace("{LeaveReason}", leaveDetails.EmployeeComment);
-
-            //json = json.Replace("{Status}", "Pending");
-
-            // var card = AdaptiveCardHelper.GetAdaptiveCardFromJosn(json);
 
             var container = new AdaptiveContainer
             {
@@ -679,6 +667,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     {
                         Title = "Edit",
                         Data = new AdaptiveCardValue<EditLeaveDetails>() { Data =  new EditLeaveDetails() { Type = Constants.EditLeave, LeaveId = leaveDetails.LeaveId }  }
+                    },
+                    new AdaptiveSubmitAction()
+                    {
+                        Title = "Withdraw",
+                        DataJson = @"{'Type':'" + Constants.Withdraw+"' , 'LeaveId':'" + leaveDetails?.LeaveId +"' }"
                     }
                 },
             };
@@ -712,6 +705,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                      }
                     );
             }
+
+            if (leaveDetails.Status == LeaveStatus.Withdrawn)
+                card3.Actions = null;
 
             return new Attachment()
             {
