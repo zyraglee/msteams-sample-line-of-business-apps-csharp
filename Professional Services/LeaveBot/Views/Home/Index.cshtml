@@ -1,5 +1,7 @@
 ﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveExtended>, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.ManagerDetails>>
 @*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
+@using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
+@using Microsoft.Teams.Samples.HelloWorld.Web;
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -161,7 +163,7 @@
     </style>
 </head>
 <body>
-    <script src='https://statics.teams.microsoft.com/sdk/v1.0/js/MicrosoftTeams.min.js'></script>
+    @Scripts.Render("https://unpkg.com/@microsoft/teams-js@1.3.4/dist/MicrosoftTeams.min.js")
     <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
 
     <script type="text/javascript">
@@ -173,11 +175,63 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
+                window.location = "https://385143f0.ngrok.io/?Emailid=" + context.userPrincipalName;
+
             })
         }
 
+       microsoftTeams.initialize();
+
+    submitHandler = (err, result) => {
+            console.log(`Submit handler - err: ${err}`);
+            alert("Result = " + JSON.stringify(result) + "\nError = " + JSON.stringify(err));
+        };
+
+        function submit(type) {
+            alert(type);
+            let taskInfo = {
+                title: null,
+                height: null,
+                width: null,
+                url: null,
+                card: null,
+                fallbackUrl: null,
+                completionBotId: null,
+            };
+
+            taskInfo.title = "Apple Leave";
+            taskInfo.height = "medium";
+            taskInfo.width = "medium";
+            if (type.includes('adaptivecard')) {
+                alert('test');
+                taskInfo.url = "https://385143f0.ngrok.io/second"
+              
+            }
+            @*if (type.includes('adaptivecard')) {
+                alert('inside function');
+                taskInfo.card = {
+                    contentType: "application/vnd.microsoft.card.adaptive",
+                    content: @EchoBot.LeaveRequest()
+                };
+                taskInfo.title = "@(TaskModuleUIConstants.AdaptiveCard.Title)";
+                taskInfo.height = "@(TaskModuleUIConstants.AdaptiveCard.Height)";
+                taskInfo.width = "@(TaskModuleUIConstants.AdaptiveCard.Width)";
+            }*@
+            }
+
+            // Set fallback URL
+            // Set fallback URL
+            taskInfo.fallbackUrl = taskInfo.url;
+
+            if (type.includes('bot'))
+                taskInfo.completionBotId = "@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]";
+
+            microsoftTeams.tasks.startTask(taskInfo, submitHandler);
+
+
     </script>
+
+
     @if (Model != null)
     {
         <div>
@@ -191,7 +245,8 @@
                         <span style="font-size:20px"><b>@Model.Item1.DisplayName</b></span><br />
                         @*<br />Sr Software Engineer<br />*@
                         <span><b>@Model.Item1.Totalleaves</b></span><span style="opacity:0.5"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="opacity:0.5"> months</span><br /><br /><br />
-                        <input style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" type="submit" value="Apply Leave" />
+                        @*<input style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" type="submit" onclick="submit('adaptivecard');" value="Apply Leave" />*@
+                        <button style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" onclick="submit('adaptivecard');">Apply Leave</button>
                     </div>
                 </div>
                 <br />
@@ -216,11 +271,11 @@
                     <div class="panel-group2">
                         <div class="heading">
                             <div>
-                                
-                                    <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
-                                    <div class="vls">
-                                        Leave Bot<br /><span style="opacity:0.7">Tip</span>
-                                    </div>
+
+                                <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
+                                <div class="vls">
+                                    Leave Bot<br /><span style="opacity:0.7">Tip</span>
+                                </div>
                             </div>
                             <br />
                             <br />
@@ -252,7 +307,9 @@
                         }
                     }
                 </div>
-           
+
+
+            </div>
             <div class="vl"></div>
             <div class="split-right">
                 @if (Model.Item1.IsManager == true)
@@ -279,13 +336,13 @@
                                             @item.mgrDaysdiff Days OOF
                                         </td>
                                         <td>
-                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc">
+                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank">
                                                 <span style="color:green" class="glyphicon glyphicon-ok"></span>
                                                 Approve
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc">
+                                            <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank">
                                                 <span style="color:red" class="glyphicon glyphicon-remove"></span>Decline
                                             </a>
                                         </td>
@@ -303,7 +360,7 @@
                 <br />
                 <br />
 
-                 
+
                 <p style="font-weight:700;font-size:14px;"> Balance Status</p>
                 <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
                 <table rules="rows" cellpadding="10">
@@ -395,8 +452,8 @@
 
                                             @item.Status
                                         </td>
-                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:57af17b5-0742-4dc8-b16f-c72cb30134cc"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><span class="glyphicon glyphicon-trash"></span></a></td>
                                     }
                                     else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
                                     {
@@ -469,10 +526,13 @@
                 </table>
             </div>
         </div>
+
     }
     else
     {
         <p style="font-weight:700;font-size:14px;">User details not found. Please go to bot</p>
     }
 </body>
+
 </html>
+

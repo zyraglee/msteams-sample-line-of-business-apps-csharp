@@ -43,5 +43,30 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
             return File.ReadAllText(path);
         }
 
+        
+
+    }
+
+    public static class TaskModuleUIConstants
+    {
+        public static UIConstants AdaptiveCard { get; set; } =
+            new UIConstants(700, 500, "Adaptive Card: Inputs", "adaptivecard", "Adaptive Card");
+    }
+    public class UIConstants
+    {
+        public UIConstants(int width, int height, string title, string id, string buttonTitle)
+        {
+            Width = width;
+            Height = height;
+            Title = title;
+            Id = id;
+            ButtonTitle = buttonTitle;
+        }
+
+        public int Height { get; set; }
+        public int Width { get; set; }
+        public string Title { get; set; }
+        public string ButtonTitle { get; set; }
+        public string Id { get; set; }
     }
 }
