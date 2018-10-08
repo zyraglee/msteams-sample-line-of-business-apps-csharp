@@ -1,11 +1,59 @@
-﻿<div class="font-semibold font-title">Configure your app here</div>
-<p>
-    <div>
-        <label for="tabChoice">Select the tab you would like to see: </label>
-        <select id="tabChoice" name="tabChoice">
-            <option value="" selected="selected">(Select a tab)</option>
-            <option value="first">First</option>
-            <option value="second">Second</option>
-        </select>
-    </div>
-</p>
+﻿<html>
+<body>
+    <form>
+        <input type="radio" name="leavebot" value="leaveboard" onclick="onClick();"> Leave Board<br>
+        <input type="radio" name="leavebot" value="holidays" onclick="onClick();"> Public Holidays<br />
+        <input type="radio" name="leavebot" value="help" onclick="onClick();"> Help<br />
+       
+    </form>
+
+
+    
+    <script src="MicrosoftTeams.min.js"></script>
+    <script type="text/javascript">
+       
+        microsoftTeams.initialize();
+        microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
+            alert('inside function');
+            var radios = document.getElementsByName("leavebot");
+            if (radios[0].checked) {
+                microsoftTeams.settings.setSettings({
+                    entityId: "com.contoso.LeaveBot.leaveboard",
+                    contentUrl: "https://leavebotdemo.azurewebsites.net",
+                    suggestedDisplayName: "Leave Board",
+                    websiteUrl: "https://leavebotdemo.azurewebsites.net"
+
+                });
+            } else if (radios[1].checked) {
+                microsoftTeams.settings.setSettings({
+                    entityId: "com.contoso.LeaveBot.holidays",
+                    contentUrl: "https://leavebotdemo.azurewebsites.net/First",
+                    suggestedDisplayName: "Public Holidays",
+                    websiteUrl: "https://leavebotdemo.azurewebsites.net/First"
+
+                });
+
+            }
+            else {
+                microsoftTeams.settings.setSettings({
+                    entityId: "com.contoso.LeaveBot.help",
+                    contentUrl: "https://leavebotdemo.azurewebsites.net/Second",
+                    suggestedDisplayName: "Help",
+                    websiteUrl: "https://leavebotdemo.azurewebsites.net/Second"
+
+                });
+
+            }
+
+
+            saveEvent.notifySuccess();
+        });
+
+        function onClick() {
+            alert('arun');
+            microsoftTeams.settings.setValidityState(true);
+        }
+
+    </script>
+</body>
+</html>
