@@ -155,7 +155,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 case Constants.RejectLeave:
                 case Constants.ApproveLeave:
 
-                    await HandleLeaveApprovalOrRejection(context, activity, type);
+                    await HandleLeaveApprovalOrRejection(context, activity, type, employee);
                     break;
                 case Constants.SetManager:
                     await SetEmployeeManager(context, activity, employee);
@@ -227,11 +227,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 || activityValue.ToString().Contains(Constants.Holidays));
         }
 
-        private static async Task HandleLeaveApprovalOrRejection(IDialogContext context, Activity activity, string type)
+        private static async Task HandleLeaveApprovalOrRejection(IDialogContext context, Activity activity, string type, Employee employee)
         {
             var managerResponse = JsonConvert.DeserializeObject<ManagerResponse>(activity.Value.ToString());
             var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(managerResponse.LeaveId);
             var appliedByEmployee = await DocumentDBRepository.GetItemAsync<Employee>(leaveDetails.AppliedByEmailId);
+
 
             // Check the leave type and reduce in DB.
             leaveDetails.Status = type == Constants.ApproveLeave ? LeaveStatus.Approved : LeaveStatus.Rejected;
@@ -242,10 +243,26 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             var msg = $"Your {conunt} days leave has been {leaveDetails.Status.ToString()}. Manager Comments: {leaveDetails.ManagerComment}";
 
             var employeeView = EchoBot.EmployeeViewCard(appliedByEmployee, leaveDetails);
+            UpdateMessageInfo managerMessageIds = leaveDetails.UpdateMessageInfo;
 
-            MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
+            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
 
-            await SendNotification(context, appliedByEmployee.UserUniqueId, null, employeeView, managerMessageIds.Employee);
+            var managerCardUpdate = activity.CreateReply();
+            var managerView = EchoBot.ManagerViewCard(appliedByEmployee, leaveDetails);
+            managerCardUpdate.Attachments.Add(managerView);
+
+            if (!string.IsNullOrEmpty(managerMessageIds.Manager))
+            {
+                await connector.Conversations.UpdateActivityAsync(managerCardUpdate.Conversation.Id, managerMessageIds.Manager, managerCardUpdate);
+            }
+
+            var messageId = await SendNotification(context, appliedByEmployee.UserUniqueId, null, employeeView, managerMessageIds.Employee);
+            if (string.IsNullOrEmpty(messageId))
+            {
+                var reply = activity.CreateReply();
+                reply.Text = $"Failed to notify {appliedByEmployee.DisplayName}. Please try again later.";
+                await context.PostAsync(reply);
+            }
         }
 
         private async Task SetEmployeeManager(IDialogContext context, Activity activity, Employee employee)
@@ -281,29 +298,25 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 leaveDetails.Status = LeaveStatus.Withdrawn;
                 var attachment = EchoBot.ManagerViewCard(employee, leaveDetails);
 
-                MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
-
                 // Manger Updates.
-                var conversationId = await SendNotification(context, managerId, null, attachment, managerMessageIds.Manager);
+                var conversationId = await SendNotification(context, managerId, null, attachment, leaveDetails.UpdateMessageInfo.Manager);
                 if (!String.IsNullOrEmpty(conversationId))
                 {
-                    managerMessageIds.Manager = conversationId;
-                    context.ConversationData.SetValue(leaveDetails.LeaveId, managerMessageIds);
+                    leaveDetails.UpdateMessageInfo.Manager = conversationId;
                 }
 
                 if (!String.IsNullOrEmpty(conversationId))
                 {
 
                     ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    MessageIds messageIds = GetMessageId(context, leaveDetails.LeaveId);
 
                     var employeeCardReply = activity.CreateReply();
                     var employeeView = EchoBot.EmployeeViewCard(employee, leaveDetails);
                     employeeCardReply.Attachments.Add(employeeView);
 
-                    if (!string.IsNullOrEmpty(messageIds.Employee))
+                    if (!string.IsNullOrEmpty(leaveDetails.UpdateMessageInfo.Employee))
                     {
-                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, messageIds.Employee, employeeCardReply);
+                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, leaveDetails.UpdateMessageInfo.Employee, employeeCardReply);
                     }
                     else
                     {
@@ -311,7 +324,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                         reply.Text = "Your leave request has been successfully withdrawn!";
                         await context.PostAsync(reply);
                         var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
-                        context.ConversationData.RemoveValue(leaveDetails.LeaveId);
                     }
                 }
                 else
@@ -320,6 +332,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     reply.Text = "Failed to send notification to your manger. Please try again later.";
                     await context.PostAsync(reply);
                 }
+                // Update DB for all the message Id realted changes
+                await DocumentDBRepository.UpdateItemAsync(leaveDetails.LeaveId, leaveDetails);
 
             }
         }
@@ -409,29 +423,28 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 
                 var attachment = EchoBot.ManagerViewCard(employee, leaveDetails);
 
-                MessageIds managerMessageIds = GetMessageId(context, leaveDetails.LeaveId);
+                UpdateMessageInfo managerMessageIds = leaveDetails.UpdateMessageInfo;
 
                 // Manger Updates.
                 var conversationId = await SendNotification(context, managerId, null, attachment, managerMessageIds.Manager);
                 if (!String.IsNullOrEmpty(conversationId))
                 {
                     managerMessageIds.Manager = conversationId;
-                    context.ConversationData.SetValue(leaveDetails.LeaveId, managerMessageIds);
                 }
 
                 if (!String.IsNullOrEmpty(conversationId))
                 {
 
                     ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    MessageIds messageIds = GetMessageId(context, leaveDetails.LeaveId);
+
                     var employeeCardReply = activity.CreateReply();
                     var employeeView = EchoBot.EmployeeViewCard(employee, leaveDetails);
                     employeeCardReply.Attachments.Add(employeeView);
 
-                    if (!string.IsNullOrEmpty(messageIds.Employee))
+                    if (!string.IsNullOrEmpty(managerMessageIds.Employee))
                     {
                         // Update existing item.
-                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, messageIds.Employee, employeeCardReply);
+                        await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, managerMessageIds.Employee, employeeCardReply);
                         //var reply = activity.CreateReply();
                         //reply.Text = "We have also notified manager with the updates.";
                         //await context.PostAsync(reply);
@@ -443,10 +456,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                         await context.PostAsync(reply);
 
                         var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
-                        messageIds.Employee = msgToUpdate.Id;
-                        context.ConversationData.SetValue<MessageIds>(leaveDetails.LeaveId, messageIds);
+                        managerMessageIds.Employee = msgToUpdate.Id;
                     }
-
                 }
                 else
                 {
@@ -455,17 +466,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     await context.PostAsync(reply);
                 }
 
+                await DocumentDBRepository.UpdateItemAsync(leaveDetails.LeaveId, leaveDetails);
             }
-        }
-
-        private static MessageIds GetMessageId(IDialogContext context, string leaveId)
-        {
-            MessageIds messageIds = new MessageIds();
-            if (context.ConversationData.ContainsKey(leaveId))
-            {
-                messageIds = context.ConversationData.GetValue<MessageIds>(leaveId);
-            }
-            return messageIds;
         }
 
         private static async Task SendSetManagerCard(IDialogContext context, Activity activity, Employee employee, string message)

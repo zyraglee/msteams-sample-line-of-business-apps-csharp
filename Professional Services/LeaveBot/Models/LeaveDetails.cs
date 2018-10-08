@@ -44,6 +44,17 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "leaveCategory")]
         public LeaveCategory LeaveCategory { get; set; }
 
+        [JsonProperty(PropertyName = "updateMessageInfo")]
+        public UpdateMessageInfo UpdateMessageInfo { get; set; } = new UpdateMessageInfo();
+        
+    }
+
+    public class UpdateMessageInfo
+    {
+        [JsonProperty(PropertyName = "employee")]
+        public string Employee { get; set; }
+        [JsonProperty(PropertyName = "manager")]
+        public string Manager { get; set; }
     }
 
     public class LeaveDate
