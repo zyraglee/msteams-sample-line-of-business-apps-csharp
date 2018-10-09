@@ -458,7 +458,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     break;
                 default:
                     break;
-            } 
+            }
 
             var card3 = new AdaptiveCard()
             {
@@ -963,7 +963,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     new AdaptiveOpenUrlAction()
                     {
                         Title="View Details",
-                        Url = new Uri(DeeplinkHelper.LeaveBoardDeeplink)
+                        Url = new Uri(DeeplinkHelper.GetLeaveBoardDeeplink(employee.EmailId))
                     }
                 },
             };
