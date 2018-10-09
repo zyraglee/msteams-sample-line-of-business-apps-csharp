@@ -163,10 +163,8 @@
     </style>
 </head>
 <body>
-    @Scripts.Render("https://unpkg.com/@microsoft/teams-js@1.3.4/dist/MicrosoftTeams.min.js")
-    <script src="MicrosoftTeams.min.js"></script>
     <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
-
+    <script src='~/Scripts/LeaveAdaptiveCard.js'></script>
     <script type="text/javascript">
         //alert(url);
         var url = window.location.search;
@@ -176,20 +174,19 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = "https://leavebotdemo.azurewebsites.net/?Emailid=" + context.userPrincipalName;
+                window.location = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.BaseUrl" + "/?Emailid=" + context.userPrincipalName;
 
             })
         }
 
        microsoftTeams.initialize();
 
-    submitHandler = (err, result) => {
-            console.log(`Submit handler - err: ${err}`);
-            alert("Result = " + JSON.stringify(result) + "\nError = " + JSON.stringify(err));
+       submitHandler = (err, result) => {
+            // alert("Result = " + JSON.stringify(result) + "\nError = " + JSON.stringify(err));
+           // Not doing anything here.
         };
 
         function submit(type) {
-
             let taskInfo = {
                 title: null,
                 height: null,
@@ -199,33 +196,16 @@
                 fallbackUrl: null,
                 completionBotId: null,
             };
+            taskInfo.title = "Apply For Leave";
+            taskInfo.height = 330;
+            taskInfo.width = 550;
+            taskInfo.card = taskInfo.card = {
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: getAdaptiveCard()};
 
-            taskInfo.title = "Apple Leave";
-            taskInfo.height = "medium";
-            taskInfo.width = "medium";
-
-            if (type.includes('adaptivecard')) {
-
-                taskInfo.card = {
-                    contentType: "application/vnd.microsoft.card.adaptive",
-                    content: @EchoBot.LeaveRequest()
-                };
-                taskInfo.title = "@(TaskModuleUIConstants.AdaptiveCard.Title)";
-                taskInfo.height = "@(TaskModuleUIConstants.AdaptiveCard.Height)";
-                taskInfo.width = "@(TaskModuleUIConstants.AdaptiveCard.Width)";
-            }
-            }
-
-            // Set fallback URL
-            // Set fallback URL
-            taskInfo.fallbackUrl = taskInfo.url;
-
-            if (type.includes('bot'))
-                taskInfo.completionBotId = "@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]";
-
+            taskInfo.completionBotId = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.AppId";
             microsoftTeams.tasks.startTask(taskInfo, submitHandler);
-
-
+        }
     </script>
 
 
@@ -376,13 +356,13 @@
                         @if (Model.Item2 != null)
                         {
                             int totalleaves = 0;
-                            
+
                             foreach (var item in Model.Item2)
                             {
                                 if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.PaidLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
-                                    
+
                                 }
 
                             }
@@ -390,13 +370,13 @@
                             <td style="color:red">@totalleaves</td>
                             <td>@Model.Item1.LeaveBalance.PaidLeave</td>
                             <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
-                                }
+                        }
 
 
 
-                      
 
-        </tr>
+
+                    </tr>
 
                     <tr>
                         <td><b>Sick Leaves</b></td>
@@ -420,27 +400,27 @@
 
 
                     </tr>
-        <tr>
-            <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
-            @if (Model.Item2 != null)
-            {
-                int totalleaves = 0;
-                foreach (var item in Model.Item2)
-                {
-                    if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
-                    {
-                        totalleaves = item.DaysDiff;
-                    }
+                    <tr>
+                        <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
+                        @if (Model.Item2 != null)
+                        {
+                            int totalleaves = 0;
+                            foreach (var item in Model.Item2)
+                            {
+                                if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                {
+                                    totalleaves = item.DaysDiff;
+                                }
 
-                }
-                <td style="color:purple">@(Model.Item1.LeaveBalance.CarriedLeave - totalleaves)</td>
-                <td style="color:red">@totalleaves</td>
-                <td>@Model.Item1.LeaveBalance.CarriedLeave</td>
-                <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
-            }
+                            }
+                            <td style="color:purple">@(Model.Item1.LeaveBalance.CarriedLeave - totalleaves)</td>
+                            <td style="color:red">@totalleaves</td>
+                            <td>@Model.Item1.LeaveBalance.CarriedLeave</td>
+                            <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
+                        }
 
-            @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
-        </tr>
+                        @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
+                    </tr>
                     <tr style="opacity:0.5">
                         <td>Maternity Leaves</td>
                         <td>@Model.Item1.LeaveBalance.MaternityLeave</td>
