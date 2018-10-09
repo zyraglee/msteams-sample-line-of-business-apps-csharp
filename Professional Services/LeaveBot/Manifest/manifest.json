@@ -34,8 +34,8 @@
     {
       "entityId": "com.contoso.LeaveBot.leaveboard",
       "name": "Leave Board",
-      "contentUrl": "https://leavebotdemo.azurewebsites.net",
-      "websiteUrl": "https://leavebotdemo.azurewebsites.net",
+      "contentUrl": "https://leavebotdemo.azurewebsites.net?EmailId={loginHint}",
+      "websiteUrl": "https://leavebotdemo.azurewebsites.net?EmailId={loginHint}",
       "scopes": [
         "personal"
       ]
