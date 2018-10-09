@@ -14,7 +14,7 @@
        
         microsoftTeams.initialize();
         microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
-            alert('inside function');
+            
             var radios = document.getElementsByName("leavebot");
             if (radios[0].checked) {
                 microsoftTeams.settings.setSettings({
@@ -50,7 +50,7 @@
         });
 
         function onClick() {
-            alert('arun');
+            
             microsoftTeams.settings.setValidityState(true);
         }
 
