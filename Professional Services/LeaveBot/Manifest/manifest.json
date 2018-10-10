@@ -11,7 +11,7 @@
     "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
   },
   "name": {
-    "short": "Leave App",
+    "short": "Leave",
     "full": "Leave App for Microsoft Teams"
   },
   "description": {
@@ -19,8 +19,8 @@
     "full": "This sample leave app which demos leave approval flow. You can extend this to add more content and capabilities."
   },
   "icons": {
-    "outline": "color.png",
-    "color": "outline.png"
+    "outline": "outline.png",
+    "color": "color.png"
   },
   "accentColor": "#60A18E",
   "configurableTabs": [
