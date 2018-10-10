@@ -284,8 +284,13 @@
     <Content Include="Content\Site.css" />
     <Content Include="Manifest\color.png" />
     <Content Include="Manifest\outline.png" />
+    <Content Include="Resources\-g-Leave balance-01.png" />
+    <Content Include="Resources\-g-Public holidays-01.png" />
     <Content Include="Resources\HeartIcon.png" />
+    <Content Include="Resources\Help-01.png" />
+    <Content Include="Resources\Leaverequest.png" />
     <Content Include="Resources\Like.png" />
+    <Content Include="Resources\pendingapprovals.png" />
     <Content Include="Resources\Vacation-01.png" />
     <Content Include="Resources\WelcomeBanner.png" />
     <Content Include="Resources\leaveicon.png" />

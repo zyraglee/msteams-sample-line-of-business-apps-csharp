@@ -33,44 +33,187 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                             },
                             new AdaptiveTextBlock()
                             {
-                                Text=$"Hey {userName}! Here what I can do for you",
+                                Text=$"Hey {userName}! Here is what I can do for you",
                                 Size=AdaptiveTextSize.Large
                             },
+                            new AdaptiveColumnSet()
+                            {
+                                Columns=new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/Leaverequest.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson=@"{'Type':'" + Constants.LeaveRequest+"'}", Title="Leave Request"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center, Spacing=AdaptiveSpacing.None }
+                                         }
+                                    },
+
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text="Leave Request",Color=AdaptiveTextColor.Accent,Size=AdaptiveTextSize.Medium, Spacing=AdaptiveSpacing.None, HorizontalAlignment=AdaptiveHorizontalAlignment.Center}
+                                         },
+                                           SelectAction = new AdaptiveSubmitAction()
+                                         {
+                                             DataJson=@"{'Type':'" + Constants.LeaveRequest+"'}", Title="Leave Request"
+                                         }
+                                    }
+                                }
+                            },
+                            new AdaptiveColumnSet()
+                            {
+                                Columns=new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/-g-Leave balance-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                         }
+                                    },
+
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text="Leave Balance",Color=AdaptiveTextColor.Accent,Size=AdaptiveTextSize.Medium,HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None }
+                                         },
+                                           SelectAction = new AdaptiveSubmitAction()
+                                         {
+                                             DataJson=@"{'Type':'" + Constants.LeaveBalance+"'}", Title="Leave Balance"
+                                         }
+                                    }
+                                }
+                            },
+                            new AdaptiveColumnSet()
+                            {
+                                Columns=new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/-g-Public holidays-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson=@"{'Type':'" + Constants.Holidays+"'}", Title="Holidays"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                         }
+                                    },
+
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text="Public Holidays",Color=AdaptiveTextColor.Accent,Size=AdaptiveTextSize.Medium,HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None }
+                                         },
+                                         SelectAction = new AdaptiveSubmitAction()
+                                         {
+                                             DataJson=@"{'Type':'" + Constants.Holidays+"'}", Title="Leave Request"
+                                         }
+                                    }
+                                }
+                            },
+                            new AdaptiveColumnSet()
+                            {
+                                Columns=new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/Help-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveOpenUrlAction(){ Url=new Uri(DeeplinkHelper.HelpDeeplink)},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                         }
+                                    },
+
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text="Help",Color=AdaptiveTextColor.Accent,Size=AdaptiveTextSize.Medium,HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                         },
+                                           SelectAction = new AdaptiveOpenUrlAction()
+                                         {
+                                             Url=new Uri(DeeplinkHelper.HelpDeeplink)
+                                         }
+                                    }
+                                }
+                            }
+
+
+
+
                         }
                     }
-            },
-                Actions = new List<AdaptiveAction>()
-                {
-                     new AdaptiveSubmitAction()
-                              {
-                                  Title="Leave Request",
-                                  DataJson= @"{'Type':'" + Constants.LeaveRequest+"'}"
-                              },
-                     new AdaptiveSubmitAction()
-                     {
-                         Title="Leave Balance",
-                          DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"
-                     },
-                     new AdaptiveSubmitAction()
-                     {
-                         Title="Public Holidays",
-                          DataJson= @"{'Type':'" + Constants.Holidays+"'}"
-                     },
-                     new AdaptiveOpenUrlAction()
-                     {
-                         Title="Help",
-                         Url = new Uri(DeeplinkHelper.HelpDeeplink)
-                     }
-                }
+                    
+            }
+                //Actions = new List<AdaptiveAction>()
+                //{
+
+                //    new AdaptiveSubmitAction()
+                //    {
+                //        Title="Leave Request",
+                //        DataJson= @"{'Type':'" + Constants.LeaveRequest+"'}"
+                //    },
+                //     new AdaptiveSubmitAction()
+                //     {
+                //         Title="Leave Balance",
+                //          DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"
+                //     },
+                //     new AdaptiveSubmitAction()
+                //     {
+                //         Title="Public Holidays",
+                //          DataJson= @"{'Type':'" + Constants.Holidays+"'}"
+                //     },
+                //     new AdaptiveOpenUrlAction()
+                //     {
+                //         Title="Help",
+                //         Url = new Uri(DeeplinkHelper.HelpDeeplink)
+                //     }
+                //}
             };
 
             if (isManager)
-                WelcomeCard.Actions.Insert(2,
-                    new AdaptiveSubmitAction()
+                (WelcomeCard.Body[0] as AdaptiveContainer).Items.Insert(3,
+                    new AdaptiveColumnSet()
                     {
-                        Title = "Pending Approvals",
-                        DataJson = @"{'Type':'" + Constants.ShowPendingApprovals + "'}"
-                    });
+                        Columns = new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/pendingapprovals.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.ShowPendingApprovals+"'}"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None }
+                                         }
+                                    },
+
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){Text="Pending Approvals",Color=AdaptiveTextColor.Accent,Size=AdaptiveTextSize.Medium,HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                         },
+                                           SelectAction = new AdaptiveSubmitAction()
+                                         {
+                                             DataJson=@"{'Type':'" + Constants.ShowPendingApprovals+"'}", Title="Pending Approvals"
+                                         }
+                                    }
+                                }
+                    }
+                    );
+                //WelcomeCard.Actions.Insert(2,
+                //    new AdaptiveSubmitAction()
+                //    {
+                //        Title = "Pending Approvals",
+                //        DataJson = @"{'Type':'" + Constants.ShowPendingApprovals + "'}"
+                //    });
 
             return new Attachment()
             {
