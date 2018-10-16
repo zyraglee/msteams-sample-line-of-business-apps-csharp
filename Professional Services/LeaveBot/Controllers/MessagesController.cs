@@ -13,6 +13,7 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
 using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
@@ -41,7 +42,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             else
             {
                 await HandleSystemMessage(activity);
-                
+
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
@@ -72,7 +73,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 taskInfo["width"] = 550;
 
                 taskEnvelope["task"] = taskObj;
-                
+
                 return Request.CreateResponse(HttpStatusCode.OK, taskEnvelope);
 
             }
@@ -109,6 +110,58 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                         await Conversation.SendAsync(message, () => new RootDialog());
                         break;
                     }
+                    else
+                    {
+                        //message.Text = "hi";
+                        //message.From.Id = message.MembersAdded[i].Id;
+                        //var channleData = message.GetChannelData<TeamsChannelData>();// message.ChannelData
+                        //channleData.Channel = null;
+                        //channleData.Team = null;
+                        //message.ChannelData = channleData;
+                        //message.From.Name = message.MembersAdded[i].Name;
+                        //await Conversation.SendAsync(message, () => new RootDialog());
+                        // break;
+                        // Send sign in card.
+
+                        // // testc this
+
+                        //try
+                        //{
+                        //    var connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                        //    var channelData = new Dictionary<string, string>();
+
+                        //    var existingData = message.GetChannelData<TeamsChannelData>();
+
+                        //    // Create a new reply.
+                        //    IMessageActivity newMessage = Activity.CreateMessageActivity();
+                        //    newMessage.Type = ActivityTypes.Message;
+
+                        //    var card = EchoBot.WelcomeLeaveCard(message.MembersAdded[i].Name, false);
+                        //    // var card = GetAdaptiveCard();
+                        //    // newMessage.Text = 
+                        //    newMessage.Attachments.Add(card);
+
+                        //    ConversationParameters conversationParams = new ConversationParameters(
+                        //        isGroup: false,
+                        //        bot: message.Recipient,
+                        //        members: new ChannelAccount[] { new ChannelAccount(message.MembersAdded[i].Id) },
+                        //        activity: (Activity)newMessage,
+                        //        channelData: new TeamsChannelData()
+                        //        {
+                        //            Tenant = new TenantInfo() { Id = existingData.Tenant.Id },
+                        //            Notification = new NotificationInfo() { Alert = true }
+                        //        });
+
+                        //    await connector.Conversations.CreateConversationAsync(conversationParams);
+                        //}
+                        //catch (Exception ex)
+                        //{
+
+                        //    Console.WriteLine(ex);
+                        //}
+                    }
+
+                    
                 }
 
             }
