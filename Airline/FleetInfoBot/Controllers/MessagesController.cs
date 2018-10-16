@@ -116,12 +116,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 }
                 else
                 {
-                    replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
+                    replyActivity.Text = $"Aircraft not available for selected base location and flight number.";
                 }
             }
             else
             {
-                replyActivity.Text = $"Aircrafts not available for selected base location with the flight number";
+                replyActivity.Text = $"Aircraft not available for selected base location and flight number.";
             }
         }
 
@@ -154,7 +154,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     list.Status = Status.Assigned;
                     var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
                     
-                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been assigned to flight: {aircardInfo.FlightNumber}.";
                 }
                 catch (Exception e)
                 {
@@ -175,7 +175,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
                     list.Status = Status.Grounded;
                     var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
-                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been grounded";
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} has been grounded.";
                 }
                 catch (Exception e)
                 {
@@ -197,7 +197,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
                     list.Status = Status.Available;
                     var aircraftDetails = await DocumentDBRepository<AirCraftInfo>.UpdateItemAsync(list.Id, list);
-                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} is available";
+                    replyActivity.Text = $"Aircraft {aircardInfo.AircraftId} is available.";
                 }
                 catch (Exception e)
                 {
@@ -210,49 +210,49 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         private static async Task CreateDataRecords()
         {
             AirCraftInfo obj1 = new AirCraftInfo();
-            obj1.BaseLocation = "Seattle";
+            obj1.BaseLocation = "Seattle, WA";
             obj1.FlightNumber = "220";
             obj1.FlightType = "Small";
             obj1.Model = "Airbus A220";
             obj1.Capacity = "108-130";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj1);
             AirCraftInfo obj2 = new AirCraftInfo();
-            obj2.BaseLocation = "Seattle";
+            obj2.BaseLocation = "Seattle, WA";
             obj2.FlightNumber = "320";
             obj2.FlightType = "Small";
             obj2.Model = "Airbus A320 family";
             obj2.Capacity = "107-206";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj2);
             AirCraftInfo obj3 = new AirCraftInfo();
-            obj3.BaseLocation = "Seattle";
+            obj3.BaseLocation = "Seattle, WA";
             obj3.FlightNumber = "330";
             obj3.FlightType = "Medium";
             obj3.Model = "Airbus A330";
             obj3.Capacity = "247-287";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj3);
             AirCraftInfo obj4 = new AirCraftInfo();
-            obj4.BaseLocation = "Seattle";
+            obj4.BaseLocation = "Seattle, WA";
             obj4.FlightNumber = "350";
             obj4.FlightType = "Medium";
             obj4.Model = "Airbus A350";
             obj4.Capacity = "276-366";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj4);
             AirCraftInfo obj5 = new AirCraftInfo();
-            obj5.BaseLocation = "Seattle";
+            obj5.BaseLocation = "Seattle, WA";
             obj5.FlightNumber = "787";
             obj5.FlightType = "Medium";
             obj5.Model = "Boeing 787";
             obj5.Capacity = "242-330";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj5);
             AirCraftInfo obj6 = new AirCraftInfo();
-            obj6.BaseLocation = "Seattle";
+            obj6.BaseLocation = "Seattle, WA";
             obj6.FlightNumber = "380";
             obj6.FlightType = "Large";
             obj6.Model = "Airbus A380";
             obj6.Capacity = "544";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj6);
             AirCraftInfo obj7 = new AirCraftInfo();
-            obj7.BaseLocation = "Seattle";
+            obj7.BaseLocation = "Seattle, WA";
             obj7.FlightNumber = "777";
             obj7.FlightType = "Large";
             obj7.Model = "Boeing 777-200LR/300ER/Boeing 777X";
@@ -345,7 +345,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
             //Cities obj4 = new Cities();
             //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston";
+            //obj4.CityName = "Boston, MA";
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
             //Cities obj5 = new Cities();
             //obj5.CityCode = "JFK";

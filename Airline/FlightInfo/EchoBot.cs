@@ -57,7 +57,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                 lst.Add(obj3);
                 Cities obj4 = new Cities();
                 obj4.CityCode = "BSZ";
-                obj4.CityName = "Boston";
+                obj4.CityName = "Boston, MA";
                 lst.Add(obj4);
                 Cities obj5 = new Cities();
                 obj5.CityCode = "JFK";

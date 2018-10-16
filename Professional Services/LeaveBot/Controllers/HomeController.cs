@@ -136,7 +136,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 StartDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
                 EndDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
                 Status = LeaveStatus.Pending,
-                ManagerComment = "You can tkae the leave"
+                ManagerComment = "You can take the leave"
             };
 
             var leaveDoc = await DocumentDBRepository.CreateItemAsync<LeaveDetails>(leave);

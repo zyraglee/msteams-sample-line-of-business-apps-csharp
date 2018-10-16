@@ -146,7 +146,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.PNR.ToLower() == PNR.ToLower());
             if (list.Count() == 0)
             {
-                replyActivity.Text = "The passenger with PNR " + PNR + " does not have any checked in baggage.";
+                replyActivity.Text = "The passenger with PNR " + PNR + " does not have any checked baggage.";
                 
             }
             else
@@ -161,11 +161,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             
             Baggage obj2 = new Baggage();
             obj2.BagCount = 2;
-            obj2.CurrentStatus = "Boston";
+            obj2.CurrentStatus = "Boston, MA";
             obj2.FlightNumber = "475";
-            obj2.From = "Boston";
-            obj2.To = "Washington DC";
-            obj2.Gender = "FeMale";
+            obj2.From = "Boston, MA";
+            obj2.To = "Washington, DC";
+            obj2.Gender = "Female";
             obj2.Name = "Ashley Solis";
             obj2.PNR = "DBW6W1";
             obj2.SeatNo = "27L";
@@ -173,11 +173,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             await DocumentDBRepository<Baggage>.CreateItemAsync(obj2);
             Baggage obj5 = new Baggage();
             obj5.BagCount = 2;
-            obj5.CurrentStatus = "Boston";
+            obj5.CurrentStatus = "Boston, MA";
             obj5.FlightNumber = "475";
-            obj5.From = "Boston";
-            obj5.To = "Washington DC";
-            obj5.Gender = "FeMale";
+            obj5.From = "Boston, MA";
+            obj5.To = "Washington, DC";
+            obj5.Gender = "Female";
             obj5.Name = "Rebecca Larson";
             obj5.PNR = "DBW6W2";
             obj5.SeatNo = "27G";
@@ -185,10 +185,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             await DocumentDBRepository<Baggage>.CreateItemAsync(obj5);
             Baggage obj3 = new Baggage();
             obj3.BagCount = 2;
-            obj3.CurrentStatus = "Washington DC";
+            obj3.CurrentStatus = "Washington, DC";
             obj3.FlightNumber = "476";
-            obj3.From = "Boston";
-            obj3.To = "Washington DC";
+            obj3.From = "Boston, MA";
+            obj3.To = "Washington, DC";
             obj3.Gender = "Male";
             obj3.Name = "Galen O'Shea";
             obj3.PNR = "DBW6W3";
@@ -197,10 +197,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             await DocumentDBRepository<Baggage>.CreateItemAsync(obj3);
             Baggage obj4 = new Baggage();
             obj4.BagCount = 2;
-            obj4.CurrentStatus = "Washington DC";
+            obj4.CurrentStatus = "Washington, DC";
             obj4.FlightNumber = "478";
-            obj4.From = "Boston";
-            obj4.To = "Washington DC";
+            obj4.From = "Boston, MA";
+            obj4.To = "Washington, DC";
             obj4.Gender = "Male";
             obj4.Name = "Ruben Comeaux";
             obj4.PNR = "DBW6W4";
@@ -210,10 +210,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 
             Baggage obj6 = new Baggage();
             obj6.BagCount = 2;
-            obj6.CurrentStatus = "Washington DC";
+            obj6.CurrentStatus = "Washington, DC";
             obj6.FlightNumber = "479";
-            obj6.From = "Boston";
-            obj6.To = "Washington DC";
+            obj6.From = "Boston, MA";
+            obj6.To = "Washington, DC";
             obj6.Gender = "Male";
             obj6.Name = "Don Howes";
             obj6.PNR = "DBW6W5";
@@ -229,7 +229,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.TicketNo.ToLower() == Ticket.ToLower());
             if (list.Count() == 0)
             {
-                replyActivity.Text = "The passenger with ticket " + Ticket + " does not have any checked in baggage.";
+                replyActivity.Text = "The passenger with ticket " + Ticket + " does not have any checked baggage.";
             }
             else
             {
@@ -257,7 +257,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             }
             else
             {
-                replyActivity.Text=$"Passenger with Name {Name} does not exists.";
+                replyActivity.Text=$"Passenger with Name {Name} does not exist.";
             }
             
             
@@ -296,7 +296,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         {
             Random random = new Random();
             int TicketNumberref = random.Next();
-            replyActivity.Text = "Report registered. Reference ticket number is: "+ TicketNumberref + " The passenger has been notified on contact number provided with the booking.";
+            replyActivity.Text = "Report registered. Reference ticket number is: "+ TicketNumberref + " The passenger has been notified using the contact number provided with the booking.";
         }
         private Activity HandleSystemMessage(Activity message)
         {
