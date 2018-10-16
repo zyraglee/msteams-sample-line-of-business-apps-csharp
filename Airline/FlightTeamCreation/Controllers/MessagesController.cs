@@ -52,7 +52,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 UserInfoRepository.AddUserInfo(new UserInfo() { userId = activity.From.Id, accessToken = stateInfo.state, ExpiryTime = DateTime.Now.AddSeconds(3450) }); //3450
 
                 var reply = activity.CreateReply();
-                reply.Text = "You are successfully signed in. Now, you can use create team command";
+                reply.Text = "You are successfully signed in. Now, you can use the 'create team' command.";
 
 
                 // Get Email Id.
@@ -160,7 +160,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             var groupId = await CreateGroupAsyn(userInfo.accessToken, teamName);
             if (IsValidGuid(groupId))
             {
-                await ReplyWithMessage(activity, connector, $"Created O365 group for '{teamName}'. Now, creating team which may take some time.");
+                await ReplyWithMessage(activity, connector, $"Created O365 group for '{teamName}'. Now, adding Microsoft Teams. This may take some time.");
 
                 var retryCount = 4;
                 string teamId = null;
