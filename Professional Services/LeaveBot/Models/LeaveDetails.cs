@@ -46,7 +46,13 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
         [JsonProperty(PropertyName = "updateMessageInfo")]
         public UpdateMessageInfo UpdateMessageInfo { get; set; } = new UpdateMessageInfo();
-        
+
+        [JsonProperty(PropertyName = "channelId")]
+        public string ChannelId { get; set; }
+
+        [JsonProperty(PropertyName = "conversationId")]
+        public string ConversationId { get; set; }
+
     }
 
     public class UpdateMessageInfo
