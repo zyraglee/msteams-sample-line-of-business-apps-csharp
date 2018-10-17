@@ -53,32 +53,34 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
             var activity = await result as Activity;
-
-            string message = string.Empty;
+           string message = string.Empty;
             if (activity.Text != null)
                 message = Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant();
             string userEmailId = string.Empty;
-            if (context.ConversationData.ContainsKey(EmailKey))
+
+            string emailKey = GetEmailKey(activity);
+            if (context.ConversationData.ContainsKey(emailKey))
             {
-                userEmailId = context.ConversationData.GetValue<string>(EmailKey);
+                userEmailId = context.ConversationData.GetValue<string>(emailKey);
             }
             else
             {
                 // Fetch from roaster
                 userEmailId = await GetUserEmailId(activity);
-                context.ConversationData.SetValue<string>(EmailKey, userEmailId);
+                context.ConversationData.SetValue(emailKey, userEmailId);
             }
 
+            string profileKey = GetProfileKey(activity);
             Employee employee;
-            if (context.ConversationData.ContainsKey(ProfileKey))
+            if (context.ConversationData.ContainsKey(profileKey))
             {
-                employee = context.ConversationData.GetValue<Employee>(ProfileKey);
+                employee = context.ConversationData.GetValue<Employee>(profileKey);
             }
             else
             {
                 employee = await DocumentDBRepository.GetItemAsync<Employee>(userEmailId);
                 if (employee != null)
-                    context.ConversationData.SetValue<Employee>(ProfileKey, employee);
+                    context.ConversationData.SetValue<Employee>(profileKey, employee);
             }
             if (employee == null)
             {
@@ -116,6 +118,16 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     await context.PostAsync(reply);
                 }
             }
+        }
+
+        private static string GetEmailKey(IActivity activity)
+        {
+            return activity.From.Id + EmailKey;
+        }
+
+        private static string GetProfileKey(IActivity activity)
+        {
+            return activity.From.Id + ProfileKey;
         }
 
         public static async Task<bool> IsManager(Employee employee)
@@ -258,7 +270,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 
             if (!isGroup)
             {
-                
+
                 var messageId = await SendNotification(context, isGroup ? leaveDetails.ChannelId : appliedByEmployee.UserUniqueId, null, employeeView, managerMessageIds.Employee, isGroup);// Update card.
                 var msg = $"Your {conunt} days leave has been {leaveDetails.Status.ToString()} by your manager.";
                 messageId = await SendNotification(context, isGroup ? leaveDetails.ChannelId : appliedByEmployee.UserUniqueId, msg, null, null, isGroup); // Send message.
@@ -272,8 +284,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             else
             {
                 var msg = $" - Your {conunt} days leave has been {leaveDetails.Status.ToString()} by your manager.";
-                var messageId = await SendChannelNotification(context, leaveDetails.ChannelId, null, employeeView, employee, managerMessageIds.Employee, leaveDetails.ConversationId, false);// Update card.
-                messageId = await SendChannelNotification(context, leaveDetails.ChannelId, msg, null, employee, null, leaveDetails.ConversationId, true); // Send message.
+                var messageId = await SendChannelNotification(context, leaveDetails.ChannelId, null, employeeView, appliedByEmployee, managerMessageIds.Employee, leaveDetails.ConversationId, false);// Update card.
+                messageId = await SendChannelNotification(context, leaveDetails.ChannelId, msg, null, appliedByEmployee, null, leaveDetails.ConversationId, true); // Send message.
                 if (string.IsNullOrEmpty(messageId))
                 {
                     var reply = activity.CreateReply();
@@ -540,7 +552,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         private static async Task UpdateEmployeeInDB(IDialogContext context, Employee employee)
         {
             await DocumentDBRepository.UpdateItemAsync(employee.EmailId, employee);
-            context.ConversationData.SetValue<Employee>(ProfileKey, employee);
+            var profileKey = GetProfileKey(context.Activity);
+            context.ConversationData.SetValue(profileKey, employee);
         }
 
 
@@ -658,7 +671,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 PhotoPath = profilePhotoUrl,
             };
             var employeeDoc = await DocumentDBRepository.CreateItemAsync(employee);
-            context.ConversationData.SetValue(ProfileKey, employee);
+            context.ConversationData.SetValue(GetProfileKey(context.Activity), employee);
 
             var msg = context.MakeMessage();
             var card = EchoBot.SetManagerCard(); // WelcomeLeaveCard(employee.Name.Split(' ').First());
@@ -753,7 +766,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 {
                     replyMessage.AddMentionToText(new ChannelAccount(employee.UserUniqueId, employee.DisplayName), MentionTextLocation.PrependText);
                 }
-                
+
                 if (attachment != null)
                     replyMessage.Attachments.Add(attachment);//  EchoBot.ManagerViewCard(employee, leaveDetails));
 

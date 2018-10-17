@@ -14,6 +14,7 @@ using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
@@ -112,56 +113,41 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     }
                     else
                     {
-                        //message.Text = "hi";
-                        //message.From.Id = message.MembersAdded[i].Id;
-                        //var channleData = message.GetChannelData<TeamsChannelData>();// message.ChannelData
-                        //channleData.Channel = null;
-                        //channleData.Team = null;
-                        //message.ChannelData = channleData;
-                        //message.From.Name = message.MembersAdded[i].Name;
-                        //await Conversation.SendAsync(message, () => new RootDialog());
-                        // break;
-                        // Send sign in card.
+                        try
+                        {
+                            var userId = message.MembersAdded[i].Id;
+                            var channelData = message.GetChannelData<TeamsChannelData>();
+                            var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
 
-                        // // testc this
+                            var parameters = new ConversationParameters
+                            {
+                                Members = new ChannelAccount[] { new ChannelAccount(userId) },
+                                ChannelData = new TeamsChannelData
+                                {
+                                    Tenant = channelData.Tenant,
+                                    Notification = new NotificationInfo() { Alert = true }
+                                }
+                            };
 
-                        //try
-                        //{
-                        //    var connector = new ConnectorClient(new Uri(message.ServiceUrl));
-                        //    var channelData = new Dictionary<string, string>();
+                            var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
 
-                        //    var existingData = message.GetChannelData<TeamsChannelData>();
+                            var replyMessage = Activity.CreateMessageActivity();
+                            replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
+                            replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
+                            var name = message.MembersAdded[i].Name;
+                            if(name != null)
+                            {
+                                name = name.Split(' ').First();
+                            }
+                            replyMessage.Attachments.Add(EchoBot.WelcomeLeaveCard(name, false));
 
-                        //    // Create a new reply.
-                        //    IMessageActivity newMessage = Activity.CreateMessageActivity();
-                        //    newMessage.Type = ActivityTypes.Message;
-
-                        //    var card = EchoBot.WelcomeLeaveCard(message.MembersAdded[i].Name, false);
-                        //    // var card = GetAdaptiveCard();
-                        //    // newMessage.Text = 
-                        //    newMessage.Attachments.Add(card);
-
-                        //    ConversationParameters conversationParams = new ConversationParameters(
-                        //        isGroup: false,
-                        //        bot: message.Recipient,
-                        //        members: new ChannelAccount[] { new ChannelAccount(message.MembersAdded[i].Id) },
-                        //        activity: (Activity)newMessage,
-                        //        channelData: new TeamsChannelData()
-                        //        {
-                        //            Tenant = new TenantInfo() { Id = existingData.Tenant.Id },
-                        //            Notification = new NotificationInfo() { Alert = true }
-                        //        });
-
-                        //    await connector.Conversations.CreateConversationAsync(conversationParams);
-                        //}
-                        //catch (Exception ex)
-                        //{
-
-                        //    Console.WriteLine(ex);
-                        //}
+                            await connectorClient.Conversations.SendToConversationAsync((Activity)replyMessage);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
                     }
-
-                    
                 }
 
             }
