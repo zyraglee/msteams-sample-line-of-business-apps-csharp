@@ -1,4 +1,4 @@
-﻿
+﻿@{var space = 0;}
 <!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -9,13 +9,81 @@
     <script src="https://maxcdn.bootstrapcdn.com/b"></script>
     <title></title>
     <style>
-        * {
-            font-size: 17px;
-            font-family: 'Times New Roman', Times, serif;
+
+        .text {
+            height: 24px;
+            width: 179px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 16px;
+            line-height: 24px;
         }
 
+        .date {
+            height: 16px;
+            width: 25px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 15px;
+        }
+
+        .day {
+            height: 16px;
+            width: 21px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 15px;
+        }
+
+        .event {
+            height: 16px;
+            width: 29px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 15px;
+        }
+
+        .row-date {
+            height: 32px;
+            /*width: 75px;*/
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 32px;
+        }
+
+        .row-day {
+            height: 19px;
+            /*width: 51px;*/
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 19px;
+        }
+
+        .row-event {
+            height: 19px;
+            /*width: 91px;*/
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 19px;
+        }
+        /* {
+            font-size: 17px;
+            font-family: "Segoe UI"; /*'Times New Roman', Times, serif;
+        }
+        */
+
         .container {
-            background-color: #f5f5f5;
+            background-color: rgb(240,240,240);
             width: 100%;
             height: 100%;
         }
@@ -30,14 +98,15 @@
         }
 
         .heading {
-            background-color: white;
-            padding: 10px 0px;
+            /*background-color: white;*/
+            /*padding: 10px 0px;*/
             border-bottom: 1px black
         }
 
         .body {
-            background-color: #f5f5f5;
-            padding: 5px;
+            /*background-color: #f5f5f5;*/
+            /*padding: 5px;*/
+            background-color: rgb(240,240,240);
             width: 100%
         }
 
@@ -68,15 +137,18 @@
         }
     </style>
 </head>
-<body>
+<body class="body">
     <div class="container">
         <div>
             <br />
             <br />
-            <p style="color:black;font-size:20px;">
-                Public Holidays 2018
+            @*style="color:black;font-size:20px;"*@
+            <p class="text">
+                &nbsp;&nbsp;&nbsp;Public Holidays 2018
                 @*<span style="float:right;padding-right:60px;" class="glyphicon glyphicon-calendar"></span>
-                    <span style="float:right;padding-right:70px;" class="glyphicon glyphicon-list"></span>*@
+                    <span style="float:right;padding-right:70px;" class="glyphicon glyphicon-list"></span>
+                    border-top:1px solid rgba(0,0,0,.15)
+                            border-top:1px solid rgba(0,0,0,.08);*@
             </p>
 
         </div>
@@ -85,40 +157,65 @@
                 <table rules="none" border="0" cellpadding="20" cellspacing="20">
                     <thead>
                         <tr style="opacity:0.7">
-                            <th style="padding:15px">
+                            <th class="date">
                                 Date
                             </th>
-                            <th style="padding:15px">
+                            <th class="day">
                                 Day
                             </th>
-                            <th style="padding:15px">
+                            <th class="event">
                                 Event
                             </th>
                         </tr>
                     </thead>
                     <tbody>
+
                         @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
                         {
-                            <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
-                                <td>
-                                    @item.Date.ToString("dd MMMM yyyy")
-                                </td>
-                                <td>
-                                    @item.Date.DayOfWeek
-                                </td>
-                                <td>
-                                    @item.Title
-                                </td>
+                            if (space % 2 == 0)
+                            {
+                                <tr style="background-color:rgb(240, 240, 240);">
+                                    <td style="padding : 6px;"></td>
+                                    <td style="padding : 6px;"></td>
+                                    <td style="padding : 6px;"></td>
+                                </tr>
+                            }
+                            if (space % 2 != 0)
+                            {
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.08);">
+                                    <td class="row-date">
+                                        @item.Date.ToString("dd MMMM yyyy")
+                                    </td>
+                                    <td class="row-day">
+                                        @item.Date.DayOfWeek
+                                    </td>
+                                    <td class="row-event">
+                                        @item.Title
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr style="background-color:white;">
+                                    <td class="row-date">
+                                        @item.Date.ToString("dd MMMM yyyy")
+                                    </td>
+                                    <td class="row-day">
+                                        @item.Date.DayOfWeek
+                                    </td>
+                                    <td class="row-event">
+                                        @item.Title
+                                    </td>
 
-                            </tr>
+                                </tr>
+                            }
 
+                            space++;
                         }
 
                     </tbody>
                 </table>
             </div>
-
-
         </div>
     </div>
 </body>
