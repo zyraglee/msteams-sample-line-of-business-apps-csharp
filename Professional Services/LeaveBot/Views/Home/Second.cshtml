@@ -4,23 +4,47 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        * {
+        /** {
             box-sizing: border-box;
             font-family: 'Times New Roman', Times, serif;
+        }*/
+        .text {
+            height: 24px;
+            width: 34px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 16px;
+            line-height: 24px;
+        }
+
+        .title {
+            height: 19px;
+            width: 57px;
+            color: rgba(37,36,36,0.75);
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 19px;
         }
 
         body {
-            font-family: "Lato", sans-serif;
-            background-color: #edeff2;
+            /*font-family: "Lato", sans-serif;*/
+            /*background-color: #edeff2;*/
         }
 
         .tab button:hover {
             background-color: mediumpurple;
         }
 
+        .main title {
+            height: 32px;
+            width: 64px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 24px;
+            line-height: 32px;
+        }
+
         .tab {
-            height: 100%;
-            width: 25%;
             position: fixed;
             z-index: 1;
             top: 0;
@@ -34,8 +58,11 @@
             .tab button {
                 display: block;
                 background-color: white;
-                padding: 20px 50px;
-                width: 100%;
+                padding: 10px 50px 10px 38px;
+                /*width: 100%;*/
+                height: 36px;
+                width: 280px;
+                /*background-color: #8184B9;*/
                 border: none;
                 outline: none;
                 text-align: left;
@@ -45,6 +72,7 @@
             }
 
         .tabcontent {
+            font-family: "Segoe UI";
             height: 100%;
             width: 74.6%;
             position: fixed;
@@ -56,35 +84,93 @@
             padding-left: 10px;
             background-color: white;
             margin-top: 10px;
+            font-size: 100px;
         }
 
-            .tabcontent p {
-                top: 0;
-                font-family: 'Times New Roman', Times, serif;
-                font-size: 17px;
-                padding-left: 10px;
-                display: block;
-                margin-block-start: 0.5em;
-                margin-block-end: 0.5em;
-                margin-inline-start: 0px;
-                margin-inline-end: 0px;
-            }
+        .text {
+            height: 32px;
+            width: 64px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 22px;
+            line-height: 32px;
+        }
+
+        .tabcontent p {
+            /*top: 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-family: "Segoe UI";
+            padding-left: 15px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            height: 32px;
+            font-size: 14px;
+            line-height: 32px;
+            font-size: 17px;
+            padding-left: 10px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;*/
+            top: 0;
+            font-family: "Segoe UI";
+            font-size: 17px;
+            padding-left: 10px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+        }
+
+        .tabsize {
+            height: 60px;
+            width: 775px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 20px;
+        }
 
         td {
-            font-size: 17px;
-            font-family: 'Times New Roman', Times, serif;
+            /*font-size: 17px;*/
+            /*font-family: 'Times New Roman', Times, serif;*/
+            font-family: "Segoe UI";
         }
-
-        h4 {
+        /*.vl {
+            border-width: -50px;
+            opacity: 0.2;
+            border-left: 3px solid #A9A9A9;
+            height: 100%;
+            position: absolute;
+            left: 26%;
+            margin-left: -3px;
+            top: 0;
+            /*border-left: 6px solid green;
+            height: 100%;
+        }*/
+        /*.vr {
+            width: 5px;
+            background-color: #000;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 500px;
+        }*/
+        /*h4 {
             display: block;
             margin-block-start: 0.33em;
             margin-block-end: 0.33em;
             margin-inline-start: 0px;
             margin-inline-end: 0px;
             font-weight: bold;
-        }
+        }*/
 
-        h3 {
+        /*h3 {
             display: block;
             font-size: 1.17em;
             margin-block-start: 0.5em;
@@ -92,59 +178,63 @@
             margin-inline-start: 0px;
             margin-inline-end: 0px;
             font-weight: bold;
+        }*/
+        .vr {
+            width: 3px;
+            background-color: rgb(240,240,240);
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 280px;
         }
     </style>
 </head>
 <body>
     <div class="tab">
-        <strong style="padding-left:30px;font-size:20px;">Help</strong>
-        <button class="tablinks" onclick="openFunc(event, 'What Can You Do'); myColor()" id="defaultOpen" style="margin-top:5px">What Can You Do??</button>
-        <button class="tablinks" id="defaultOpen1" onclick="openFunc(event, 'FAQs'); myColor1() ">FAQs</button>
+        <p style="padding-left:30px;" class="text">Help</p>
+        <button class="tablinks" onclick="openFunc(event, 'What Can You Do'); myColor();" id="defaultOpen" style="margin-top:5px;font-family: Segoe UI;">What Can You Do??</button>
+        <button class="tablinks" id="defaultOpen1" onclick="openFunc(event, 'FAQs'); myColor1();" style="font-family: Segoe UI;">FAQs</button>
 
     </div>
-
+    <div class="vr">&nbsp;</div>
     <div id="What Can You Do" class="tabcontent">
-        <h3 style="padding-left:10px">What Can you do??</h3>
-        <h4 style="padding-left:10px">You can..</h4>
+        <p style="padding-left:10px;font-size : 24px;">What Can you do??</p>
+        <p style="padding-left:10px;font-size : 16px;">You can..</p>
 
         <table border="0" cellpadding="5" cellspacing="5">
             <tr>
-                <td>Submit a request</td>
+                <td style="font-size : 14px;">Submit a request</td>
             </tr>
             <tr>
-                <td>Delete a request</td>
+                <td style="font-size : 14px;">Delete a request</td>
             </tr>
             <tr>
-                <td> Approve a request</td>
+                <td style="font-size : 14px;"> Approve a request</td>
             </tr>
             <tr>
-                <td>View your previous submitted requests</td>
+                <td style="font-size : 14px;">View your previous submitted requests</td>
             </tr>
             <tr>
-                <td>Check balance status</td>
+                <td style="font-size : 14px;">Check balance status</td>
             </tr>
             <tr>
-                <td>View public holidays</td>
+                <td style="font-size : 14px;">View public holidays</td>
             </tr>
             <tr>
-                <td>View personal dashboard </td>
+                <td style="font-size : 14px;">View personal dashboard </td>
             </tr>
-
         </table>
-
-
-
     </div>
 
     <div id="FAQs" class="tabcontent">
-        <h3 style="padding-left:10px">FAQs</h3>
+        <p style="padding-left:10px;font-size : 24px;">FAQs</p>
         <p>
-            <span style="font-size:20px;color:blue">What is the leave board?<br /></span>
+            <span style="font-size:16px;font-family: Segoe UI;color:#6264A7;">What is the leave board?<br /></span>
             It is a onestop shop for you to see everything related to your leave queries.
             View the requests you have submitted. Get status on the balance.
             You can also get cool tips from our leave application. If you are a manager,
             you will also see all the pending requests in one shot here.<br /><br />
-            <span style="font-size:20px;color:blue"> What is a long holiday in the calendar view?<br /></span>
+            <span style="font-size:16px;font-family: Segoe UI;color:#6264A7;"> What is a long holiday in the calendar view?<br /></span>
             It means that the public holiday falls either on a Friday or Monday and that it will be a long weekend. So have some fun!
         </p>
     </div>
@@ -153,12 +243,18 @@
 
     <script type="text/javascript">
         function myColor() {
-            document.getElementById("defaultOpen").style.background = "mediumpurple";
+            document.getElementById("defaultOpen").style.background = "#8184B9";
             document.getElementById("defaultOpen1").style.background = "white";
+            document.getElementById("defaultOpen").style.color = "white";
+            document.getElementById("defaultOpen1").style.color = "black";
         };
         function myColor1() {
-            document.getElementById("defaultOpen1").style.background = "mediumpurple";
+            document.getElementById("defaultOpen1").style.background = "#8184B9";
             document.getElementById("defaultOpen").style.background = "white";
+            //document.getElementById("defaultOpen1").onclick.style.color == "black" ? "white" : "black";
+            //document.getElementById("defaultOpen").onclick.style.color = "black";
+            document.getElementById("defaultOpen1").style.color = "white";
+            document.getElementById("defaultOpen").style.color = "black";
         };
 
 
