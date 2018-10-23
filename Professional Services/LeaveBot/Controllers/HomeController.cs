@@ -14,7 +14,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         public async Task<ActionResult> Index(string Emailid)
 
         {
-            //Emailid = "v-washai@microsoft.com";
             if (Emailid != null)
             {
                 
@@ -44,7 +43,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 }
 
                 List<LeaveExtended> leaveDetails = null;
-                //List<string> lastMonth = null;
                 var readLeave = await DocumentDBRepository.GetItemsAsync<LeaveExtended>(e => e.Type == LeaveDetails.TYPE && e.AppliedByEmailId == Emailid);
                 if (readLeave != null)
                 {
@@ -61,11 +59,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                         if (item.Status == LeaveStatus.Approved)
                             readEmployee.Totalleaves += item.DaysDiff;
 
-                        //lastMonth.Add(item.EndDate.Date.ToString("MMM"));
                     }
                     leaveDetails = readLeave.ToList();
-                    
-                    //readEmployee.lastUsed = lastMonth[0].ToString();
                 }
                 
                 List<ManagerDetails> mrgLeavedata = null;
@@ -99,62 +94,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 return View();
             }
-            //return View(readEmployee);
-        }
-
-        [Route("hello")]
-        public async Task<ActionResult> Hello()
-        {
-            var emp = new Employee()
-            {
-                Name = "Wajeed",
-                EmailId = "v-washai@microsoft.com",
-                UserUniqueId = "Unique",
-                TenantId = "microsfttenatnaid",
-                DemoManagerEmailId = "v-washai@microsoft.com",
-                LeaveBalance = new LeaveBalance
-                {
-                    PaidLeave = 20,
-                    SickLeave = 10,
-                    OptionalLeave = 2,
-                    CarriedLeave = 2,
-                    MaternityLeave = 0,
-                    PaternityLeave = 0,
-                    Caregiver = 0
-                },
-                ManagerEmailId = "v-washai@microsft.com",
-                PhotoPath = @"D:\Microsoft\Test\1.png",
-            };
-            var employeeDoc = await DocumentDBRepository.CreateItemAsync(emp);
-
-            var leave = new LeaveDetails()
-            {
-                AppliedByEmailId = "v-washai@micso.com",
-                LeaveId = "someuniqueId123456876543",
-                EmployeeComment = "Vacation",
-                LeaveType = LeaveType.PaidLeave,
-                StartDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
-                EndDate = new LeaveDate() { Date = DateTime.Now, Type = DayType.FullDay },
-                Status = LeaveStatus.Pending,
-                ManagerComment = "You can tkae the leave"
-            };
-
-            var leaveDoc = await DocumentDBRepository.CreateItemAsync<LeaveDetails>(leave);
-
-            var AllEmployees = await DocumentDBRepository.GetItemsAsync<Employee>(e => e.Type == Employee.TYPE);
-
-            var AllLeave = await DocumentDBRepository.GetItemsAsync<LeaveDetails>(e => e.Type == LeaveDetails.TYPE);
-
-
-            var readEmployee = await DocumentDBRepository.GetItemAsync<Employee>("v-washai@microsoft.com");
-
-            var readLeave = await DocumentDBRepository.GetItemAsync<LeaveDetails>("someuniqueId123456876543");
-
-            readEmployee.LeaveBalance.OptionalLeave = 100;
-
-            var upatedEmp = await DocumentDBRepository.UpdateItemAsync<Employee>(readEmployee.EmailId, readEmployee);
-
-            return View(Tuple.Create(readEmployee,readLeave));
         }
 
         [Route("first")]
