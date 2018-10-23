@@ -1,29 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Configuration;
-using Microsoft.Bot.Builder.Dialogs;
+﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Web;
-using System.Net.Http;
-using System.Net.Http.Headers;
-//using AdaptiveCards;
-using System.Linq;
-using System.Text;
-using System.Threading;
-//using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-using System.IO;
-//using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
-//using Microsoft.Teams.Samples.HelloWorld.Web.Models;
-using Microsoft.Bot.Connector.Teams.Models;
 using Microsoft.Bot.Connector.Teams;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
+using Microsoft.Bot.Connector.Teams.Models;
 using Microsoft.Graph;
 using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
+using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
 {
@@ -483,9 +473,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                     {
                         // Update existing item.
                         await connector.Conversations.UpdateActivityAsync(employeeCardReply.Conversation.Id, managerMessageIds.Employee, employeeCardReply);
-                        //var reply = activity.CreateReply();
-                        //reply.Text = "We have also notified manager with the updates.";
-                        //await context.PostAsync(reply);
                     }
                     else
                     {

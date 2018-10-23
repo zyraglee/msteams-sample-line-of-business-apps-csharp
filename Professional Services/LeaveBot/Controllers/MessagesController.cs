@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Teams.Models;
+using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
+using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Teams;
-using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
@@ -82,9 +78,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 activity.Name = Constants.EditLeave;
                 await Conversation.SendAsync(activity, () => new RootDialog());
-                //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                //Activity reply = activity.CreateReply("Received = " + activity.Value.ToString());
-                //connector.Conversations.ReplyToActivity(reply);
             }
             return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
