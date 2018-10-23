@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Graph;
+using System;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Web;
-using Microsoft.Graph;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
 {
