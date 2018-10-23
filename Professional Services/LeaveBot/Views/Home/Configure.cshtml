@@ -19,9 +19,9 @@
             if (radios[0].checked) {
                 microsoftTeams.settings.setSettings({
                     entityId: "com.contoso.LeaveBot.leaveboard",
-                    contentUrl: "https://leavebotdemo.azurewebsites.net",
+                    contentUrl: "https://leavebotdemo.azurewebsites.net/?Emailid={loginHint}",
                     suggestedDisplayName: "Leave Board",
-                    websiteUrl: "https://leavebotdemo.azurewebsites.net"
+                    websiteUrl: "https://leavebotdemo.azurewebsites.net/?Emailid={loginHint}"
 
                 });
             } else if (radios[1].checked) {
