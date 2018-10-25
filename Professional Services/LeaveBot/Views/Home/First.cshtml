@@ -76,6 +76,15 @@
             font-size: 14px;
             line-height: 19px;
         }
+
+        .row-event1 {
+            height: 16px;
+            width: 188px;
+            color: #B24782;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+        }
         /* {
             font-size: 17px;
             font-family: "Segoe UI"; /*'Times New Roman', Times, serif;
@@ -108,6 +117,14 @@
             /*padding: 5px;*/
             background-color: rgb(240,240,240);
             width: 100%
+        }
+
+        .dot1 {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            background-color: forestgreen;
+            display: inline-block;
         }
 
         .one {
@@ -166,6 +183,7 @@
                             <th class="event">
                                 Event
                             </th>
+                            <th class="event"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,38 +196,160 @@
                                     <td style="padding : 6px;"></td>
                                     <td style="padding : 6px;"></td>
                                     <td style="padding : 6px;"></td>
+                                    <td style="padding : 6px;"></td>
+
                                 </tr>
                             }
+
+                            @*if (space % 2 != 0)
+                                {
+                                    <tr style="background-color:white;border-top:1px solid rgb(0,0,0,0.08);">
+                                        <td class="row-date">
+                                            @item.Date.ToString("dd MMMM yyyy")
+                                            @if (item.OptionalHoliday != null)
+                                            {
+                                                <br />
+                                                <span>@item.OptionalHoliday</span>
+                                            }
+                                        </td>
+                                        <td class="row-day">
+                                            @if (item.Date.DayOfWeek == DayOfWeek.Friday)
+                                            {
+                                                @item.Date.DayOfWeek<br />
+                                                <span>Long weekend</span>
+                                            }
+                                        </td>
+                                        <td class="row-event">
+                                            @item.Title
+                                        </td>
+                                        @if (item.Title == "Diwali")
+                                        {
+                                            <td><img src=@item.ImagePath /></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="row-event"></td>
+                                        }
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr style="background-color:white;">
+                                        <td class="row-date">
+                                            @item.Date.ToString("dd MMMM yyyy")
+                                            @if (item.OptionalHoliday != null)
+                                            {
+                                               <br />
+                                               <span>@item.OptionalHoliday</span>
+                                            }
+                                        </td>
+                                        <td class="row-day">
+                                            @if (item.Date.DayOfWeek == DayOfWeek.Friday)
+                                            {
+                                                @item.Date.DayOfWeek<br />
+                                                <span>Long weekend</span>
+                                            }
+                                        </td>
+                                        <td class="row-event">
+                                            @item.Title
+                                        </td>
+                                            @if(item.Title == "Diwali")
+                                            {
+                                                <td><img src = @item.ImagePath/></td>
+                                            }
+                                            else
+                                            {
+                                                <td class="row-event"></td>
+                                            }
+                                    </tr>
+                                }*@
                             if (space % 2 != 0)
                             {
-                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.08);">
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,0.12);">
                                     <td class="row-date">
                                         @item.Date.ToString("dd MMMM yyyy")
+                                        @if (item.OptionalHoliday != null)
+                                        {
+                                            <br />
+                                            <span><i style="opacity:0.5;font-family:cursive;font-family : 'Segoe UI'">@item.OptionalHoliday</i></span>
+                                        }
                                     </td>
                                     <td class="row-day">
-                                        @item.Date.DayOfWeek
+                                        @if (item.Date.DayOfWeek == DayOfWeek.Friday || item.Date.DayOfWeek==DayOfWeek.Monday)
+                                        {
+                                            @item.Date.DayOfWeek<br />
+                                            <span class="dot1"></span>
+                                            <span style="color : forestgreen">Long Holiday</span>
+                                        }
+                                        else
+                                        {
+                                            @item.Date.DayOfWeek
+                                        }
                                     </td>
                                     <td class="row-event">
-                                        @item.Title
+                                        @if (item.Title == "Diwali")
+                                        {
+                                            @item.Title
+                                            <br />
+                                            <span class="row-event1">@item.CelebrationText</span>
+                                        }
+                                        else
+                                        {
+                                            @item.Title
+                                        }
                                     </td>
+                                    @if (item.Title == "Diwali")
+                                    {
+                                        @*<td class="row-event">
+                                                <img src="~/Resources/Diwali.PNG" />
+                                            </td>*@
+                                        <td class="row-event"><img src=@item.ImagePath /></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="row-event"></td>
+                                    }
                                 </tr>
                             }
                             else
                             {
-                                <tr style="background-color:white;">
+                                <tr style="background-color:white;border-top:1px solid rgb(0,0,0,0.08);">
                                     <td class="row-date">
                                         @item.Date.ToString("dd MMMM yyyy")
+                                        @if (item.OptionalHoliday != null)
+                                        {
+                                            <br />
+                                            <span><i style="opacity:0.5;font-family:cursive;font-family : 'Segoe UI'">@item.OptionalHoliday</i></span>
+                                        }
                                     </td>
                                     <td class="row-day">
                                         @item.Date.DayOfWeek
                                     </td>
                                     <td class="row-event">
-                                        @item.Title
-                                    </td>
+                                        @if (item.Title == "Diwali")
+                                        {
+                                            @item.Title
+                                            <br />
+                                            <span style="color:deeppink">@item.CelebrationText</span>
+                                        }
+                                        else
+                                        {
+                                            @item.Title
+                                        }
 
+                                    </td>
+                                    @if (item.Title == "Diwali")
+                                    {
+                                        @*<td class="row-event"><img src="~/Resources/Diwali.PNG" /></td>*@
+                                        <td class="row-event"><img src=@item.ImagePath /></td>
+
+                                    }
+                                    else
+                                    {
+                                        <td class="row-event"></td>
+                                    }
                                 </tr>
                             }
-
                             space++;
                         }
 
