@@ -2,6 +2,8 @@
 @*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
 @using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 @using Microsoft.Teams.Samples.HelloWorld.Web;
+@{var myId = 0;}
+@{var showlength = 5;}
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -58,6 +60,7 @@
             right: 0;
         }
 
+
         table {
             width: 100%;
             border: -70px black;
@@ -112,7 +115,6 @@
             padding-top: 8px;
             border: 10px solid transparent;
             display: block;
-            margin: 10 auto;
             border: 1px solid transparent;
             border-top: 2.5px solid #237B4B;
             box-shadow: 0 0 8px 0 #D3D3D3;
@@ -124,7 +126,6 @@
             padding-top: 8px;
             border: 10px solid transparent;
             display: block;
-            margin: 10 auto;
             font-family: 'Segoe UI';
             box-shadow: 0 0 8px 0 rgba(37,36,36,0.3);
             border: 1px solid transparent;
@@ -138,6 +139,14 @@
             border-radius: 50%;
             display: inline-block;
             float: left;
+        }
+
+        .dot1 {
+            height: 5px;
+            width: 5px;
+            background-color: mediumpurple;
+            border-radius: 50%;
+            display: inline-block;
         }
 
         .rectangle-10-copy {
@@ -167,8 +176,8 @@
         }
 
         .vb {
-            padding-top: 15px;
-            padding-left: 80px;
+            padding-top: 2px;
+            padding-left: 110px;
         }
 
         .vls {
@@ -178,8 +187,8 @@
         }
 
         .rect {
-            display: block;
-            margin: 0 auto;
+            /*display: block;
+            margin: 0 auto;*/
             height: 32px;
             width: 120px;
             color: white;
@@ -189,6 +198,15 @@
             box-shadow: 0 2px 4px -0.75px rgba(0,0,0,0.1);
             font-family: "Segoe UI";
             font-size: 14px;
+        }
+
+        .big {
+            height: 20px;
+            width: 85px;
+            color: #6264A7;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 20px;
         }
     </style>
 </head>
@@ -236,6 +254,31 @@
             taskInfo.completionBotId = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.AppId";
             microsoftTeams.tasks.startTask(taskInfo, submitHandler);
         }
+        //$(function () {
+        //    $("tr").slice(0, 4).show(); // select the first ten
+        //    $("#load").click(function (e) { // click event for load more
+        //        e.preventDefault();
+        //        $("tr:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
+        //        if ($("tr:hidden").length == 0) { // check if any hidden divs still exist
+        //            alert("No more data"); // alert if there are none left
+        //        }
+        //    });
+        //});
+
+        function myFunction(count) {
+            for (var id = @showlength; id < count; id++) {
+                var x = document.getElementById(id);
+                if (x.style.display === "none") {
+                    x.style.display = "table-row";
+                    //document.getElementById('load') = LoadLess;
+                } else {
+                    x.style.display = "none";
+                    //document.getElementById('load') = LoadLess;
+                }
+            }
+            document.getElementById('load').style.display = "none";
+        }
+
     </script>
 
 
@@ -244,21 +287,27 @@
         <div>
             <div class="split-left">
                 <div>
+
                     <div class="centered">
 
                         <img src=@Model.Item1.PhotoPath hspace="20" style="box-shadow:0 0 10px 7px #D3D3D3" @*alt=@Model.Item1.Name *@>
                     </div>
+
+
                     <div class="vb">
                         <span style="height: 20px;	width: 113px;	color: #252424;	font-family: Helvetica;	font-size: 18px;	font-weight: bold;	line-height: 20px;"><b>@Model.Item1.DisplayName</b></span><br />
-
+                        <span style="height: 16px;width: 66px;color: #252424;	font-family:'Segoe UI';font-size: 12px;line-height: 16px;">UX Designer</span><br />
                         <span><b>@Model.Item1.Totalleaves</b></span><span style="height: 16px;	width: 65px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;line-height: 16px;"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="height: 16px;	width: 41px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';	font-size: 12px;	line-height: 16px;"> months</span><br /><br /><br />
+                        <span><button class="rect" onclick="submit('adaptivecard');">Apply Leave</button></span>
                     </div> <br />
 
-                    <button class="rect" onclick="submit('adaptivecard');">Apply Leave</button>
+
+
                 </div>
                 <br />
                 <br />
-                <br />
+
+
 
                 <p style="font-size:15px;height:24px;width:90px;font-family:'Segoe UI';padding-left:7px;">Notifications</p>
                 <div style="padding-left:10px">
@@ -283,7 +332,7 @@
                         <div class="heading">
                             <div>
                                 <div class="cent">
-                                    <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
+                                    <span class="dot" hspace="20"><img class="dot" src=~/Resources/color.png /></span>
                                 </div>
                                 <div class="vls">
                                     <span style="height: 40px;	width: 170px;	color: #252424;	font-family: Helvetica;	font-size: 13px;">Leave Bot<br /></span><span style="height: 16px;	width: 18px;	color: rgba(37,36,36,0.65);	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Tip</span>
@@ -305,7 +354,7 @@
                         <div class="heading">
                             <div>
                                 <div class="cent">
-                                    <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
+                                    <span class="dot" hspace="20"><img class="dot" src=~/Resources/color.png /></span>
                                 </div>
 
                                 <div class="vls"><span style="height: 40px;	width: 170px;	color: #252424;	font-family: Helvetica;	font-size: 13px;">Leave Bot</span><br /></div>
@@ -346,7 +395,7 @@
                                         <td>
                                             @item.mgrstartDay, @item.mgrStartDateval-@item.mgrEndDay, @item.mgrEndDateVal, @item.EndDate.Date.Year <br />
                                             <br />
-                                            <span style="color:#6462A7"> @item.LeaveType  </span> <br />
+                                            <span style="color:#6462A7"> @item.LeaveType  </span><span class="dot1"></span>
                                             <span style="font-size:small;line-height:12px;"> @item.EmployeeComment</span>
 
                                         </td>
@@ -403,7 +452,7 @@
                                     totalleaves = item.DaysDiff;
 
                                 }
-                                if (item.EndDate != null && item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.PaidLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.EndDate != null)
                                 {
                                     Lastused = item.EndDate.Date.ToString("MMM");
                                 }
@@ -422,6 +471,11 @@
                             }
                         }
 
+
+
+
+
+
                     </tr>
 
                     <tr>
@@ -430,16 +484,15 @@
                         {
                             int totalleaves = 0;
                             string Lastused = null;
-                            DateTime Lastusedday;
                             foreach (var item in Model.Item2)
                             {
                                 if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.SickLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
                                 }
-                                if (item.EndDate != null &&  item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.SickLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.EndDate != null)
                                 {
-                                    Lastused= item.EndDate.Date.ToString("MMM");
+                                    Lastused = item.EndDate.Date.ToString("MMM");
                                 }
 
                             }
@@ -495,21 +548,21 @@
 
                         @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Maternity Leaves</td>
                         <td>@Model.Item1.LeaveBalance.MaternityLeave</td>
                         <td>0</td>
                         <td>0</td>
                         <td>-</td>
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Paternity Leaves</td>
                         <td>@Model.Item1.LeaveBalance.PaternityLeave</td>
                         <td>0</td>
                         <td>0</td>
                         <td>-</td>
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Caregiver Leaves</td>
                         <td>@Model.Item1.LeaveBalance.Caregiver</td>
                         <td>0</td>
@@ -529,99 +582,172 @@
                         {
 
 
-                            foreach (var item in Model.Item2)
+
+                            @*foreach (var item in Model.Item2)
+                                {
+                                    <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px" id="@myId">
+                                        <td>
+                                            @item.startDay, @item.StartDateval-@item.EndDay, @item.EndDateVal, @item.EndDate.Date.Year <br />
+
+                                            <span style="color:mediumpurple"> @item.LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @item.EmployeeComment</span>
+
+                                        </td>
+                                        <td>
+                                            @item.DaysDiff Days OOF
+                                        </td>
+                                        @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                        {
+                                            <td style="color:#92C353">Approved</td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                        {
+                                            <td style="color:#FFC312">
+
+                                                @item.Status
+                                            </td>
+                                            <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                            <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
+                                        }
+                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                        {
+                                            <td style="color:#C4314B">Declined</td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                    </tr>
+                                    myId++;
+                                }*@
+                            for (int index = 0; index < ((showlength > Model.Item2.Count) ? Model.Item2.Count : showlength); index++, myId++)
                             {
-                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px;display :  table-row" id="@myId">
                                     <td>
-                                        @item.startDay, @item.StartDateval-@item.EndDay, @item.EndDateVal, @item.EndDate.Date.Year <br />
-                                        <br />
-                                        <span style="color:mediumpurple"> @item.LeaveType  </span> <span style="font-size:small"> @item.EmployeeComment</span>
+                                        @Model.Item2[index].startDay, @Model.Item2[index].StartDateval-@Model.Item2[index].EndDay, @Model.Item2[index].EndDateVal, @Model.Item2[index].EndDate.Date.Year <br />
+
+                                        <span style="color:mediumpurple"> @Model.Item2[index].LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @Model.Item2[index].EmployeeComment</span>
 
                                     </td>
                                     <td>
-                                        @item.DaysDiff Days OOF
+                                        @Model.Item2[index].DaysDiff Days OOF
                                     </td>
-                                    @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                     {
                                         <td style="color:#92C353">Approved</td>
                                         <td></td>
                                         <td></td>
                                     }
-                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
                                     {
                                         <td style="color:#FFC312">
 
-                                            @item.Status
+                                            @Model.Item2[index].Status
                                         </td>
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
                                     }
-                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
                                     {
                                         <td style="color:#C4314B">Declined</td>
                                         <td></td>
                                         <td></td>
                                     }
-
-
-
                                 </tr>
 
                             }
+                            for (int index = showlength; index < Model.Item2.Count; index++, myId++)
+                            {
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px;display : none" id="@myId">
+                                    <td>
+                                        @Model.Item2[index].startDay, @Model.Item2[index].StartDateval-@Model.Item2[index].EndDay, @Model.Item2[index].EndDateVal, @Model.Item2[index].EndDate.Date.Year <br />
+
+                                        <span style="color:mediumpurple"> @Model.Item2[index].LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @Model.Item2[index].EmployeeComment</span>
+
+                                    </td>
+                                    <td>
+                                        @Model.Item2[index].DaysDiff Days OOF
+                                    </td>
+                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                    {
+                                        <td style="color:#92C353">Approved</td>
+                                        <td></td>
+                                        <td></td>
+                                    }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    {
+                                        <td style="color:#FFC312">
+
+                                            @Model.Item2[index].Status
+                                        </td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
+                                    }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    {
+                                        <td style="color:#C4314B">Declined</td>
+                                        <td></td>
+                                        <td></td>
+                                    }
+                                </tr>
+
+                            }
+
+
                         }
-                        else
-                        {
-                            <tr>
-                                <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
-                                    >
-                                    Thu, Sep13-Mon,Sep17, 2018<br />
-                                    <span style="color:#6264A7;font-size:12px;">PL.</span><span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> i am visiting home over the<br /> weekend.Will be available...></span>
-                                </td>
-                                <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
-                                <td style="height: 16px;width: 44px;color: #FFC312;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Pending</td>
-                                <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
-                                <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
 
-                            </tr>
-                            <tr>
-                                <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
-                                    >
-                                    Wed, Aug 1, 2018<br />
-                                    <span style="color:mediumpurple">SL.</span>
-                                    <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
-                                </td>
-                                <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">1 day OOF</td>
-                                <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
-                                <td> </td>
-                                <td> </td>
+                        @*else
+                            {
+                                    <tr>
+                                        <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                            >
+                                            Thu, Sep13-Mon,Sep17, 2018<br />
+                                            <span style="color:#6264A7;font-size:12px;">PL.</span><span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> i am visiting home over the<br /> weekend.Will be available...></span>
+                                        </td>
+                                        <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                        <td style="height: 16px;width: 44px;color: #FFC312;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Pending</td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
 
-                            </tr>
-                            <tr>
-                                <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
-                                    >
-                                    Mon, May4 - Thu, May 7,2018<br />
-                                    <span style="color:mediumpurple">SL.</span>
-                                    <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
-                                </td>
-                                <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
-                                <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
-                                <td> </td>
-                                <td> </td>
+                                    </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        >
+                                        Wed, Aug 1, 2018<br />
+                                        <span style="color:mediumpurple">SL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">1 day OOF</td>
+                                    <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
+                                    <td> </td>
+                                    <td> </td>
 
-                            </tr>
-                            <tr>
-                                <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
-                                    Fri, Apr 7 - Mon, Apr 10, 2018<br />
-                                    <span style="color:mediumpurple">PL.</span>
-                                    <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Vacation</span>
-                                </td>
-                                <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
-                                <td style="height: 16px;width: 47px;color: #C4314B;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Declined</td>
-                                <td> </td>
-                                <td> </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        >
+                                        Mon, May4 - Thu, May 7,2018<br />
+                                        <span style="color:mediumpurple">SL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                    <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
+                                    <td> </td>
+                                    <td> </td>
 
-                            </tr>
-                        }
+                                </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        Fri, Apr 7 - Mon, Apr 10, 2018<br />
+                                        <span style="color:mediumpurple">PL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Vacation</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                    <td style="height: 16px;width: 47px;color: #C4314B;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Declined</td>
+                                    <td> </td>
+                                    <td> </td>
+
+                                </tr>
+                            }*@
 
 
                     </tbody>
@@ -631,6 +757,12 @@
 
 
                 </table>
+                @if (showlength < Model.Item2.Count)
+                {
+                    <a href="#" id="load" class="big" onclick="myFunction(@Model.Item2.Count)">Load More</a>
+                }
+                <br />
+                <br />
             </div>
         </div>
 
@@ -642,4 +774,3 @@
 </body>
 
 </html>
-
