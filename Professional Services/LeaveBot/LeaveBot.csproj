@@ -286,6 +286,7 @@
     <Content Include="Manifest\outline.png" />
     <Content Include="Resources\-g-Leave balance-01.png" />
     <Content Include="Resources\-g-Public holidays-01.png" />
+    <Content Include="Resources\color.png" />
     <Content Include="Resources\delete.PNG" />
     <Content Include="Resources\Diwali.PNG" />
     <Content Include="Resources\HeartIcon.png" />
