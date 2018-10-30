@@ -66,8 +66,8 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 taskInfo["card"] = JObject.FromObject(EchoBot.LeaveRequest(leaveDetails));
                 taskInfo["title"] = "Edit Leave";
 
-                taskInfo["height"] = 330;
-                taskInfo["width"] = 550;
+                taskInfo["height"] = 500;
+                taskInfo["width"] = 600;
 
                 taskEnvelope["task"] = taskObj;
 
