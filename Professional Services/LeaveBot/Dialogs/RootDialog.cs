@@ -93,7 +93,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 {
                     await SendSetManagerCard(context, activity, employee, message);
                 }
-                else if (message.ToLowerInvariant().Equals("reset"))
+                else if (message.ToLowerInvariant().Contains("reset"))
                 {
                     // Sign the user out from AAD
                     await Signout(userEmailId, context);
