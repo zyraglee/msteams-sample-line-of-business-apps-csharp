@@ -50,9 +50,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             var activityValue = activity.Value.ToString();
             if (activity.Name == "task/fetch")
             {
-                var action = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<EditLeaveDetails>>(activityValue);
+                var action = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<EditLeaveDetails>>(activityValue);
 
-                var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(action.Data.LeaveId);
+                var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(action.Data.Data.LeaveId);
 
                 // TODO: Convert this to helpers once available.
                 JObject taskEnvelope = new JObject();

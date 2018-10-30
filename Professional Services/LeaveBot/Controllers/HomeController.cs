@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
+using Microsoft.Bot.Connector;
+
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     public class HomeController : Controller
@@ -113,6 +115,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         public ActionResult Configure()
         {
             return View();
+        }
+
+        [Route("GetEditCard")]
+        public async Task<JsonResult> GetEditCard(string leaveId)
+        {
+            var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(leaveId);
+            var card = EchoBot.LeaveRequest(leaveDetails);
+            return Json(card, JsonRequestBehavior.AllowGet);
         }
     }
 }
