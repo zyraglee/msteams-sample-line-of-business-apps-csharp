@@ -51,6 +51,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         [JsonProperty(PropertyName = "leaveBalance")]
         public LeaveBalance LeaveBalance { get; set; }
 
+        [JsonProperty(PropertyName = "jobTitle")]
+        public string JobTitle { get; set; }
+
     }
 
     public class LeaveBalance
