@@ -296,7 +296,7 @@
 
                     <div class="vb">
                         <span style="height: 20px;	width: 113px;	color: #252424;	font-family: Helvetica;	font-size: 18px;	font-weight: bold;	line-height: 20px;"><b>@Model.Item1.DisplayName</b></span><br />
-                        <span style="height: 16px;width: 66px;color: #252424;	font-family:'Segoe UI';font-size: 12px;line-height: 16px;">UX Designer</span><br />
+                        <span style="height: 16px;width: 66px;color: #252424;	font-family:'Segoe UI';font-size: 12px;line-height: 16px;">@(@Model.Item1.JobTitle?? @Model.Item1.EmailId)</span><br />
                         <span><b>@Model.Item1.Totalleaves</b></span><span style="height: 16px;	width: 65px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;line-height: 16px;"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="height: 16px;	width: 41px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';	font-size: 12px;	line-height: 16px;"> months</span><br /><br /><br />
                         <span><button class="rect" onclick="submit('adaptivecard');">Apply Leave</button></span>
                     </div> <br />

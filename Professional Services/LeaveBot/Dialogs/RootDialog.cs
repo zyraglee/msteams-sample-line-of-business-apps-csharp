@@ -43,7 +43,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
             var activity = await result as Activity;
-           string message = string.Empty;
+            string message = string.Empty;
             if (activity.Text != null)
                 message = Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant();
             string userEmailId = string.Empty;
@@ -648,6 +648,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                 UserUniqueId = context.Activity.From.Id, // For proactive messages
                 TenantId = channelData.Tenant.Id,
                 DemoManagerEmailId = string.Empty,
+                JobTitle = me.JobTitle ?? me.UserPrincipalName,
                 LeaveBalance = new LeaveBalance
                 {
                     OptionalLeave = 2,
