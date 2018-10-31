@@ -603,8 +603,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
                         return;
                     }
                 }
-                await context.PostAsync($"Hmm. Something went wrong. Let's try again.");
-                await SendOAuthCardAsync(context, activity);
+                await context.PostAsync($"Hmm. Something went wrong. Please initiate the SignIn again. Try sending help.");
+                //await SendOAuthCardAsync(context, activity);
+                // await MessageReceivedAsync(context,  result);
+                context.Wait(MessageReceivedAsync);
             }
         }
 
