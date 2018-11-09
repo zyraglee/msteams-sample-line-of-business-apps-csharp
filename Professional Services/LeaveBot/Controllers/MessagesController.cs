@@ -1,9 +1,9 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using ProfessionalServices.LeaveBot.Dialogs;
+using ProfessionalServices.LeaveBot.Models;
+using ProfessionalServices.LeaveBot.Repository;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace ProfessionalServices.LeaveBot.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController

@@ -1,8 +1,8 @@
-﻿using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+﻿using ProfessionalServices.LeaveBot.Helper;
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
+namespace ProfessionalServices.LeaveBot.Models
 {
     // Static class
     public static class PublicHolidaysList

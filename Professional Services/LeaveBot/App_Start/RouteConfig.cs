@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace ProfessionalServices.LeaveBot
 {
     public class RouteConfig
     {
