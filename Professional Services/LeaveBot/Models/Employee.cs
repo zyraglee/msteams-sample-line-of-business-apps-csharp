@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 {
@@ -53,6 +50,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
         [JsonProperty(PropertyName = "leaveBalance")]
         public LeaveBalance LeaveBalance { get; set; }
+
+        [JsonProperty(PropertyName = "jobTitle")]
+        public string JobTitle { get; set; }
 
     }
 

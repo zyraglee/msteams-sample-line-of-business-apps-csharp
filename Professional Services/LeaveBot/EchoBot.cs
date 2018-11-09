@@ -1,13 +1,10 @@
-﻿using System.Threading.Tasks;
-using AdaptiveCards;
-using System.Data;
-using System.Collections.Generic;
+﻿using AdaptiveCards;
 using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Teams;
+using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using System;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using System.Collections.Generic;
 using TaskModule;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web
@@ -151,31 +148,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         }
                     }
                     
-            }
-                //Actions = new List<AdaptiveAction>()
-                //{
-
-                //    new AdaptiveSubmitAction()
-                //    {
-                //        Title="Leave Request",
-                //        DataJson= @"{'Type':'" + Constants.LeaveRequest+"'}"
-                //    },
-                //     new AdaptiveSubmitAction()
-                //     {
-                //         Title="Leave Balance",
-                //          DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"
-                //     },
-                //     new AdaptiveSubmitAction()
-                //     {
-                //         Title="Public Holidays",
-                //          DataJson= @"{'Type':'" + Constants.Holidays+"'}"
-                //     },
-                //     new AdaptiveOpenUrlAction()
-                //     {
-                //         Title="Help",
-                //         Url = new Uri(DeeplinkHelper.HelpDeeplink)
-                //     }
-                //}
+             }
             };
 
             if (isManager)
@@ -208,12 +181,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 }
                     }
                     );
-                //WelcomeCard.Actions.Insert(2,
-                //    new AdaptiveSubmitAction()
-                //    {
-                //        Title = "Pending Approvals",
-                //        DataJson = @"{'Type':'" + Constants.ShowPendingApprovals + "'}"
-                //    });
 
             return new Attachment()
             {
@@ -1202,7 +1169,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                    new AdaptiveTextBlock(){Text="02 Oct 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
+                                    new AdaptiveTextBlock(){Text="01 Nov 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
 
 
 
@@ -1217,7 +1184,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="Tuesday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text="Thursday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1231,7 +1198,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="Gandhi Jayanti", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text="Kannada Rajyotsava", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1258,7 +1225,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="19 Oct 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
+                                     new AdaptiveTextBlock(){Text="08 Nov 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
 
 
 
@@ -1274,7 +1241,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 {
 
 
-                                     new AdaptiveTextBlock(){Text="Friday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text="Thursday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1289,7 +1256,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                                 {
 
 
-                                     new AdaptiveTextBlock(){Text="Dussehra", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text="Diwali", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1374,8 +1341,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
         public string LeaveId { get; set; }
 
     }
-
-
 
     public class EditRequest
     {
