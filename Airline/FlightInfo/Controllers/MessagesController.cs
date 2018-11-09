@@ -83,7 +83,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             }
             else
             {
-                replyActivity.Text = $"Flights not avilibile for selected date. Please check some other date";
+                replyActivity.Text = $"Flights are not available for selected date. Please check another date.";
             }
         }
 
@@ -194,7 +194,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
             //Cities obj4 = new Cities();
             //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston";
+            //obj4.CityName = "Boston, MA";
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
             //Cities obj5 = new Cities();
             //obj5.CityCode = "JFK";

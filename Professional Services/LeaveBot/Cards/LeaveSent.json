@@ -58,7 +58,7 @@
     },
     {
       "type": "TextBlock",
-      "text": "{DayCount} days OOF"
+      "text": "{DayCount} days out of office"
     },
     {
       "type": "ColumnSet",
