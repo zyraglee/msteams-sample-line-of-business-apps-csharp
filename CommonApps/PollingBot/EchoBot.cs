@@ -790,54 +790,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
             return card;
         }
-        private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
-        {
-            var reply = await context.Activity.CreateOAuthReplyAsync(ConnectionName, "To do this, you'll first need to sign in.", "Sign In", true).ConfigureAwait(false);
-            await context.PostAsync(reply);
-
-            context.Wait(WaitForToken);
-        }
-
-        private async Task WaitForToken(IDialogContext context, IAwaitable<object> result)
-        {
-            var activity = await result as Activity;
-
-            var tokenResponse = activity.ReadTokenResponseContent();
-            if (tokenResponse != null)
-            {
-                // Use the token to do exciting things!
-
-            }
-            else
-            {
-                // Get the Activity Message as well as activity.value in case of Auto closing of pop-up
-                string input = activity.Type == ActivityTypes.Message ? Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity)
-                                                                : ((dynamic)(activity.Value)).state.ToString();
-                if (!string.IsNullOrEmpty(input))
-                {
-                    tokenResponse = await context.GetUserTokenAsync(ConnectionName, input.Trim());
-                    if (tokenResponse != null && tokenResponse.Token != null)
-                    {
-                        try
-                        {
-                            await context.PostAsync($"You are successfully signed in. Now, you can use create team command.");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                    }
-                    else
-                    {
-                        await context.PostAsync($"Hmm. Something went wrong. Let's try again.");
-                    }
-                    context.Wait(MessageReceivedAsync);
-                    return;
-                }
-                await context.PostAsync($"Hmm. Something went wrong. Let's try again.");
-                await SendOAuthCardAsync(context, activity);
-            }
-        }
+       
 
         public void CreateCSVFile(DataTable dt, string strFilePath)
         {
