@@ -3,14 +3,14 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using ProfessionalServices.LeaveBot.Repository;
 using System.Configuration;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace ProfessionalServices.LeaveBot
 {
     public class MvcApplication : System.Web.HttpApplication
     {

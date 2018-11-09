@@ -1,5 +1,5 @@
 ﻿using System.Configuration;
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
+namespace ProfessionalServices.LeaveBot.Helper
 {
     public static class ApplicationSettings
     {

@@ -1,12 +1,9 @@
-﻿using ContosoAirline.Model;
+﻿using Airline.PassengerInfo.Web.Model;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace ContosoAirline.Helper
+namespace Airline.PassengerInfo.Web.Helper
 {
     public class O365CardHelper
     {

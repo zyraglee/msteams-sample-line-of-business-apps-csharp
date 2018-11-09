@@ -1,7 +1,7 @@
-﻿using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+﻿using ProfessionalServices.LeaveBot.Helper;
 using System.Web;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
+namespace ProfessionalServices.LeaveBot.Helpers
 {
     public static class DeeplinkHelper
     {

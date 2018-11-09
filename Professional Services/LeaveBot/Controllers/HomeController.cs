@@ -1,14 +1,14 @@
-﻿using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+﻿using ProfessionalServices.LeaveBot.Repository;
 using System.Web.Mvc;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using ProfessionalServices.LeaveBot.Models;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
+using ProfessionalServices.LeaveBot.Dialogs;
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace ProfessionalServices.LeaveBot.Controllers
 {
     public class HomeController : Controller
     {

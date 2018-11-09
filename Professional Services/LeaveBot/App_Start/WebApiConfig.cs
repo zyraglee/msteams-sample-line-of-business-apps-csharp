@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace ProfessionalServices.LeaveBot
 {
     public static class WebApiConfig
     {

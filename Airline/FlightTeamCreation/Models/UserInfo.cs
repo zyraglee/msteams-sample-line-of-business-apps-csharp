@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace SimpleEchoBot.Models
+namespace Airline.FlightTeamCreation.Web.Models
 {
     public class UserInfo
     {

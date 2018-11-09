@@ -9,9 +9,9 @@ using System.Configuration;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using ProfessionalServices.LeaveBot.Models;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
+namespace ProfessionalServices.LeaveBot.Repository
 {
     public static class DocumentDBRepository
     {
