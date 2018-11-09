@@ -25,41 +25,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
                 {
-                    //CreateDataRecords();
-                    //if (activity.Value != null)
-                    //{
-                    //    InventoryInputDetails itemCount = Newtonsoft.Json.JsonConvert.DeserializeObject<InventoryInputDetails>(activity.Value.ToString());
-                    //    Activity replyActivity = activity.CreateReply();
-                    //    switch (itemCount.Type)
-                    //    {
-                    //        case Constants.newInventoryCount:
-                    //            await AddItems(itemCount, replyActivity);
-                               
-                    //            await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                    //            break;
-                    //        case Constants.BlockInventory:
-                    //            await BlockItems(itemCount, replyActivity);
-                    //            await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                    //            break;
-                    //        case Constants.RetireInventory:
-                    //            await RetireItems(itemCount, replyActivity);
-                    //            await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                    //            break;
-                    //        case Constants.RequestNewStock:
-                    //            await AttachNewStock(replyActivity);
-                               
-                    //            await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                    //            break;
-                               
-                    //        default:
-                    //            break; 
-                    //    }
-
-                    //}
-                    //else
-                    //{
-                        await Conversation.SendAsync(activity, () => new EchoBot());
-                    //}
+                   
+                    await Conversation.SendAsync(activity, () => new EchoBot());
+                  
                 }
                 else if (activity.Type == ActivityTypes.Invoke)
                 {
@@ -108,39 +76,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                     await connector.Conversations.ReplyToActivityAsync(replyActivity);
                 }
-                //else
-                //    await Conversation.SendAsync(activity, () => new EchoBot());
+                
             }
             catch(Exception e)
             {
                 activity.CreateReply(e.Message.ToString());
             }
-            //switch (o365CardQuery.ActionId)
-            //{
-            //    case Constants.Industry:
-            //        var industryCode = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-            //        await ShowProductInfo(industryCode.Value, replyActivity);
-            //        break;
-            //    case Constants.newInventoryCount:
-            //        InventoryInputDetails itemCount = Newtonsoft.Json.JsonConvert.DeserializeObject<InventoryInputDetails>(o365CardQuery.Body);
-            //        await AddItems(itemCount, replyActivity);
-            //        break;
-            //    case Constants.BlockInventory:
-            //        InventoryInputDetails blockItem = Newtonsoft.Json.JsonConvert.DeserializeObject<InventoryInputDetails>(o365CardQuery.Body);                    
-            //        await BlockItems(blockItem,replyActivity);
-            //        break;
-            //    case Constants.RetireInventory:
-            //        InventoryInputDetails retireitemcount = Newtonsoft.Json.JsonConvert.DeserializeObject<InventoryInputDetails>(o365CardQuery.Body);
-            //        await RetireItems(retireitemcount, replyActivity);
-            //        break;
-            //    case Constants.RequestNewStock:
-            //        await AttachNewStock(replyActivity);
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
-
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
         private static async Task ShowProductInfo(string IndustryCode, Activity replyActivity)
@@ -182,8 +123,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     var itemsList = await DocumentDBRepository<Product>.UpdateItemAsync(list.Id, list);
                     var replyCard = O365CardHelper.GetAdativeCard(addItems.FirstOrDefault(), itemcount.ActionId);
                     replyActivity.Attachments.Add(replyCard);
-                    //replyActivity.Text = $"Items added successfully {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
-                    //replyActivity.Text = "Items added Successfully";
+                    
                 }
                 catch (Exception e)
                 {
@@ -208,12 +148,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                             loc.Quantity = Convert.ToInt32(loc.Quantity) - Convert.ToInt32(itemcount.newItemCount);
                         }
                     }
-                    //list.Quantity = Convert.ToInt32(list.Quantity) - Convert.ToInt32(itemcount.newItemCount);
+                    
                     var itemsList = await DocumentDBRepository<Product>.UpdateItemAsync(list.Id, list);
                     var replyCard = O365CardHelper.GetAdativeCard(addItems.FirstOrDefault(), itemcount.ActionId);
                     replyActivity.Attachments.Add(replyCard);
-                    //replyActivity.Text = $"Items added successfully {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
-                    //replyActivity.Text = "Items retire Successfully";
+                    
                 }
                 catch (Exception e)
                 {
@@ -248,12 +187,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                             }
                         }
                     }
-                    //list.Quantity = Convert.ToInt32(list.Quantity) - Convert.ToInt32(itemcount);
-
-                   
-                    
-
-                   
+                 
                 }
                 catch (Exception e)
                 {
@@ -306,52 +240,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             lst1.Add(obj12);
             obj5.locationList = lst1;
             await DocumentDBRepository<Product>.CreateItemAsync(obj5);
-
-            //Product obj6 = new Product();
-            //obj6.PrdouctId = 10;
-            //obj6.ProductName = "Frames";
-            //obj6.IsActive = true;
-            //obj6.Quantity = 10;
-            //obj6.IndustryCode = "mft";
-            //obj6.Location = "Hyderbad";
-            //await DocumentDBRepository<Product>.CreateItemAsync(obj6);
-            //Product obj7 = new Product();
-            //obj7.PrdouctId = 11;
-            //obj7.ProductName = "Ball bearings";
-            //obj7.IsActive = true;
-            //obj7.Quantity = 10;
-            //obj7.IndustryCode = "mft";
-            //obj7.Location = "Hyderbad";
-            //await DocumentDBRepository<Product>.CreateItemAsync(obj7);
-            //Product obj8 = new Product();
-            //obj8.PrdouctId = 12;
-            //obj8.ProductName = "Key stock";
-            //obj8.IsActive = true;
-            //obj8.Quantity = 10;
-            //obj8.IndustryCode = "mft";
-            //obj8.Location = "Hyderbad";
-            //await DocumentDBRepository<Product>.CreateItemAsync(obj8);
-            //Cities obj2 = new Cities();
-            //obj2.CityCode = "EWR";
-            //obj2.CityName = "Newark";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj2);
-            //Cities obj3 = new Cities();
-            //obj3.CityCode = "BWI";
-            //obj3.CityName = "Washington, DC";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
-            //Cities obj4 = new Cities();
-            //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston, MA";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
-            //Cities obj5 = new Cities();
-            //obj5.CityCode = "JFK";
-            //obj5.CityName = "New York";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj5);
-            //Cities obj6 = new Cities();
-            //obj6.CityCode = "ORD";
-            //obj6.CityName = "Chicago";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj6);
-
         }
 
 
