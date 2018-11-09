@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.NotificationBot", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryInfoBotWeb", "CommonApps\InventoryBot\InventoryInfoBotWeb.csproj", "{E7A02B0D-A563-4CB8-AC6B-1D85272C5D7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollingBotV1", "CommonApps\PollingBot\PollingBotV1.csproj", "{45B6FECB-17FA-41F5-8AB7-A80C9FEEEEB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E7A02B0D-A563-4CB8-AC6B-1D85272C5D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7A02B0D-A563-4CB8-AC6B-1D85272C5D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A02B0D-A563-4CB8-AC6B-1D85272C5D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45B6FECB-17FA-41F5-8AB7-A80C9FEEEEB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45B6FECB-17FA-41F5-8AB7-A80C9FEEEEB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45B6FECB-17FA-41F5-8AB7-A80C9FEEEEB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45B6FECB-17FA-41F5-8AB7-A80C9FEEEEB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
