@@ -1,10 +1,10 @@
-﻿using SimpleEchoBot.Models;
+﻿using Airline.FlightTeamCreation.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace SimpleEchoBot.Repository
+namespace Airline.FlightTeamCreation.Web.Repository
 {
     public class UserInfoRepository
     {

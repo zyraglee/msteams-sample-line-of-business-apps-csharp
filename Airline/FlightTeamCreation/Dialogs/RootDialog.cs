@@ -1,27 +1,19 @@
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Bot.Connector;
+using Airline.FlightTeamCreation.Web.Controllers;
+using Airline.FlightTeamCreation.Web.Repository;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Configuration;
-using System.Collections.Generic;
-using SimpleEchoBot.Repository;
-using SimpleEchoBot.Models;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
-using System.Text;
-using Newtonsoft.Json.Linq;
-
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using Microsoft.Bot.Connector.Teams.Models;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Microsoft.Bot.Sample.SimpleEchoBot
+namespace Airline.FlightTeamCreation.Web
 {
     [Serializable]
-    public class EchoDialog : IDialog<object>
+    public class RootDialog : IDialog<object>
     {
         protected int count = 1;
 

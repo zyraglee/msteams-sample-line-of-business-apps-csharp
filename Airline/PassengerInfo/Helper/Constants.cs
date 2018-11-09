@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ContosoAirline.Helper
+namespace Airline.PassengerInfo.Web.Helper
 {
     public class Constants
     {

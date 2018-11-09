@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using ContosoAirline.Helper;
-using ContosoAirline.Model;
-using ContosoAirline.Repository;
+using Airline.PassengerInfo.Web.Helper;
+using Airline.PassengerInfo.Web.Model;
+using Airline.PassengerInfo.Web.Repository;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
@@ -30,7 +30,7 @@ namespace Airline.PassengerInfo.Web.Controllers
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new EchoDialog());
+                await Conversation.SendAsync(activity, () => new RootDialog());
             }
             else if (activity.Type == ActivityTypes.Invoke) // Received an invoke
             {

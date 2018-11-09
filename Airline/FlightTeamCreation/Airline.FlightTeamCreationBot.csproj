@@ -15,8 +15,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimpleEchoBot</RootNamespace>
-    <AssemblyName>SimpleEchoBot</AssemblyName>
+    <RootNamespace>Airline.FlightTeamCreation.Web</RootNamespace>
+    <AssemblyName>Airline.FlightTeamCreation.Web</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -78,25 +78,20 @@
       <HintPath>..\..\packages\Microsoft.Azure.KeyVault.Core.3.0.0\lib\net452\Microsoft.Azure.KeyVault.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Bot.Builder, Version=3.15.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bot.Builder.3.15.3\lib\net46\Microsoft.Bot.Builder.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bot.Builder, Version=3.17.0.42969, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Builder.3.17.0.42969\lib\net46\Microsoft.Bot.Builder.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bot.Builder.Autofac, Version=3.15.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bot.Builder.3.15.3\lib\net46\Microsoft.Bot.Builder.Autofac.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bot.Builder.Autofac, Version=3.17.0.42969, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Builder.3.17.0.42969\lib\net46\Microsoft.Bot.Builder.Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bot.Builder.Azure, Version=3.15.2.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bot.Builder.Azure.3.15.2.2\lib\net46\Microsoft.Bot.Builder.Azure.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bot.Builder.Azure, Version=3.16.3.40383, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Builder.Azure.3.16.3.40383\lib\net46\Microsoft.Bot.Builder.Azure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bot.Builder.History, Version=3.15.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bot.Builder.History.3.15.3\lib\net46\Microsoft.Bot.Builder.History.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bot.Builder.History, Version=3.16.1.38846, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Builder.History.3.16.1.38846\lib\net46\Microsoft.Bot.Builder.History.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bot.Connector, Version=3.15.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Bot.Connector.3.15.3\lib\net46\Microsoft.Bot.Connector.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Bot.Connector, Version=3.17.0.42969, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Connector.3.17.0.42969\lib\net46\Microsoft.Bot.Connector.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bot.Connector.Teams, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bot.Connector.Teams.0.9.0\lib\net46\Microsoft.Bot.Connector.Teams.dll</HintPath>
@@ -250,6 +245,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
+    <Content Include="Manifest\Admin.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -272,6 +268,8 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Manifest\Flight Team Creation App Manifest.zip" />
+    <Content Include="Manifest\manifest.json" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -301,7 +299,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\EchoDialog.cs" />
+    <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -343,7 +341,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Manifest\" />
     <Folder Include="Views\Authentication\" />
   </ItemGroup>
   <ItemGroup>

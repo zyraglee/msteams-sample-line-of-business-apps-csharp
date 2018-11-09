@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using ContosoAirline.Model;
-using ContosoAirline.Repository;
+using Airline.PassengerInfo.Web.Model;
+using Airline.PassengerInfo.Web.Repository;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
