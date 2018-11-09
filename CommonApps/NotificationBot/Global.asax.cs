@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 
-namespace SimpleEchoBot
+namespace Common.NotificationBot
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

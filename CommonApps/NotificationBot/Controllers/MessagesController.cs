@@ -1,14 +1,12 @@
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Teams;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs;
 using System.Web.Http.Description;
-using System.Net.Http;
-using System;
-using Microsoft.Bot.Connector.Teams;
 
-namespace Microsoft.Bot.Sample.SimpleEchoBot
+namespace Common.NotificationBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
