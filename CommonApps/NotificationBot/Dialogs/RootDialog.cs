@@ -1,16 +1,14 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs;
-using System.Net.Http;
-using Microsoft.Bot.Connector.Teams.Models;
-using System.Collections.Generic;
-using SimpleEchoBot.Models;
 using AdaptiveCards;
+using Common.NotificationBot.Models;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
+using Microsoft.Bot.Connector.Teams.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Microsoft.Bot.Sample.SimpleEchoBot
+namespace Common.NotificationBot
 {
     [Serializable]
     public class RootDialog : IDialog<object>
