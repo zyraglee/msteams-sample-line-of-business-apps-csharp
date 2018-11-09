@@ -10,7 +10,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Optimization;
 
-namespace SimpleEchoBot
+namespace Airline.FlightTeamCreation.Web
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

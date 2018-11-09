@@ -1,22 +1,22 @@
 ﻿{
-  "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.0",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.3/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.3",
   "version": "1.0.0",
   "id": "bcae082d-24e5-4f85-8b0b-07471c2619d7",
   "packageName": "com.airline.airpass",
   "developer": {
-    "name": "AirPASS developer",
+    "name": "Airline Company",
     "websiteUrl": "https://www.microsoft.com",
     "privacyUrl": "https://www.microsoft.com/privacy",
     "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
   },
   "name": {
-    "short": "AirPASS",
-    "full": "This is an app for an AirPASS"
+    "short": "PassengerInfo",
+    "full": "This is an app which queries Passenger Information for a flight"
   },
   "description": {
-    "short": "This is an airline app",
-    "full": "This is an airline app whic allows you to search for passengers in bot and compose extension."
+    "short": "This is a Passenger Information app",
+    "full": "This is an app to search for passenger information using a bot and compose extension."
   },
   "icons": {
     "outline": "airpass20x20.png",

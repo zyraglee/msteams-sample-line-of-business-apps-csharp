@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace ContosoAirline.Repository
+namespace Airline.PassengerInfo.Web.Repository
 {
     public static class DocumentDBRepository<T> where T : class
     {

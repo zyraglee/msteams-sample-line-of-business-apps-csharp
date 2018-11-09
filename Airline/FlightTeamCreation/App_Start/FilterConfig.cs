@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SimpleEchoBot
+namespace Airline.FlightTeamCreation.Web
 {
     public class FilterConfig
     {
