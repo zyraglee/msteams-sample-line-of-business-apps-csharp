@@ -276,7 +276,6 @@
   <ItemGroup>
     <Folder Include="FeedBack\" />
     <Folder Include="Files\" />
-    <Folder Include="ProfilePhotos\" />
     <Folder Include="Static\" />
   </ItemGroup>
   <ItemGroup>
