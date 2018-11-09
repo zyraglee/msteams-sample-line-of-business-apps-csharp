@@ -80,10 +80,10 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                 else if (activity.Type == ActivityTypes.Message)
                 {
                     ConnectorClient connector1 = new ConnectorClient(new Uri(activity.ServiceUrl));
-                    Activity reply = activity.CreateReply($"You sent {activity.Text} which was {activity.Text.Length} characters");
+                    Activity reply = activity.CreateReply($"You sent {activity.Text} which was {activity.Text.Length} characters.");
 
                     var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(reply);
-                    Activity updatedReply = activity.CreateReply($"This is an updated message");
+                    Activity updatedReply = activity.CreateReply($"This is an updated message.");
                     await connector.Conversations.UpdateActivityAsync(reply.Conversation.Id, msgToUpdate.Id, updatedReply);
                 }
               
@@ -155,12 +155,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             }
             else
             {
-                replyActivity.Text = $"Products not avilibile for selected Industry.";
+                replyActivity.Text = $"Products not avilibile for selected industry.";
             }
         }
         private static async Task AttachNewStock(Activity replyActivity)
         {
-            replyActivity.Text = "Thanks for your request. The procurement team has been notified of your request" ;
+            replyActivity.Text = "Thanks for your request. The procurement team has been notified of your request." ;
         }
 
         private static async Task AddItems(InventoryInputDetails itemcount, Activity replyActivity)
@@ -244,7 +244,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                             }
                             else
                             {
-                                replyActivity.Text = "Items are not availbile";
+                                replyActivity.Text = "Items are not available.";
                             }
                         }
                     }
@@ -341,7 +341,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
             //Cities obj4 = new Cities();
             //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston";
+            //obj4.CityName = "Boston, MA";
             //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
             //Cities obj5 = new Cities();
             //obj5.CityCode = "JFK";

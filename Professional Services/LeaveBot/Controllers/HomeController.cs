@@ -98,6 +98,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             }
         }
 
+
         [Route("first")]
         public ActionResult First()
         {

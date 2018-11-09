@@ -73,7 +73,7 @@ namespace Airline.PassengerInfo.Web.Controllers
             switch (o365CardQuery.ActionId)
             {
                 case Constants.All:
-                    await AttachAllPassengerList(replyActivity, "All passengers List");
+                    await AttachAllPassengerList(replyActivity, "All passengers");
                     break;
                 case Constants.ClassWise:
                     var classInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
@@ -81,17 +81,17 @@ namespace Airline.PassengerInfo.Web.Controllers
                     break;
                 case Constants.Zone:
                     var zoneInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                    await AttachZoneWisePassengerList(zoneInfo.Value, replyActivity, $"Passengers who belongs to Zone {zoneInfo.Value}");
+                    await AttachZoneWisePassengerList(zoneInfo.Value, replyActivity, $"Passengers who belongs to zone {zoneInfo.Value}");
                     break;
                 case Constants.FrequentFlyer:
-                    await AttachFrequentFlyerPassengerList(replyActivity, "Frequent Flyer passengers list");
+                    await AttachFrequentFlyerPassengerList(replyActivity, "Frequent flyer passengers");
                     break;
                 case Constants.SeatNumber:
                     var seatNo = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
                     await AttachPassengerOnSpecifiedSeat(seatNo.Value, replyActivity);
                     break;
                 case Constants.SpecialAssistance:
-                    await AttachPassengerWhoNeedSpecialAssistance(replyActivity, "Passengers who needs special assistance");
+                    await AttachPassengerWhoNeedSpecialAssistance(replyActivity, "Passengers who need special assistance");
                     break;
                 default:
                     break;
@@ -113,7 +113,7 @@ namespace Airline.PassengerInfo.Web.Controllers
             var passengers = await DocumentDBRepository<Passenger>.GetItemsAsync(d => d.Seat == seatNo);
             if (passengers.Count() == 0)
             {
-                replyActivity.Text = $"Passenger with Seat Number {seatNo} does not exists.";
+                replyActivity.Text = $"Passenger with seat number {seatNo} does not exist.";
             }
             else
             {
