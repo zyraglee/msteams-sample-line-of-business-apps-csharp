@@ -239,15 +239,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="EchoBot.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\Constants.cs" />
     <Compile Include="Helper\ExcelHelper.cs" />
-    <Compile Include="Helper\SimpleGraphClient.cs" />
-    <Compile Include="MessageExtension.cs" />
     <Compile Include="Models\NewSurveyDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\DocumentDBRepository.cs" />
@@ -258,7 +255,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Manifest\Polling bot icon.png" />
-    <Content Include="Scripts\teamsapp.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -274,8 +270,10 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Dialogs\" />
     <Folder Include="FeedBack\" />
     <Folder Include="Files\" />
+    <Folder Include="Scripts\" />
     <Folder Include="Static\" />
   </ItemGroup>
   <ItemGroup>
