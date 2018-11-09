@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
+namespace ProfessionalServices.LeaveBot.Models
 {
     public class LeaveDetails
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Linq;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
+namespace ProfessionalServices.LeaveBot.Models
 {
 
     public class Employee

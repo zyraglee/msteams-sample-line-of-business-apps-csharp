@@ -1,13 +1,13 @@
 ﻿using AdaptiveCards;
 using Microsoft.Bot.Connector;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
+using ProfessionalServices.LeaveBot.Helper;
+using ProfessionalServices.LeaveBot.Helpers;
+using ProfessionalServices.LeaveBot.Models;
 using System;
 using System.Collections.Generic;
 using TaskModule;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace ProfessionalServices.LeaveBot
 {
     public class EchoBot
     {

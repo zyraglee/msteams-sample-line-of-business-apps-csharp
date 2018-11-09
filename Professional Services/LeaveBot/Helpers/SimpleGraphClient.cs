@@ -3,7 +3,7 @@ using System;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
+namespace ProfessionalServices.LeaveBot.Helpers
 {
     public class SimpleGraphClient
     {

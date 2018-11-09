@@ -3,10 +3,10 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 using Microsoft.Graph;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-using Microsoft.Teams.Samples.HelloWorld.Web.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using ProfessionalServices.LeaveBot.Helper;
+using ProfessionalServices.LeaveBot.Helpers;
+using ProfessionalServices.LeaveBot.Models;
+using ProfessionalServices.LeaveBot.Repository;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
+namespace ProfessionalServices.LeaveBot.Dialogs
 {
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             var activity = await result as Activity;
             string message = string.Empty;
             if (activity.Text != null)
-                message = Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant();
+                message = Microsoft.Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant();
             string userEmailId = string.Empty;
 
             string emailKey = GetEmailKey(activity);
@@ -583,7 +583,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             else
             {
                 // Get the Activity Message as well as activity.value in case of Auto closing of pop-up
-                string input = activity.Type == ActivityTypes.Message ? Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity)
+                string input = activity.Type == ActivityTypes.Message ? Microsoft.Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity)
                                                                 : ((dynamic)(activity.Value)).state.ToString();
                 if (!string.IsNullOrEmpty(input))
                 {
@@ -688,7 +688,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
             await context.PostAsync($"We have cleared everything related to you.");
         }
 
-        public static async Task<string> SendNotification(IDialogContext context, string userOrChannelId, string messageText, Bot.Connector.Attachment attachment, string updateMessageId, bool isChannelMessage)
+        public static async Task<string> SendNotification(IDialogContext context, string userOrChannelId, string messageText, Microsoft.Bot.Connector.Attachment attachment, string updateMessageId, bool isChannelMessage)
         {
             var userId = userOrChannelId.Trim();
             var botId = context.Activity.Recipient.Id;
@@ -743,7 +743,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Dialogs
         }
 
 
-        private static async Task<string> SendChannelNotification(IDialogContext context, string channelId, string messageText, Bot.Connector.Attachment attachment, Employee employee, string updateMessageId, string channleConversationId, bool addAtMention)
+        private static async Task<string> SendChannelNotification(IDialogContext context, string channelId, string messageText, Microsoft.Bot.Connector.Attachment attachment, Employee employee, string updateMessageId, string channleConversationId, bool addAtMention)
         {
             var connectorClient = new ConnectorClient(new Uri(context.Activity.ServiceUrl));
             try

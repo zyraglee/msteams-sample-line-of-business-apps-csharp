@@ -3,7 +3,7 @@ using Microsoft.Bot.Connector;
 using System;
 using System.IO;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helpers
+namespace ProfessionalServices.LeaveBot.Helpers
 {
     /// <summary>
     ///  Helper class which posts to the saved channel every 20 seconds.
