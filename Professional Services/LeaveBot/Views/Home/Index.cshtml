@@ -2,6 +2,8 @@
 @*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
 @using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
 @using Microsoft.Teams.Samples.HelloWorld.Web;
+@{var myId = 0;}
+@{var showlength = 5;}
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -20,20 +22,19 @@
         body {
             font-size: 25px;
             font-family: 'Times New Roman', Times, serif;
+            background-color: white;
         }
 
         .vl {
             border-width: -50px;
             opacity: 0.2;
-            border-left: 1px solid black;
+            border-left: 3px solid #A9A9A9;
             height: 100%;
             position: absolute;
             left: 29%;
             margin-left: -3px;
             top: 0;
         }
-
-
 
         .split-left {
             height: 100%;
@@ -53,10 +54,12 @@
             position: fixed;
             z-index: 1;
             top: 0;
+            font-size: 8px;
             overflow-x: hidden;
             padding-top: 20px;
             right: 0;
         }
+
 
         table {
             width: 100%;
@@ -66,6 +69,7 @@
             border-left: none;
             border-right: none;
             font-size: 14px;
+            font-family: 'Segoe UI';
         }
 
         .no td {
@@ -74,7 +78,7 @@
         }
 
         th, td {
-            padding: 10px;
+            padding: 8px;
         }
 
         th {
@@ -87,41 +91,45 @@
         }
 
         .centered img {
-            width: 100px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             float: left;
         }
 
         .heading {
+            padding-right: 10px;
             background-color: white;
-            padding: 15px 10px;
-            border-bottom: 1px black
+            border-bottom: 1px black;
+            padding-left: 10px;
         }
 
         .body {
             background-color: #f5f5f5;
-            padding: 8px;
+            padding: 7px;
         }
 
         .panel-group {
-            width: 90%;
+            width: 92%;
             opacity: 1.5;
+            padding-top: 8px;
             border: 10px solid transparent;
             display: block;
-            margin: 10 auto;
             border: 1px solid transparent;
-            border-top: 4px solid green;
+            border-top: 2.5px solid #237B4B;
+            box-shadow: 0 0 8px 0 #D3D3D3;
         }
 
         .panel-group2 {
-            width: 90%;
-            opacity: 3.6;
+            width: 92%;
             opacity: 1.5;
+            padding-top: 8px;
             border: 10px solid transparent;
             display: block;
-            margin: 10 auto;
+            font-family: 'Segoe UI';
+            box-shadow: 0 0 8px 0 rgba(37,36,36,0.3);
             border: 1px solid transparent;
-            border-top: 4px solid purple;
+            border-top: 2.5px solid #6264A7;
         }
 
         .dot {
@@ -133,11 +141,27 @@
             float: left;
         }
 
-        .boxed {
-            border: 1px solid rgba(0,0,0,.15);
-            font-size: 14px;
-            padding: 1px;
+        .dot1 {
+            height: 5px;
+            width: 5px;
+            background-color: mediumpurple;
+            border-radius: 50%;
+            display: inline-block;
         }
+
+        .rectangle-10-copy {
+            height: 1px;
+            width: 100%;
+            background-color: rgba(37,36,36,0.15);
+        }
+
+        /*.boxed {
+            border: 1px solid rgba(0,0,0,.08);
+            font-size: 10px;
+            padding: -10px;
+            opacity: 0.5;
+            background-color: rgba(37,36,36,0.15);
+        }*/
 
         .colored {
             border: 1px solid goldenrod;
@@ -152,13 +176,37 @@
         }
 
         .vb {
-            padding-top: 20px;
-            padding-left: 120px;
+            padding-top: 2px;
+            padding-left: 110px;
         }
 
         .vls {
             padding-top: 5px;
             padding-left: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .rect {
+            /*display: block;
+            margin: 0 auto;*/
+            height: 32px;
+            width: 120px;
+            color: white;
+            border: 1px solid rgba(37,36,36,0.15);
+            border-radius: 2px;
+            background-color: #6264A7;
+            box-shadow: 0 2px 4px -0.75px rgba(0,0,0,0.1);
+            font-family: "Segoe UI";
+            font-size: 14px;
+        }
+
+        .big {
+            height: 20px;
+            width: 85px;
+            color: #6264A7;
+            font-family: "Segoe UI";
+            font-size: 14px;
+            line-height: 20px;
         }
     </style>
 </head>
@@ -197,8 +245,8 @@
                 completionBotId: null,
             };
             taskInfo.title = "Apply For Leave";
-            taskInfo.height = 330;
-            taskInfo.width = 550;
+            taskInfo.height = 500;
+            taskInfo.width = 600;
             taskInfo.card = taskInfo.card = {
                 contentType: "application/vnd.microsoft.card.adaptive",
                 content: getAdaptiveCard()};
@@ -206,6 +254,31 @@
             taskInfo.completionBotId = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.AppId";
             microsoftTeams.tasks.startTask(taskInfo, submitHandler);
         }
+        //$(function () {
+        //    $("tr").slice(0, 4).show(); // select the first ten
+        //    $("#load").click(function (e) { // click event for load more
+        //        e.preventDefault();
+        //        $("tr:hidden").slice(0, 10).show(); // select next 10 hidden divs and show them
+        //        if ($("tr:hidden").length == 0) { // check if any hidden divs still exist
+        //            alert("No more data"); // alert if there are none left
+        //        }
+        //    });
+        //});
+
+        function myFunction(count) {
+            for (var id = @showlength; id < count; id++) {
+                var x = document.getElementById(id);
+                if (x.style.display === "none") {
+                    x.style.display = "table-row";
+                    //document.getElementById('load') = LoadLess;
+                } else {
+                    x.style.display = "none";
+                    //document.getElementById('load') = LoadLess;
+                }
+            }
+            document.getElementById('load').style.display = "none";
+        }
+
     </script>
 
 
@@ -214,77 +287,94 @@
         <div>
             <div class="split-left">
                 <div>
+
                     <div class="centered">
 
-                        <img src=@Model.Item1.PhotoPath @*alt=@Model.Item1.Name @*hspace="15"*@ ;>
+                        <img src=@Model.Item1.PhotoPath hspace="20" style="box-shadow:0 0 10px 7px #D3D3D3" @*alt=@Model.Item1.Name *@>
                     </div>
+
+
                     <div class="vb">
-                        <span style="font-size:20px"><b>@Model.Item1.DisplayName</b></span><br />
-                        @*<br />Sr Software Engineer<br />*@
-                        <span><b>@Model.Item1.Totalleaves</b></span><span style="opacity:0.5"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="opacity:0.5"> months</span><br /><br /><br />
-                        @*<input style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" type="submit" onclick="submit('adaptivecard');" value="Apply Leave" />*@
-                        <button style="display:block;margin:0 auto;background-color:blueviolet;color:white;border:1px solid bluviolet" onclick="submit('adaptivecard');">Apply Leave</button>
-                    </div>
+                        <span style="height: 20px;	width: 113px;	color: #252424;	font-family: Helvetica;	font-size: 18px;	font-weight: bold;	line-height: 20px;"><b>@Model.Item1.DisplayName</b></span><br />
+                        <span style="height: 16px;width: 66px;color: #252424;	font-family:'Segoe UI';font-size: 12px;line-height: 16px;">@(@Model.Item1.JobTitle?? @Model.Item1.EmailId)</span><br />
+                        <span><b>@Model.Item1.Totalleaves</b></span><span style="height: 16px;	width: 65px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;line-height: 16px;"> days OOF in </span><span><b>@DateTime.Now.ToString("MM")</b></span><span style="height: 16px;	width: 41px;	color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';	font-size: 12px;	line-height: 16px;"> months</span><br /><br /><br />
+                        <span><button class="rect" onclick="submit('adaptivecard');">Apply Leave</button></span>
+                    </div> <br />
+
+
+
                 </div>
                 <br />
                 <br />
-                <div>
-                    <p style="font-size:15px">Notifications</p>
+
+
+
+                <p style="font-size:15px;height:24px;width:90px;font-family:'Segoe UI';padding-left:7px;">Notifications</p>
+                <div style="padding-left:10px">
                     <div class="panel-group">
                         <div class="heading">
                             <div class="cent">
                                 <span class="dot"><img class="dot" src=@Model.Item1.PhotoPath /></span>
                             </div>
                             <div class="vls">
-                                @Model.Item1.ManagerName has approved your Leave<br /><span style="opacity:0.7;text-align:center;">Enjoy</span>
+                                <span style="height: 40px;	width: 196px;	color: #252424;	font-family: Helvetica;	font-size: 13px;	line-height: 12px;">  @Model.Item1.ManagerName has approved your Leave<br /></span>
+                                <span style="height: 16px;	width: 18px;	color: rgba(37,36,36,0.65);	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Enjoy</span>
                             </div>
                         </div>
                         <br />
-                        <div class="body"><span class="glyphicon glyphicon-envelope"></span> <span><a href="https://teams.microsoft.com/_#/conversations/8:orgid:@Model.Item1.AzureADId?ctx=chat" target="_blank">Chat with @Model.Item1.ManagerName</a></span></div>
+
+                        <div class="body"><img src="~/Resources/msg.PNG" /> <span><a style="color:#6264A7" href="https://teams.microsoft.com/_#/conversations/8:orgid:@Model.Item1.AzureADId?ctx=chat" target="_blank">Chat with @Model.Item1.ManagerName</a></span></div>
                     </div>
                 </div>
 
-                <div>
+                <div style="padding-left:10px;">
                     <div class="panel-group2">
                         <div class="heading">
                             <div>
-
-                                <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
+                                <div class="cent">
+                                    <span class="dot" hspace="20"><img class="dot" src=~/Resources/color.png /></span>
+                                </div>
                                 <div class="vls">
-                                    Leave Bot<br /><span style="opacity:0.7">Tip</span>
+                                    <span style="height: 40px;	width: 170px;	color: #252424;	font-family: Helvetica;	font-size: 13px;">Leave Bot<br /></span><span style="height: 16px;	width: 18px;	color: rgba(37,36,36,0.65);	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Tip</span>
                                 </div>
                             </div>
                             <br />
                             <br />
-
-
-                            You can Utilise the carried over leaves from last year for you recently applied Leave...
-
+                            <span style="font-family: Helvetica;font-size:12px;color: #252424;height:40px;width:196px;">You can Utilise the carried over leaves from last year for you recently applied Leave...</span>
+                            <br />
+                            <br />
                         </div>
-                        <div class="body"> @*<span><a href="#">Change Leave type</a></span>*@</div>
+                        @*<div class="body">*@ @*<span><a href="#">Change Leave type</a></span@*></div>*@
                     </div>
                 </div>
                 <br />
-                <br />
 
-                <div class="panel-group2">
-                    <div class="heading">
-                        <div>
-                            <span class="dot" hspace="20"><img class="dot" src=https://leavebotdemo.azurewebsites.net/resources/leaveicon.png /></span>
-                            <div class="vls">Leave Bot<br /></div>
+                <div style="padding-left:10px;">
+                    <div class="panel-group2">
+                        <div class="heading">
+                            <div>
+                                <div class="cent">
+                                    <span class="dot" hspace="20"><img class="dot" src=~/Resources/color.png /></span>
+                                </div>
+
+                                <div class="vls"><span style="height: 40px;	width: 170px;	color: #252424;	font-family: Helvetica;	font-size: 13px;">Leave Bot</span><br /></div>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
+                            {
+                                if (item.Date > DateTime.Now)
+                                {
+                                    <span style="font-family:Helvetica;font-size:12px;color: #252424;height:40px;width:196px;">Upcoming holiday is @item.Title on @item.Date.Day.@item.Date.Month.@item.Date.Year</span>
+                                    break;
+                                }
+                            }
+                            <br />
+                            <br />
                         </div>
                     </div>
-                    <br />
-                    @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
-                    {
-                        if (item.Date.Day > DateTime.Now.Day)
-                        {
-                            <span>Upcoming holiday is @item.Title on @item.Date.Day.@item.Date.Month.@item.Date.Year</span>
-                            break;
-                        }
-                    }
                 </div>
-
 
             </div>
             <div class="vl"></div>
@@ -294,19 +384,19 @@
 
                     if (Model.Item3.Count > 0)
                     {
-                        <p style="font-weight:700;font-size:14px;"> Pending Requests</p>
-                        <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                        <p style="height: 24px;	color: #252424;	font-family:'Segoe UI';	font-size: 16px;line-height: 24px;"> Pending Requests</p>
+                        <p class="rectangle-10-copy"></p>
                         <table rules="rows">
                             <tbody>
                                 @foreach (var item in Model.Item3)
                                 {
                                     <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
-                                        <td><b style="font-weight:300px">@item.ResourceName</b></td>
+                                        <td><span style="height: 19px;	width: 72px;color: #252424;	font-family:'Segoe UI';	font-size: 14px;line-height: 19px;">@item.ResourceName</span></td>
                                         <td>
                                             @item.mgrstartDay, @item.mgrStartDateval-@item.mgrEndDay, @item.mgrEndDateVal, @item.EndDate.Date.Year <br />
                                             <br />
-                                            <span style="color:mediumpurple"> @item.LeaveType  </span> <br />
-                                            <span style="font-size:small"> @item.EmployeeComment</span>
+                                            <span style="color:#6462A7"> @item.LeaveType  </span><span class="dot1"></span>
+                                            <span style="font-size:small;line-height:12px;"> @item.EmployeeComment</span>
 
                                         </td>
                                         <td>
@@ -331,31 +421,29 @@
                     }
                     else
                     {
-                        <p style="font-weight:700;font-size:14px;"> No Pending requests</p>
+                        <p style="height: 24px;	color: #252424;	font-family:'Segoe UI';	font-size: 16px;line-height: 24px;font-weight:bold">No Pending requests </p>
                     }
                 }
                 <br />
-                <br />
-
-
-                <p style="font-weight:700;font-size:14px;"> Balance Status</p>
-                <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                <p style="height: 24px;	color: #252424;	font-family:'Segoe UI';	font-size: 16px;line-height: 24px;">Balance status</p>
+                <p class="rectangle-10-copy"></p>
                 <table rules="rows" cellpadding="10">
 
-                    <tr style="opacity:0.5;border-bottom:1px solid rgba(255,255,255)">
-                        <th>Type</th>
-                        <th>Remaining</th>
-                        <th>Used</th>
-                        <th>Allowance</th>
+                    <tr>
+                        <th style="height: 16px;width: 26px;color: rgba(37,36,36,0.65);	font-family:'Segoe UI';	font-size: 12px;	line-height: 16px;">Type</th>
+                        <th style="height: 16px;width: 57px;color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;	line-height: 16px;">Remaining</th>
+                        <th style="height: 16px;width: 27px;color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;	line-height: 16px;">Used</th>
+                        <th style="height: 16px;width: 54px;color: rgba(37,36,36,0.65);	font-family: 'Segoe UI';font-size: 12px;	line-height: 16px;">Allowance</th>
                         <th> </th>
                     </tr>
 
                     <tr>
-                        <td><b style="font-weight:300px">Paid Leave<b></td>
+                        <td><span style="height: 19px;	width: 72px;color: #252424;	font-family: 'Segoe UI';	font-size: 14px;	line-height: 19px;">Paid Leaves</span></td>
 
                         @if (Model.Item2 != null)
                         {
                             int totalleaves = 0;
+                            string Lastused = null;
 
                             foreach (var item in Model.Item2)
                             {
@@ -364,13 +452,25 @@
                                     totalleaves = item.DaysDiff;
 
                                 }
+                                if (item.EndDate != null)
+                                {
+                                    Lastused = item.EndDate.Date.ToString("MMM");
+                                }
 
                             }
-                            <td style="color:purple">@(Model.Item1.LeaveBalance.PaidLeave - totalleaves)</td>
+                            <td style="color:#6462A7">@(Model.Item1.LeaveBalance.PaidLeave - totalleaves)</td>
                             <td style="color:red">@totalleaves</td>
                             <td>@Model.Item1.LeaveBalance.PaidLeave</td>
-                            <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
+                            if (Lastused != null)
+                            {
+                                <td style="height: 16px;width: 101px;color: rgba(37,36,36,0.75);font-family: 'Segoe UI';font-size: 12px;font-style: italic;	line-height: 16px;">Last Used in @Lastused</td>
+                            }
+                            else
+                            {
+                                <td>-</td>
+                            }
                         }
+
 
 
 
@@ -379,63 +479,90 @@
                     </tr>
 
                     <tr>
-                        <td><b>Sick Leaves</b></td>
+                        <td><span style="height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">Sick Leaves</span></td>
                         @if (Model.Item2 != null)
                         {
                             int totalleaves = 0;
-
+                            string Lastused = null;
                             foreach (var item in Model.Item2)
                             {
                                 if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.SickLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
                                 }
+                                if (item.EndDate != null)
+                                {
+                                    Lastused = item.EndDate.Date.ToString("MMM");
+                                }
 
                             }
-                            <td style="color:purple">@(Model.Item1.LeaveBalance.SickLeave - totalleaves)</td>
+                            <td style="color:#6462A7">@(Model.Item1.LeaveBalance.SickLeave - totalleaves)</td>
                             <td style="color:red">@totalleaves</td>
                             <td>@Model.Item1.LeaveBalance.SickLeave</td>
-                            <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
+                            if (Lastused != null)
+                            {
+                                <td style="height: 16px;width: 101px;color: rgba(37,36,36,0.75);font-family: 'Segoe UI';font-size: 12px;font-style: italic;	line-height: 16px;">Last Used in @Lastused</td>
+                            }
+                            else
+                            {
+                                <td>-</td>
+                            }
                         }
 
 
                     </tr>
                     <tr>
-                        <td><b>Carried over from last year<br /></b><span style="font-size:13px;">Recommended to utilise for vacations</span></td>
+                        <td>
+                            <span style="height: 19px;width: 72px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">Carried over from last year<br /></span>
+                            <span style="height: 16px;width: 200px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;line-height: 16px;">Recommended to utilise for vacations</span>
+                        </td>
                         @if (Model.Item2 != null)
                         {
                             int totalleaves = 0;
+                            string Lastused = null;
                             foreach (var item in Model.Item2)
                             {
                                 if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
                                 }
+                                if (item.EndDate != null && item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                {
+
+                                    Lastused = item.EndDate.Date.ToString("MMM");
+                                }
 
                             }
-                            <td style="color:purple">@(Model.Item1.LeaveBalance.CarriedLeave - totalleaves)</td>
+                            <td style="color:#6462A7">@(Model.Item1.LeaveBalance.CarriedLeave - totalleaves)</td>
                             <td style="color:red">@totalleaves</td>
                             <td>@Model.Item1.LeaveBalance.CarriedLeave</td>
-                            <td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">-</td>
+                            if (Lastused != null)
+                            {
+                                <td style="height: 16px;width: 101px;color: rgba(37,36,36,0.75);font-family: 'Segoe UI';font-size: 12px;font-style: italic;	line-height: 16px;">Last Used in @Lastused</td>
+                            }
+                            else
+                            {
+                                <td>-</td>
+                            }
                         }
 
                         @*<td style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;opacity:0.3">Recently used this month</td>*@
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Maternity Leaves</td>
                         <td>@Model.Item1.LeaveBalance.MaternityLeave</td>
                         <td>0</td>
                         <td>0</td>
                         <td>-</td>
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Paternity Leaves</td>
                         <td>@Model.Item1.LeaveBalance.PaternityLeave</td>
                         <td>0</td>
                         <td>0</td>
                         <td>-</td>
                     </tr>
-                    <tr style="opacity:0.5">
+                    <tr style="opacity:0.5;height: 19px;width: 72px;color: #252424;	font-family: 'Segoe UI';font-size: 14px;line-height: 19px;">
                         <td>Caregiver Leaves</td>
                         <td>@Model.Item1.LeaveBalance.Caregiver</td>
                         <td>0</td>
@@ -447,99 +574,180 @@
                 <br />
                 <br />
 
-                <p style="font-weight:700;font-size:14px;"> Leave reports</p>
-                <p style="border-bottom:1px solid rgba(0,0,0,.15)"></p>
+                <span style="height: 24px;	width: 95px;color: #252424;	font-family:'Segoe UI';	font-size: 16px;line-height: 24px;"> Leave reports</span>
+                <p class="rectangle-10-copy"></p>
                 <table rules="rows">
                     <tbody>
                         @if (Model.Item2 != null)
                         {
-                            foreach (var item in Model.Item2)
-                            {
-                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15)">
-                                    <td>
-                                        @item.startDay, @item.StartDateval-@item.EndDay, @item.EndDateVal, @item.EndDate.Date.Year <br />
-                                        <br />
-                                        <span style="color:mediumpurple"> @item.LeaveType  </span> <span style="font-size:small"> @item.EmployeeComment</span>
 
-                                    </td>
-                                    <td>
-                                        @item.DaysDiff Days OOF
-                                    </td>
-                                    @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
-                                    {
-                                        <td style="color:forestgreen">Approved</td>
-                                        <td></td>
-                                        <td></td>
-                                    }
-                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
-                                    {
-                                        <td style="color:goldenrod">
 
-                                            @item.Status
+
+                            @*foreach (var item in Model.Item2)
+                                {
+                                    <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px" id="@myId">
+                                        <td>
+                                            @item.startDay, @item.StartDateval-@item.EndDay, @item.EndDateVal, @item.EndDate.Date.Year <br />
+
+                                            <span style="color:mediumpurple"> @item.LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @item.EmployeeComment</span>
+
                                         </td>
-                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><span class="glyphicon glyphicon-trash"></span></a></td>
-                                    }
-                                    else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                        <td>
+                                            @item.DaysDiff Days OOF
+                                        </td>
+                                        @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                        {
+                                            <td style="color:#92C353">Approved</td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                        {
+                                            <td style="color:#FFC312">
+
+                                                @item.Status
+                                            </td>
+                                            <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                            <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
+                                        }
+                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                        {
+                                            <td style="color:#C4314B">Declined</td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                    </tr>
+                                    myId++;
+                                }*@
+                            for (int index = 0; index < ((showlength > Model.Item2.Count) ? Model.Item2.Count : showlength); index++, myId++)
+                            {
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px;display :  table-row" id="@myId">
+                                    <td>
+                                        @Model.Item2[index].startDay, @Model.Item2[index].StartDateval-@Model.Item2[index].EndDay, @Model.Item2[index].EndDateVal, @Model.Item2[index].EndDate.Date.Year <br />
+
+                                        <span style="color:mediumpurple"> @Model.Item2[index].LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @Model.Item2[index].EmployeeComment</span>
+
+                                    </td>
+                                    <td>
+                                        @Model.Item2[index].DaysDiff Days OOF
+                                    </td>
+                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
                                     {
-                                        <td style="color:red">Declined</td>
+                                        <td style="color:#92C353">Approved</td>
                                         <td></td>
                                         <td></td>
                                     }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    {
+                                        <td style="color:#FFC312">
 
-
-
+                                            @Model.Item2[index].Status
+                                        </td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
+                                    }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    {
+                                        <td style="color:#C4314B">Declined</td>
+                                        <td></td>
+                                        <td></td>
+                                    }
                                 </tr>
 
                             }
+                            for (int index = showlength; index < Model.Item2.Count; index++, myId++)
+                            {
+                                <tr style="background-color:white;border-top:1px solid rgba(0,0,0,.15);line-height:35px;display : none" id="@myId">
+                                    <td>
+                                        @Model.Item2[index].startDay, @Model.Item2[index].StartDateval-@Model.Item2[index].EndDay, @Model.Item2[index].EndDateVal, @Model.Item2[index].EndDate.Date.Year <br />
+
+                                        <span style="color:mediumpurple"> @Model.Item2[index].LeaveType  </span><span class="dot1"></span> <span style="font-size:small"> @Model.Item2[index].EmployeeComment</span>
+
+                                    </td>
+                                    <td>
+                                        @Model.Item2[index].DaysDiff Days OOF
+                                    </td>
+                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                    {
+                                        <td style="color:#92C353">Approved</td>
+                                        <td></td>
+                                        <td></td>
+                                    }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    {
+                                        <td style="color:#FFC312">
+
+                                            @Model.Item2[index].Status
+                                        </td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
+                                    }
+                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    {
+                                        <td style="color:#C4314B">Declined</td>
+                                        <td></td>
+                                        <td></td>
+                                    }
+                                </tr>
+
+                            }
+
+
                         }
-                        else
-                        {
-                            <tr>
-                                <td>
-                                    Thu,Sep13-Mon,Sep17,2018<br />
-                                    <span style="color:mediumpurple">PL.</span><span style="font-size:small"> i am visiting home over the<br /> weekend.Will be available...></span>
-                                </td>
-                                <td style="opacity:0.5">2 days OOF</td>
-                                <td style="color:goldenrod">Pending</td>
-                                <td> <span class="glyphicon glyphicon-pencil"></span></td>
-                                <td> <span class="glyphicon glyphicon-trash"></span></td>
 
-                            </tr>
-                            <tr>
-                                <td>
-                                    Wed,Aug 1,2018<br />
-                                    <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
-                                </td>
-                                <td style="opacity:0.5">1 day OOF</td>
-                                <td style="color:forestgreen">Approved</td>
-                                <td> </td>
-                                <td> </td>
+                        @*else
+                            {
+                                    <tr>
+                                        <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                            >
+                                            Thu, Sep13-Mon,Sep17, 2018<br />
+                                            <span style="color:#6264A7;font-size:12px;">PL.</span><span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> i am visiting home over the<br /> weekend.Will be available...></span>
+                                        </td>
+                                        <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                        <td style="height: 16px;width: 44px;color: #FFC312;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Pending</td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
+                                        <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
 
-                            </tr>
-                            <tr>
-                                <td>
-                                    Mon,May4-Thu,May 7,,2018<br />
-                                    <span style="color:mediumpurple">SL.</span><span style="font-size:small"> Sickness</span>
-                                </td>
-                                <td style="opacity:0.5">2 days OOF</td>
-                                <td style="color:forestgreen">Pending</td>
-                                <td> </td>
-                                <td> </td>
+                                    </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        >
+                                        Wed, Aug 1, 2018<br />
+                                        <span style="color:mediumpurple">SL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">1 day OOF</td>
+                                    <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
+                                    <td> </td>
+                                    <td> </td>
 
-                            </tr>
-                            <tr>
-                                <td>
-                                    Fri,Apr 7-Mon,Apr 10,2018<br />
-                                    <span style="color:mediumpurple">PL.</span><span style="font-size:small"> Vacation</span>
-                                </td>
-                                <td style="opacity:0.5">2 days OOF</td>
-                                <td style="color:red">Declined</td>
-                                <td> </td>
-                                <td> </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        >
+                                        Mon, May4 - Thu, May 7,2018<br />
+                                        <span style="color:mediumpurple">SL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Sickness</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                    <td style="height: 16px;width: 53px;color: #92C353;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Approved</td>
+                                    <td> </td>
+                                    <td> </td>
 
-                            </tr>
-                        }
+                                </tr>
+                                <tr>
+                                    <td style="height: 20px;width: 204px;color: #252424;font-family: 'Segoe UI';font-size: 14px;line-height: 20px;">
+                                        Fri, Apr 7 - Mon, Apr 10, 2018<br />
+                                        <span style="color:mediumpurple">PL.</span>
+                                        <span style="height: 32px;width: 178px;color: rgba(37,36,36,0.75);font-family:'Segoe UI';font-size: 12px;line-height: 16px;"> Vacation</span>
+                                    </td>
+                                    <td style="height: 20px;color: rgba(37,36,36,0.75);	font-family:'Segoe UI';font-size: 12px;	line-height: 20px;">2 days OOF</td>
+                                    <td style="height: 16px;width: 47px;color: #C4314B;	font-family:'Segoe UI';	font-size: 12px;line-height: 16px;">Declined</td>
+                                    <td> </td>
+                                    <td> </td>
+
+                                </tr>
+                            }*@
 
 
                     </tbody>
@@ -549,6 +757,12 @@
 
 
                 </table>
+                @if (showlength < Model.Item2.Count)
+                {
+                    <a href="#" id="load" class="big" onclick="myFunction(@Model.Item2.Count)">Load More</a>
+                }
+                <br />
+                <br />
             </div>
         </div>
 
@@ -560,4 +774,3 @@
 </body>
 
 </html>
-

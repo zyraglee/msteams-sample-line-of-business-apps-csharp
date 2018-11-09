@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 {
@@ -46,7 +44,13 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
 
         [JsonProperty(PropertyName = "updateMessageInfo")]
         public UpdateMessageInfo UpdateMessageInfo { get; set; } = new UpdateMessageInfo();
-        
+
+        [JsonProperty(PropertyName = "channelId")]
+        public string ChannelId { get; set; }
+
+        [JsonProperty(PropertyName = "conversationId")]
+        public string ConversationId { get; set; }
+
     }
 
     public class UpdateMessageInfo
@@ -90,7 +94,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         MaternityLeave,
         PaternityLeave,
         Caregiver,
-        // Arun - Add types
     }
 
     public enum LeaveStatus
@@ -99,7 +102,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Models
         Approved,
         Rejected,
         Withdrawn
-        // Arun - Add types
     }
 
     public class LeaveExtended : LeaveDetails

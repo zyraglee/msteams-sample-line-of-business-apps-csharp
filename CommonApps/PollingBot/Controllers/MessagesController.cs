@@ -1,17 +1,14 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Dialogs;
 using Microsoft.Teams.Samples.HelloWorld.Web.Models;
 using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-
 namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
 {
     [BotAuthentication]
@@ -22,64 +19,32 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
         {
             if (activity != null && activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new RootDialog());
+                await Conversation.SendAsync(activity, () => new EchoBot());
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
-            }
-            else if (activity.Type == ActivityTypes.Invoke)
-            {
-                if (activity.Name == "signin/verifyState")
-                {
-                    await Conversation.SendAsync(activity, () => new RootDialog());
-                }
-                else
-                {
-                    return await HandleInvokeMessages(activity);
-                }
             }
             else
             {
                 await HandleSystemMessage(activity);
-
             }
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
-
-        private async Task<HttpResponseMessage> HandleInvokeMessages(Activity activity)
+        private async Task<string> GetUserEmailId(Activity activity)
         {
-            var activityValue = activity.Value.ToString();
-            if (activity.Name == "task/fetch")
-            {
-                var action = Newtonsoft.Json.JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<EditLeaveDetails>>(activityValue);
+            // Fetch the members in the current conversation
+            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Email;
+            
+        }
 
-                var leaveDetails = await DocumentDBRepository.GetItemAsync<LeaveDetails>(action.Data.Data.LeaveId);
+        private async Task<string> GetUserName(Activity activity)
+        {
+            // Fetch the members in the current conversation
+            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Name;
 
-                // TODO: Convert this to helpers once available.
-                JObject taskEnvelope = new JObject();
-
-                JObject taskObj = new JObject();
-                JObject taskInfo = new JObject();
-
-                taskObj["type"] = "continue";
-                taskObj["value"] = taskInfo;
-
-                taskInfo["card"] = JObject.FromObject(EchoBot.LeaveRequest(leaveDetails));
-                taskInfo["title"] = "Edit Leave";
-
-                taskInfo["height"] = 500;
-                taskInfo["width"] = 600;
-
-                taskEnvelope["task"] = taskObj;
-
-                return Request.CreateResponse(HttpStatusCode.OK, taskEnvelope);
-
-            }
-            else if (activity.Name == "task/submit")
-            {
-                activity.Name = Constants.EditLeave;
-                await Conversation.SendAsync(activity, () => new RootDialog());
-            }
-            return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
 
         private async Task<Activity> HandleSystemMessage(Activity message)
@@ -100,8 +65,23 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     if (message.MembersAdded[i].Id == message.Recipient.Id)
                     {
                         // Bot is added. Let's send welcome message.
-                        message.Text = "hi";
-                        await Conversation.SendAsync(message, () => new RootDialog());
+                        var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
+                        var user = new UserDetails();
+                        user.EmaildId = await GetUserEmailId(message);
+                        user.UserId = message.From.Id;
+                        user.UserName = await GetUserName(message);
+                        if(user.UserName!=null)
+                        {
+                            user.UserName = user.UserName.Split(' ').FirstOrDefault();
+                        }
+                        user.Type = Helper.Constants.NewUser;
+                        var NewUserRecord = await DocumentDBRepository.CreateItemAsync(user);
+                        ThumbnailCard card = EchoBot.GetWelcomeMessage();
+                        //ThumbnailCard card = EchoBot.GetHelpMessage();
+                        var reply = message.CreateReply();
+                        reply.TextFormat = TextFormatTypes.Xml;
+                        reply.Attachments.Add(card.ToAttachment());
+                        await connectorClient.Conversations.ReplyToActivityAsync(reply);
                         break;
                     }
                     else
@@ -111,7 +91,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                             var userId = message.MembersAdded[i].Id;
                             var channelData = message.GetChannelData<TeamsChannelData>();
                             var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
-
+                            var user = new UserDetails();
+                            user.EmaildId = await GetUserEmailId(message);
+                            user.UserId = message.From.Id;
                             var parameters = new ConversationParameters
                             {
                                 Members = new ChannelAccount[] { new ChannelAccount(userId) },
@@ -128,11 +110,12 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                             replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
                             replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
                             var name = message.MembersAdded[i].Name;
-                            if(name != null)
+                            if (name != null)
                             {
                                 name = name.Split(' ').First();
                             }
-                            replyMessage.Attachments.Add(EchoBot.WelcomeLeaveCard(name, false));
+                            ThumbnailCard card = EchoBot.GetWelcomeMessage();
+                            replyMessage.Attachments.Add(card.ToAttachment());
 
                             await connectorClient.Conversations.SendToConversationAsync((Activity)replyMessage);
                         }
@@ -153,7 +136,13 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 // Handle knowing tha the user is typing
             }
+            else if (message.Type == ActivityTypes.Ping)
+            {
+            }
+
             return null;
         }
+
+
     }
 }
