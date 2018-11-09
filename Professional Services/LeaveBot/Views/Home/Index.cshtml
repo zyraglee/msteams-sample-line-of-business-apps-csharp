@@ -1,7 +1,7 @@
-﻿@model Tuple<Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveExtended>, List<Microsoft.Teams.Samples.HelloWorld.Web.Models.ManagerDetails>>
-@*@model Microsoft.Teams.Samples.HelloWorld.Web.Models.Employee*@
-@using Microsoft.Teams.Samples.HelloWorld.Web.Helpers;
-@using Microsoft.Teams.Samples.HelloWorld.Web;
+﻿@model Tuple<ProfessionalServices.LeaveBot.Models.Employee, List<ProfessionalServices.LeaveBot.Models.LeaveExtended>, List<ProfessionalServices.LeaveBot.Models.ManagerDetails>>
+@*@model ProfessionalServices.LeaveBot.Models.Employee*@
+@using ProfessionalServices.LeaveBot.Helpers;
+@using ProfessionalServices.LeaveBot;
 @{var myId = 0;}
 @{var showlength = 5;}
 <!DOCTYPE html>
@@ -222,7 +222,7 @@
             microsoftTeams.initialize();
             microsoftTeams.getContext(function (context) {
                 context.userPrincipalName;
-                window.location = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.BaseUrl" + "/?Emailid=" + context.userPrincipalName;
+                window.location = "@ProfessionalServices.LeaveBot.Helper.ApplicationSettings.BaseUrl" + "/?Emailid=" + context.userPrincipalName;
 
             })
         }
@@ -251,7 +251,7 @@
                 contentType: "application/vnd.microsoft.card.adaptive",
                 content: getAdaptiveCard()};
 
-            taskInfo.completionBotId = "@Microsoft.Teams.Samples.HelloWorld.Web.Helper.ApplicationSettings.AppId";
+            taskInfo.completionBotId = "@ProfessionalServices.LeaveBot.Helper.ApplicationSettings.AppId";
             microsoftTeams.tasks.startTask(taskInfo, submitHandler);
         }
         //$(function () {
@@ -362,7 +362,7 @@
                             <br />
                             <br />
                             <br />
-                            @foreach (var item in Microsoft.Teams.Samples.HelloWorld.Web.Models.PublicHolidaysList.HolidayList)
+                            @foreach (var item in ProfessionalServices.LeaveBot.Models.PublicHolidaysList.HolidayList)
                             {
                                 if (item.Date > DateTime.Now)
                                 {
@@ -447,7 +447,7 @@
 
                             foreach (var item in Model.Item2)
                             {
-                                if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.PaidLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.LeaveType == ProfessionalServices.LeaveBot.Models.LeaveType.PaidLeave && item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
 
@@ -486,7 +486,7 @@
                             string Lastused = null;
                             foreach (var item in Model.Item2)
                             {
-                                if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.SickLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.LeaveType == ProfessionalServices.LeaveBot.Models.LeaveType.SickLeave && item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
                                 }
@@ -522,11 +522,11 @@
                             string Lastused = null;
                             foreach (var item in Model.Item2)
                             {
-                                if (item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.LeaveType == ProfessionalServices.LeaveBot.Models.LeaveType.CarriedLeave && item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                 {
                                     totalleaves = item.DaysDiff;
                                 }
-                                if (item.EndDate != null && item.LeaveType == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveType.CarriedLeave && item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                if (item.EndDate != null && item.LeaveType == ProfessionalServices.LeaveBot.Models.LeaveType.CarriedLeave && item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                 {
 
                                     Lastused = item.EndDate.Date.ToString("MMM");
@@ -595,13 +595,13 @@
                                         <td>
                                             @item.DaysDiff Days OOF
                                         </td>
-                                        @if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                        @if (item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                         {
                                             <td style="color:#92C353">Approved</td>
                                             <td></td>
                                             <td></td>
                                         }
-                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                        else if (item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Pending)
                                         {
                                             <td style="color:#FFC312">
 
@@ -610,7 +610,7 @@
                                             <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
                                             <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
                                         }
-                                        else if (item.Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                        else if (item.Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Rejected)
                                         {
                                             <td style="color:#C4314B">Declined</td>
                                             <td></td>
@@ -631,13 +631,13 @@
                                     <td>
                                         @Model.Item2[index].DaysDiff Days OOF
                                     </td>
-                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                    @if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                     {
                                         <td style="color:#92C353">Approved</td>
                                         <td></td>
                                         <td></td>
                                     }
-                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    else if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Pending)
                                     {
                                         <td style="color:#FFC312">
 
@@ -646,7 +646,7 @@
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
                                     }
-                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    else if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Rejected)
                                     {
                                         <td style="color:#C4314B">Declined</td>
                                         <td></td>
@@ -667,13 +667,13 @@
                                     <td>
                                         @Model.Item2[index].DaysDiff Days OOF
                                     </td>
-                                    @if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Approved)
+                                    @if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Approved)
                                     {
                                         <td style="color:#92C353">Approved</td>
                                         <td></td>
                                         <td></td>
                                     }
-                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Pending)
+                                    else if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Pending)
                                     {
                                         <td style="color:#FFC312">
 
@@ -682,7 +682,7 @@
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/pencil.PNG" /></a></td>
                                         <td> <a href="https://teams.microsoft.com/l/chat/0/0?users=28:@System.Web.Configuration.WebConfigurationManager.AppSettings["MicrosoftAppId"]" target="_blank"><img src="~/Resources/delete.PNG" /></a></td>
                                     }
-                                    else if (Model.Item2[index].Status == Microsoft.Teams.Samples.HelloWorld.Web.Models.LeaveStatus.Rejected)
+                                    else if (Model.Item2[index].Status == ProfessionalServices.LeaveBot.Models.LeaveStatus.Rejected)
                                     {
                                         <td style="color:#C4314B">Declined</td>
                                         <td></td>

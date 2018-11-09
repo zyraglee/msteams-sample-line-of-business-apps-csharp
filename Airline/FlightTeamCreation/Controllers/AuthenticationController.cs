@@ -1,16 +1,12 @@
-﻿//using Microsoft.Teams.TemplateBotCSharp.src.Models;
-//using Microsoft.Teams.TemplateBotCSharp.src.Services;
-using SimpleEchoBot.Models;
-using SimpleEchoBot.Repository;
+﻿using Airline.FlightTeamCreation.Web.Models;
+using Airline.FlightTeamCreation.Web.Repository;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace SimpleEchoBot.Controllers
+namespace Airline.FlightTeamCreation.Web.Controllers
 {
     public class AuthenticationController : ApiController
     {

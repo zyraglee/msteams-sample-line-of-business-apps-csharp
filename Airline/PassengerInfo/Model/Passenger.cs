@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ContosoAirline.Model
+namespace Airline.PassengerInfo.Web.Model
 {
     public class Passenger
     {

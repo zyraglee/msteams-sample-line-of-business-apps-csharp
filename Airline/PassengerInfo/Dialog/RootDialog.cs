@@ -7,14 +7,14 @@ using System.Net.Http;
 using Microsoft.Bot.Connector.Teams.Models;
 using Microsoft.Bot.Connector.Teams;
 using System.Collections.Generic;
-using ContosoAirline.Helper;
-using ContosoAirline.Repository;
-using ContosoAirline.Model;
+using Airline.PassengerInfo.Web.Helper;
+using Airline.PassengerInfo.Web.Repository;
+using Airline.PassengerInfo.Web.Model;
 
 namespace Airline.PassengerInfo.Web
 {
     [Serializable]
-    public class EchoDialog : IDialog<object>
+    public class RootDialog : IDialog<object>
     {
         public async Task StartAsync(IDialogContext context)
         {
@@ -48,62 +48,18 @@ namespace Airline.PassengerInfo.Web
             }
             else
             {
-                var messageText = message.Text.ToLower();
-                //if (messageText.Contains("hi") || messageText.Contains("hello") || messageText.Contains("help"))
-                {
-                    var reply = context.MakeMessage();
-                    reply.Attachments.Add(GetFilter());
+                var reply = context.MakeMessage();
+                reply.Attachments.Add(GetFilter());
 
-                    await context.PostAsync((reply));
-                    context.Wait(MessageReceivedAsync);
-                }
+                await context.PostAsync((reply));
+                context.Wait(MessageReceivedAsync);
             }
         }
 
         public Attachment GetFilter()
         {
 
-            //ThumbnailCard card2 = new ThumbnailCard
-            //{
-            //    Title = "Welcome to AirPASS",
-            //    Subtitle = "Your Passport to Airline Services from within Microsoft Teams",
-            //    Text = "Use AirPass bot to do the following:\n<ul>\n<li>List <strong>passengers & their profiles</strong> for this flight</li>\n<li>List <strong>frequest flyers</strong> to serve them best</li>\n<li>Locate passengers with <strong>special assistance</strong>  needs</li>\n<li>Get all <strong>passengers seated in a specific zone</strong></li>\n<li>Find out <strong>who is seated</strong> at a specific location</li>\n</ul>\n\n\n\n",
-            //    Images = new List<CardImage>(),
-            //    Buttons = new List<CardAction>(),
-            //};
-            //card2.Images.Add(new CardImage { Url = "https://95e2c888.ngrok.io/Public/Resources/Flight.png" });
-            //card2.Buttons.Add(new CardAction
-            //{
-            //    Title = "All Passengers"
-            //});
-            //card2.Buttons.Add(new CardAction
-            //{
-            //    Title = "Frequent Flyers"
-            //});
-            //card2.Buttons.Add(new CardAction
-            //{
-            //    Title = "Special Assistance"
-            //});
-            //card2.Buttons.Add(new CardAction
-            //{
-            //    Title = "Passengers by Zone"
-            //});
-            //card2.Buttons.Add(new CardAction
-            //{
-            //    Title = "Passenger at Seat #"
-            //});
-            //return card2.ToAttachment();
-
             var section = new O365ConnectorCardSection("Your Passport to Airline Services from within Microsoft Teams", "Use PassengerInfoBot to do the following:\n<ul>\n<li>List <strong>passengers & their profiles</strong> for this flight</li>\n<li>List <strong>frequest flyers</strong> to serve them best</li>\n<li>Locate passengers with <strong>special assistance</strong>  needs</li>\n<li>Get all <strong>passengers seated in a specific zone</strong></li>\n<li>Find out <strong>who is seated</strong> at a specific location</li>\n</ul>\n\n\n\n", null, null, null, null);
-
-            // "C:\Users\v-washai\Downloads\Picture1.png"
-            var heroImage = new O365ConnectorCardSection()
-            {
-                
-            };
-            heroImage.Images = new List<O365ConnectorCardImage>();
-
-            heroImage.Images.Add(new O365ConnectorCardImage("https://ef74fa37.ngrok.io/Public/Resources/HeroImage.png", "PassengerInfoBot"));
 
             var classWiseCard = new O365ConnectorCardActionCard(
                 O365ConnectorCardActionCard.Type,

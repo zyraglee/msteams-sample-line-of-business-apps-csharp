@@ -1,23 +1,24 @@
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Linq;
-using Microsoft.Bot.Connector;
+using Airline.FlightTeamCreation.Web;
+using Airline.FlightTeamCreation.Web.Models;
+using Airline.FlightTeamCreation.Web.Repository;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Web.Http.Description;
-using System.Net.Http;
-using System;
-using SimpleEchoBot.Repository;
-using SimpleEchoBot.Models;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Net.Http.Headers;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Description;
 
-namespace Microsoft.Bot.Sample.SimpleEchoBot
+namespace Airline.FlightTeamCreation.Web.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -36,7 +37,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new EchoDialog());
+                await Conversation.SendAsync(activity, () => new RootDialog());
             }
             else if (activity.IsO365ConnectorCardActionQuery())
             {
@@ -63,7 +64,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                     email = member.Email;
 
 
-                var card = EchoDialog.GetFilter(email);
+                var card = RootDialog.GetFilter(email);
                 reply.Attachments.Add(card);
 
                 
@@ -88,7 +89,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             if (userInfo == null || userInfo.ExpiryTime < DateTime.Now)
             {
                 var reply = activity.CreateReply();
-                SigninCard plCard = EchoDialog.GetSignInCard();
+                SigninCard plCard = RootDialog.GetSignInCard();
                 reply.Attachments.Add(plCard.ToAttachment());
                 await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(reply);
                 return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
@@ -140,13 +141,14 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 HardcodedMembersListDefault;
         }
 
+        // These are hardcoded for demo tenant.
         public static List<string> HardcodedMembersListForMicrosoftTenants = new List<string>() {
                     "Myrtle@teamsdevtest.onmicrosoft.com",
                     "Tomba@teamsdevtest.onmicrosoft.com",
                     "Maxima@teamsdevtest.onmicrosoft.com"
                     };
 
-
+        // These are hardcoded for demo tenant.
         public static List<string> HardcodedMembersListDefault = new List<string>() {"IrvinS@M365x614055.onmicrosoft.com",
                     "MeganB@M365x614055.onmicrosoft.com",
                     "MiriamG@M365x614055.onmicrosoft.com",
