@@ -6,13 +6,13 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
+using Airline.FleetInfoBot.Web.Helper;
+using Airline.FleetInfoBot.Web.Repository;
+using Airline.FleetInfoBot.Web.Model;
 using System.Linq;
 using System.Configuration;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace Airline.FleetInfoBot.Web
 {
     [Serializable]
     public class EchoBot: IDialog<object>

@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace Airline.FlightInfoBot.Web.Controllers
 {
     public class HomeController : Controller
     {

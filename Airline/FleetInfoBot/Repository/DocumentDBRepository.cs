@@ -9,9 +9,9 @@ using System.Configuration;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
+using Airline.FleetInfoBot.Web.Model;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Repository
+namespace Airline.FleetInfoBot.Web.Repository
 {
     public static class DocumentDBRepository<T> where T : class
     {

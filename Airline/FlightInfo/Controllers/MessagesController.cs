@@ -8,12 +8,12 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 using System.Collections.Generic;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using Airline.FlightInfoBot.Web.Model;
+using Airline.FlightInfoBot.Web.Helper;
 using System.Linq;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Airline.FlightInfoBot.Web.Repository;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace Airline.FlightInfoBot.Web.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -183,31 +183,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             obj5.PNR = "DBW6WG";
 
             await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj5);
-
-            //Cities obj2 = new Cities();
-            //obj2.CityCode = "EWR";
-            //obj2.CityName = "Newark";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj2);
-            //Cities obj3 = new Cities();
-            //obj3.CityCode = "BWI";
-            //obj3.CityName = "Washington, DC";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
-            //Cities obj4 = new Cities();
-            //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston, MA";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
-            //Cities obj5 = new Cities();
-            //obj5.CityCode = "JFK";
-            //obj5.CityName = "New York";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj5);
-            //Cities obj6 = new Cities();
-            //obj6.CityCode = "ORD";
-            //obj6.CityName = "Chicago";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj6);
-
         }
-
-
-
     }
 }
