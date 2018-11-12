@@ -21,9 +21,6 @@
 **Notification Bot**<br>
 Notification Bot will notify you on weather changes, operations delays etc.
 
-## BFSI
-
-## Consumer Good
 
 ## Manufacturing
 

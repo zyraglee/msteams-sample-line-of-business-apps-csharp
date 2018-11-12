@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace Airline.BaggageInfoBot.Web.Controllers
 {
     public class BaggageController : Controller
     {

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
+using Airline.BaggageInfoBot.Web.Model;
 using Microsoft.Bot.Connector;
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
+namespace Airline.BaggageInfoBot.Web.Helper
 {
     public class O365CardHelper
     {
@@ -33,14 +33,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                         null,
                         false,
                         null)
-                     //new O365ConnectorCardTextInput(
-                     //   O365ConnectorCardTextInput.Type,
-                     //   "pnrNumberInput",
-                     //   true,
-                     //   "Enter new PNR number",
-                     //   null,
-                     //   false,
-                     //   null)
                 },
                 new List<O365ConnectorCardActionBase>
                 {
@@ -49,11 +41,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                         "Rebook",
                         Constants.RebookBaggage,
                         @"{""flightNumberInput"":""{{flightNumberInput.value}}""/*, ""pnrNumberInput"": ""{{pnrNumberInput.value}}""*/}")
-                       //@"{""PNRValue"":""{{pnrNumberInput.value}}"", ""NewFlightValue"":""{{flightNumberInput.value}}""}"),
-
-                     //@"{""CardsType"":""{{CardsType.value}}"", ""Teams"":""{{Teams.value}}"", ""Apps"":""{{Apps.value}}"", ""OfficeProduct"":""{{OfficeProduct.value}}""}")
-
-
                 });
             O365ConnectorCard card = new O365ConnectorCard()
             {
@@ -62,7 +49,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>
                 {
-                    //new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Details of Checked in Baggage",Constants.DetailsofCheckedBaggage, $"{{'Value':'{baggage.PNR}'}}" ),
                     new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Show Baggage Details",Constants.CurrentStatus,$"{{'Value':'{baggage.PNR}'}}"),
                     RebookingCard,
                     new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Report Missing",Constants.ReportMissing,baggage.PNR)
@@ -116,14 +102,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                         null,
                         false,
                         null)
-                     //new O365ConnectorCardTextInput(
-                     //   O365ConnectorCardTextInput.Type,
-                     //   "pnrNumberInput",
-                     //   true,
-                     //   "Enter new PNR number",
-                     //   null,
-                     //   false,
-                     //   null)
                 },
                 new List<O365ConnectorCardActionBase>
                 {
@@ -132,10 +110,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                         "Rebook",
                         Constants.RebookBaggage,
                         @"{""flightNumberInput"":""{{flightNumberInput.value}}""/*, ""pnrNumberInput"": ""{{pnrNumberInput.value}}""*/}")
-                       //@"{""PNRValue"":""{{pnrNumberInput.value}}"", ""NewFlightValue"":""{{flightNumberInput.value}}""}"),
-
-                     //@"{""CardsType"":""{{CardsType.value}}"", ""Teams"":""{{Teams.value}}"", ""Apps"":""{{Apps.value}}"", ""OfficeProduct"":""{{OfficeProduct.value}}""}")
-
 
                 });
             O365ConnectorCard card = new O365ConnectorCard()
@@ -145,7 +119,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>
                 {
-                    //new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Details of Checked in Baggage",Constants.DetailsofCheckedBaggage, $"{{'Value':'{baggage.PNR}'}}" ),
                     RebookingCard1,
                     new O365ConnectorCardHttpPOST(O365ConnectorCardHttpPOST.Type,"Report Missing",Constants.ReportMissing,baggage.PNR)
 
