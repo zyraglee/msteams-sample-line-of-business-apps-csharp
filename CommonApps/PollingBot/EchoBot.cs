@@ -417,20 +417,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
                         }
                     }
-                    //foreach (var questions in questionbank.Questions)
-                    //{
-                            
-                    //        var question = new Question();
-                    //        question.Id = questions.Id;
-                    //        question.Title = questions.Title;
-                    //        question.Options = questions.Options;
-                    //        tempcount = tempcount + 1;
-                    //        attachment=(PollCreationCard(questionbank.Id, question, false, questionbank.Questions.Count(), tempcount));
-                    //}
-
-
-                    //foreach (var emailid in questionbank.EmailIds)
-                    //{
+                   
                     var currentEmailid = await GetUserEmailId(activity);
                         var userData = await DocumentDBRepository.GetItemsAsync<UserDetails>(u => u.EmaildId == currentEmailid);
                         var usersData = userData.FirstOrDefault();
@@ -438,14 +425,13 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         {
                             userUniqueId = usersData.UserId;
                             userEmailId = usersData.EmaildId;
-                            //var MessageText = "**Hey " + usersData.UserName + "!!  Welcome to the survey application. Please fill the survey details**";
                             await SendNotification(context, userUniqueId, null, attachment, activity.ReplyToId);
                         }
-                    //}
+                    
                 }
 
             }
-            //var FeedBackdata = await DocumentDBRepository.CreateItemAsync(objFeedBack);
+            
         }
         private static ThumbnailCard GetThumbnailForTeamsAction()
         {
@@ -857,12 +843,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             }
             else if (IsAdmin == false && (tempCount == TotalCount))
             {
-                //PoolCreationCard.Actions.Insert(0,
-                //    new AdaptiveSubmitAction()
-                //    {
-                //        Title = "Submit",
-                //        DataJson = @"{'Type':'" + Helper.Constants.Submit + "', 'QuestionBankId':'" + QuestionBankId + "', 'QuestionId':'" + surveyDetails.Title + "' }"
-                //    });
+                
                 PoolCreationCard.Actions.Insert(0,
                     new AdaptiveSubmitAction()
                     {

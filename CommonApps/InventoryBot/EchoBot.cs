@@ -48,8 +48,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             
             if (message.Text != null && message.Text.Contains("Show details of product"))
             {
-                //Activity reply = message.CreateReply();
-                //var reply = context.MakeMessage();
+                
                 var reply = (Activity)message;
                 Activity replyActivity = reply.CreateReply();
                 var actionId = Guid.NewGuid().ToString();
@@ -63,7 +62,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(replyActivity);
                     context.ConversationData.SetValue(actionId, msgToUpdate.Id);
                     privateStorage.Add(actionId, msgToUpdate.Id);
-                    //await context.PostAsync((replyActivity));
+                    
                 }
                 catch(Exception e)
                 {
@@ -83,15 +82,15 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     case Constants.newInventoryCount:
                         await AddItems(itemCount, replyActivity);
 
-                        //await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                        
                         break;
                     case Constants.BlockInventory:
                         await BlockItems(itemCount, replyActivity);
-                        //await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                        
                         break;
                     case Constants.RetireInventory:
                         await RetireItems(itemCount, replyActivity);
-                        //await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                        
                         break;
                     case Constants.RequestNewStock:
                         await AttachNewStock(replyActivity);
@@ -112,33 +111,14 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                         // Update existing item.
                         await connector.Conversations.UpdateActivityAsync(replyActivity.Conversation.Id, lastMessageId, replyActivity);
                         context.ConversationData.RemoveValue(itemCount.ActionId);
-                        //if (privateStorage.ContainsKey(itemCount.ActionId))
-                        //    privateStorage.Remove(itemCount.ActionId);
+                       
                     }
                     else
                     {
                         await connector.Conversations.SendToConversationAsync(replyActivity);
                     }
                 }
-                //if (context.ConversationData.TryGetValue(LastMessageIdKey, out savedMessageId))
-                //{
-                //    try
-                //    {
-                //        var resource = await connector.Conversations.UpdateActivityAsync(replyActivity.Conversation.Id, savedMessageId, replyActivity);
-                //        savedMessageId = resource.Id;
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        var resource = e.Message.ToString();
-                //    }
-                //}
-                //else
-                //{
-                //    var resource = await connector.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
-                //    savedMessageId = resource.Id;
-                //}
-                //context.ConversationData.SetValue(LastMessageIdKey, savedMessageId);
-                //await connector.Conversations.ReplyToActivityAsync(replyActivity);
+                
             }
             else
             {
@@ -242,8 +222,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     var replyCard = O365CardHelper.GetAdativeCard(addItems.FirstOrDefault(), itemcount.ActionId);
                     replyActivity.Attachments.Add(replyCard);
 
-                    //replyActivity.Text = $"Items added successfully {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
-                    //replyActivity.Text = "Items added Successfully";
+                   
                 }
                 catch (Exception e)
                 {
@@ -268,12 +247,11 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                             loc.Quantity = Convert.ToInt32(loc.Quantity) - Convert.ToInt32(itemcount.newItemCount);
                         }
                     }
-                    //list.Quantity = Convert.ToInt32(list.Quantity) - Convert.ToInt32(itemcount.newItemCount);
+                    
                     var itemsList = await DocumentDBRepository<Product>.UpdateItemAsync(list.Id, list);
                     var replyCard = O365CardHelper.GetAdativeCard(addItems.FirstOrDefault(), itemcount.ActionId);
                     replyActivity.Attachments.Add(replyCard);
-                    //replyActivity.Text = $"Items added successfully {aircardInfo.AircraftId} has been assigned to Flight: {aircardInfo.FlightNumber}";
-                    //replyActivity.Text = "Items retire Successfully";
+                    
                 }
                 catch (Exception e)
                 {
@@ -308,7 +286,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                             }
                         }
                     }
-                    //list.Quantity = Convert.ToInt32(list.Quantity) - Convert.ToInt32(itemcount);
+                   
 
                }
                 catch (Exception e)
