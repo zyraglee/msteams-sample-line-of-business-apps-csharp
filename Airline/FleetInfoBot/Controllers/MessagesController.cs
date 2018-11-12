@@ -8,20 +8,17 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 using System.Collections.Generic;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using Airline.FleetInfoBot.Web.Model;
+using Airline.FleetInfoBot.Web.Helper;
 using System.Linq;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Airline.FleetInfoBot.Web.Repository;
 using System.Configuration;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace Airline.FleetInfoBot.Web.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        
-        
-
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
@@ -74,29 +71,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 activity.CreateReply(e.Message.ToString());
             }
-
-            //switch (o365CardQuery.ActionId)
-            //{
-            //    case Constants.ShowAirCraftDetails:
-            //        AirCraftDetails aircraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
-            //        await ShowAircraftDetails(aircraftInfo, replyActivity);
-            //        break;
-            //    case Constants.Assignaircraft:
-            //        AirCraftDetails assignairCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
-            //        await AttachAssignairCraft(assignairCraftInfo, replyActivity);
-            //        break;
-            //    case Constants.MarkGrounded:
-            //        AirCraftDetails groundedAirCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
-            //        await MarkGroundedAirCraft(groundedAirCraftInfo, replyActivity);
-            //        break;
-            //    case Constants.Available:
-            //        AirCraftDetails freeAirCraftInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<AirCraftDetails>(o365CardQuery.Body);
-            //        await MarkFreeAirCraft(freeAirCraftInfo, replyActivity);
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -258,107 +232,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             obj7.Model = "Boeing 777-200LR/300ER/Boeing 777X";
             obj7.Capacity = "350-400";
             await DocumentDBRepository<AirCraftInfo>.CreateItemAsync(obj7);
-
-            //FlightInfo obj1 = new FlightInfo();
-            //obj1.FlightNumber = "475";
-            //obj1.FlightName = "Constoso Airline";
-            //obj1.JourneyDate = DateTime.UtcNow.AddDays(4);
-            //obj1.SeatCount = 10;
-            //obj1.Status = "Ready to Fly";
-            //obj1.Type = "Flight";
-            //obj1.FromCity = "SEA";
-            //obj1.ToCity = "BWI";
-            //obj1.Departure = DateTime.UtcNow.AddDays(4); 
-            //obj1.Arrival = DateTime.UtcNow.AddDays(4);
-            //obj1.PNR = "DBW6WL";
-
-            //await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj1);
-
-            //FlightInfo obj2 = new FlightInfo();
-            //obj2.FlightNumber = "475";
-            //obj2.FlightName = "Constoso Airline";
-            //obj2.JourneyDate = DateTime.UtcNow.AddDays(4);
-            //obj2.SeatCount = 10;
-            //obj2.Status = "Ready to Fly";
-            //obj2.Type = "Flight";
-            //obj2.FromCity = "BWI";
-            //obj2.ToCity = "ORD";
-            //obj2.Departure = DateTime.UtcNow.AddDays(4);
-            //obj2.Arrival = DateTime.UtcNow.AddDays(4);
-            //obj2.PNR = "DBW6WK";
-
-            //await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj2);
-
-            //FlightInfo obj3= new FlightInfo();
-            //obj3.FlightNumber = "475";
-            //obj3.FlightName = "Constoso Airline";
-            //obj3.JourneyDate = DateTime.UtcNow.AddDays(6);
-            //obj3.SeatCount = 10;
-            //obj3.Status = "Ready to Fly";
-            //obj3.Type = "Flight";
-            //obj3.FromCity = "BWI";
-            //obj3.ToCity = "ORD";
-            //obj3.Departure = DateTime.UtcNow.AddDays(6);
-            //obj3.Arrival = DateTime.UtcNow.AddDays(6);
-            //obj3.PNR = "DBW6WJ";
-
-            //await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj3);
-
-            //FlightInfo obj4 = new FlightInfo();
-            //obj4.FlightNumber = "475";
-            //obj4.FlightName = "Constoso Airline";
-            //obj4.JourneyDate = DateTime.UtcNow.AddDays(6);
-            //obj4.SeatCount = 50;
-            //obj4.Status = "Ready to Fly";
-            //obj4.Type = "Flight";
-            //obj4.FromCity = "JFK";
-            //obj4.ToCity = "SEA";
-            //obj4.Departure = DateTime.UtcNow.AddDays(6);
-            //obj4.Arrival = DateTime.UtcNow.AddDays(6);
-            //obj4.PNR = "DBW6WG";
-
-            //await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj4);
-
-
-            //FlightInfo obj5 = new FlightInfo();
-            //obj5.FlightNumber = "475";
-            //obj5.FlightName = "Constoso Airline";
-            //obj5.JourneyDate = DateTime.UtcNow.AddDays(6);
-            //obj5.SeatCount = 10;
-            //obj5.Status = "Ready to Fly";
-            //obj5.Type = "Flight";
-            //obj5.FromCity = "SEA";
-            //obj5.ToCity = "JFK";
-            //obj5.Departure = DateTime.UtcNow.AddDays(6);
-            //obj5.Arrival = DateTime.UtcNow.AddDays(6);
-            //obj5.PNR = "DBW6WG";
-
-            //await DocumentDBRepository<FlightInfo>.CreateItemAsync(obj5);
-
-            //Cities obj2 = new Cities();
-            //obj2.CityCode = "EWR";
-            //obj2.CityName = "Newark";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj2);
-            //Cities obj3 = new Cities();
-            //obj3.CityCode = "BWI";
-            //obj3.CityName = "Washington, DC";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj3);
-            //Cities obj4 = new Cities();
-            //obj4.CityCode = "SEA";
-            //obj4.CityName = "Boston, MA";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj4);
-            //Cities obj5 = new Cities();
-            //obj5.CityCode = "JFK";
-            //obj5.CityName = "New York";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj5);
-            //Cities obj6 = new Cities();
-            //obj6.CityCode = "ORD";
-            //obj6.CityName = "Chicago";
-            //await DocumentDBRepository<Cities>.CreateItemAsync(obj6);
-
         }
-
-
-
     }
 }

@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
+using Airline.FlightInfoBot.Web.Model;
 
 
 using Microsoft.Bot.Connector;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Helper
+namespace Airline.FlightInfoBot.Web.Helper
 {
     public static class O365CardHelper
     {

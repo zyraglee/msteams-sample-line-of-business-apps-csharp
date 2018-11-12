@@ -6,11 +6,11 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Airline.BaggageInfoBot.Web.Helper;
+using Airline.BaggageInfoBot.Web.Model;
+using Airline.BaggageInfoBot.Web.Repository;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace Airline.BaggageInfoBot.Web
 {
     [Serializable]
     public class EchoBot: IDialog<object>
@@ -76,9 +76,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
                     break;
                 case Constants.RebookBaggage:
                     RebookClass NewFlightTicketNumber = Newtonsoft.Json.JsonConvert.DeserializeObject<RebookClass>(o365CardQuery.Body);
-                    //Newtonsoft.Json.Linq.JObject results = JObject.Parse (o365CardQuery.Body);
-                    //var flightNumber = results["flightNumberInput"].ToString();
-                    //var pnrNumber = results["pnrNumberInput"].ToString();
                     await AttachRebookInformation(NewFlightTicketNumber.flightNumberInput, replyActivity);
                     context.ConversationData.RemoveValue(LastMessageIdKey);
                     break;
@@ -128,9 +125,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
         }
         private static async Task AttachBaggageInformationName(string Name, Activity replyActivity)
         {
-
-
-            // var list = listobj.Where(l => l.Name.Contains(Name));
             var actionId = Guid.NewGuid().ToString();
             var list = await DocumentDBRepository<Baggage>.GetItemsAsync(d => d.Name.ToLower().Contains(Name.ToLower()));
             int count = list.Count();

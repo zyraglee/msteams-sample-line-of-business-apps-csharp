@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Microsoft.Teams.Samples.HelloWorld.Web")]
+[assembly: AssemblyTitle("Airline.FleetInfoBot.Web")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Microsoft.Teams.Samples.HelloWorld.Web")]
+[assembly: AssemblyProduct("Airline.FleetInfoBot.Web")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d5c31082-d431-4a90-b8f0-a9296b8bec25")]
+[assembly: Guid("4f271c28-d7f2-4e6f-816d-6d48cf92c0c1")]
 
 // Version information for an assembly consists of the following four values:
 //

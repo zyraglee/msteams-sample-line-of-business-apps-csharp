@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace Airline.FlightInfoBot.Web
 {
     public class RouteConfig
     {

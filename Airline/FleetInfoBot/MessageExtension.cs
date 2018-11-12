@@ -5,7 +5,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web
+namespace Airline.FleetInfoBot.Web
 {
     public class MessageExtension
     {
