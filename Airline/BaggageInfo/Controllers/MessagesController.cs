@@ -7,17 +7,17 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
-using Microsoft.Teams.Samples.HelloWorld.Web.Model;
-using Microsoft.Teams.Samples.HelloWorld.Web.Helper;
+using Airline.BaggageInfoBot.Web.Model;
+using Airline.BaggageInfoBot.Web.Helper;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.Teams.Samples.HelloWorld.Web.Repository;
+using Airline.BaggageInfoBot.Web.Repository;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace Airline.BaggageInfoBot.Web.Controllers
 {
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -71,20 +71,6 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
                     ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                     await connector.Conversations.ReplyToActivityAsync(replyActivity);
                 }
-                //else if(o365CardQuery.ActionId == Constants.PNR)
-                //{
-                //    var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                //    await AttachBaggagebyPNR(PNRno.Value, replyActivity);
-                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                //    await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                //}
-                //else if(o365CardQuery.ActionId == Constants.TicketNumber)
-                //{
-                //    var Ticketno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-                //    await AttachBaggageInformationTicket(Ticketno.Value, replyActivity);
-                //    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                //    await connector.Conversations.ReplyToActivityAsync(replyActivity);
-                //}
                 else
                     await Conversation.SendAsync(activity, () => new EchoBot());
             }
@@ -92,47 +78,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
             {
                 activity.CreateReply(e.Message.ToString());
             }
-
-            //switch (o365CardQuery.ActionId)
-            //{
-            //    case Constants.PNR:
-            //        var PNRno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-            //        await AttachBaggagebyPNR(PNRno.Value, replyActivity);
-            //        break;
-            //    case Constants.TicketNumber:
-            //        var Ticketno = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-            //        await AttachBaggageInformationTicket(Ticketno.Value, replyActivity);
-            //        break;
-            //    case Constants.Name:
-            //        var Name = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-            //        await AttachBaggageInformationName(Name.Value, replyActivity);
-
-            //        break;
-            //    case Constants.DetailsofCheckedBaggage:
-            //        var PNRno1 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body).Value;
-            //        await AttachBaggageInformation(PNRno1, replyActivity);
-            //        break;
-            //    case Constants.CurrentStatus:
-            //        var PNRno2 = Newtonsoft.Json.JsonConvert.DeserializeObject<O365BodyValue>(o365CardQuery.Body);
-            //        await AttachBaggageInformation(PNRno2.Value, replyActivity);
-            //        break;
-            //    case Constants.RebookBaggage:
-            //        RebookClass NewFlightTicketNumber = Newtonsoft.Json.JsonConvert.DeserializeObject<RebookClass>(o365CardQuery.Body);
-            //        //Newtonsoft.Json.Linq.JObject results = JObject.Parse (o365CardQuery.Body);
-            //        //var flightNumber = results["flightNumberInput"].ToString();
-            //        //var pnrNumber = results["pnrNumberInput"].ToString();
-            //        await AttachRebookInformation(NewFlightTicketNumber.flightNumberInput, replyActivity);
-            //        break;
-            //    case Constants.ReportMissing:
-            //        await AttachReportMissing(replyActivity);
-            //        break;
-            //    default:
-            //        break;
-            //}
-
-            //await connectorClient.Conversations.ReplyToActivityWithRetriesAsync(replyActivity);
-
-            return new HttpResponseMessage(HttpStatusCode.OK);
+return new HttpResponseMessage(HttpStatusCode.OK);
         }
         
         private static async Task AttachRebookInformation(string FlightNumber, Activity replyActivity)

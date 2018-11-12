@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Model
+namespace Airline.BaggageInfoBot.Web.Model
 {
     public class ListCard
     {

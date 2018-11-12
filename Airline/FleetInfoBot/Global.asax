@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Microsoft.Teams.Samples.HelloWorld.Web.MvcApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Airline.FleetInfoBot.Web.MvcApplication" Language="C#" %>
