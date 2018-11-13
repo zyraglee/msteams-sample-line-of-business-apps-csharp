@@ -1,10 +1,11 @@
 Baggage Information:
 
 This will help complete the below:
-•	Check baggage status
-•	Track current location
-•	Re-assign baggage
-•	Report missing
+* Check baggage status
+* Track current location
+* Re-assign baggage
+* Report missing
+
 The sample data to be given as input is mentioned as Ex: in each input box.  This is applicable when a passenger is rebooked on another flight due to reasons like flight overbooked, 
 passenger unfit etc. 
 
