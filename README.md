@@ -2,6 +2,8 @@
 
 ## Airline
 
+A collection of 5 bots that help across achieve multiple 
+
 1. **Flight Info Bot**<br>
     This bot allows you to search flights and rebook a passenger to another flight.     
 
