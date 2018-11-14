@@ -6,10 +6,14 @@ This will help complete the below:
 * Re-assign baggage
 * Report missing
 
-The sample data to be given as input is mentioned as Ex: in each input box.  This is applicable when a passenger is rebooked on another flight due to reasons like flight overbooked, 
+This is applicable when a passenger is enquiring an airline staff about the baggage status or when there is a need to reassign baggage when a passenger is rebooked on another flight due to reasons like flight overbooked, 
 passenger unfit etc. 
 
-![1](Images/1.png)
+
+The sample data to be given as input is mentioned as Ex: in each input box.  
+
+
+![1](../../../../source/repos/msteams-sample-industry-apps-csharp/Airline/Images/1.png)
 ![1](Images/2.png)
 
 
