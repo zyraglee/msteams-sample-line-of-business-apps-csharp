@@ -39,8 +39,19 @@ The inventory bot helps get a view of the available inventory across multiple pr
 **Employee Leave**<br>
 The app has an employee and manager workflow with bot and tab capabilities. It enables an employee to make a new vacation request, check leave balance status and public holidays. In addition, when an employee makes a new vacation request, the manager gets a notification and the approval / reject workflow can be completed from within the app on Teams.  
 
-## Manifests
- 
+## Try it yourself
+
+All these samples are deployed on Microsoft Azure and you can try it yourself by uploading respective app packages (.zip files linke below) to one of your teams and/or as a personal app. (Sideloading must be enabled for your tenant; see [step 6 here](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-tenant#turn-on-microsoft-teams-for-your-organization).) These apps are running on the free Azure tier, so it may take a while to load if you haven't used it recently and it goes back to sleep quickly if it's not being used, but once it's loaded it's pretty snappy.
+
+[Flight Info Bot](Airline/FlightInfo/Manifest/Flight%20Info%20App%20Manifest.zip)<br>
+[Passenger Info Bot](Airline/PassengerInfo/Manifest/Passenger%20Information%20App%20Manifest.zip)<br>
+[Baggage Info Bot](Airline/BaggageInfo/Manifest/Baggage%20Info%20App%20Manifest.zip)<br>
+[Flight Team Creation Bot](Airline/FlightTeamCreation/Manifest/Flight%20Team%20Creation%20App%20Manifest.zip)<br>
+[Fleet Bot](Airline/FleetInfoBot/Manifest/FleetInfo%20App%20Manifest.zip)<br>
+[Notification Bot](Cross%20Vertical/NotificationBot/Manifest/Notification%20App.zip)<br>
+[Employee survey / Polling bot](Cross%20Vertical/PollingBot/Manifest/Polling%20App%20Manifest.zip)<br>
+[Inventory Bot](Manufacturing/InventoryBot/Manifest/Inventory%20App%20Manifest.zip)<br>
+[Employee Leave](Professional%20Services/LeaveBot/Manifest/Leave%20App%20Manifest.zip)
 
 <br><br>
 # Contributing
