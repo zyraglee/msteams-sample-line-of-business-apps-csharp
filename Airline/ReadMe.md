@@ -13,7 +13,7 @@ passenger unfit etc.
 The sample data to be given as input is mentioned as Ex: in each input box.  
 
 
-![1](../../../../source/repos/msteams-sample-industry-apps-csharp/Airline/Images/1.png)
+![1](Images/1.png)
 ![1](Images/2.png)
 
 
