@@ -39,6 +39,9 @@ The inventory bot helps get a view of the available inventory across multiple pr
 **Employee Leave**<br>
 The app has an employee and manager workflow with bot and tab capabilities. It enables an employee to make a new vacation request, check leave balance status and public holidays. In addition, when an employee makes a new vacation request, the manager gets a notification and the approval / reject workflow can be completed from within the app on Teams.  
 
+## Manifests
+ 
+
 <br><br>
 # Contributing
 
