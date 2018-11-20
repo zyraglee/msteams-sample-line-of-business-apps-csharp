@@ -69,7 +69,7 @@ namespace ProfessionalServices.LeaveBot
                                          Width=AdaptiveColumnWidth.Auto,
                                          Items=new List<AdaptiveElement>()
                                          {
-                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/-g-Leave balance-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/-g-Leave balance-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.LeaveBalance+"'}",   Title= "Leave Balance"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
                                          }
                                     },
 
@@ -109,7 +109,7 @@ namespace ProfessionalServices.LeaveBot
                                          },
                                          SelectAction = new AdaptiveSubmitAction()
                                          {
-                                             DataJson=@"{'Type':'" + Constants.Holidays+"'}", Title="Leave Request"
+                                             DataJson=@"{'Type':'" + Constants.Holidays+"'}", Title="Holidays"
                                          }
                                     }
                                 }
@@ -123,7 +123,7 @@ namespace ProfessionalServices.LeaveBot
                                          Width=AdaptiveColumnWidth.Auto,
                                          Items=new List<AdaptiveElement>()
                                          {
-                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/Help-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveOpenUrlAction(){ Url=new Uri(DeeplinkHelper.HelpDeeplink)},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/Help-01.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveOpenUrlAction(){ Url=new Uri(DeeplinkHelper.HelpDeeplink), Title = "Help"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None}
                                          }
                                     },
 
@@ -136,7 +136,8 @@ namespace ProfessionalServices.LeaveBot
                                          },
                                            SelectAction = new AdaptiveOpenUrlAction()
                                          {
-                                             Url=new Uri(DeeplinkHelper.HelpDeeplink)
+                                             Url=new Uri(DeeplinkHelper.HelpDeeplink),
+                                             Title = "Help"
                                          }
                                     }
                                 }
@@ -147,7 +148,7 @@ namespace ProfessionalServices.LeaveBot
 
                         }
                     }
-                    
+
              }
             };
 
@@ -162,7 +163,7 @@ namespace ProfessionalServices.LeaveBot
                                          Width=AdaptiveColumnWidth.Auto,
                                          Items=new List<AdaptiveElement>()
                                          {
-                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/pendingapprovals.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.ShowPendingApprovals+"'}"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None }
+                                             new AdaptiveImage(){Url=new Uri(ApplicationSettings.BaseUrl + "/Resources/pendingapprovals.png"),Size=AdaptiveImageSize.Small,Style=AdaptiveImageStyle.Default, SelectAction=new AdaptiveSubmitAction(){ DataJson= @"{'Type':'" + Constants.ShowPendingApprovals+"'}", Title = "Pending Approvals"},HorizontalAlignment=AdaptiveHorizontalAlignment.Center,Spacing=AdaptiveSpacing.None }
                                          }
                                     },
 
@@ -182,12 +183,12 @@ namespace ProfessionalServices.LeaveBot
                     }
                     );
 
-            return new Attachment()
+            var acard = new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
                 Content = WelcomeCard
             };
-
+            return acard;
         }
 
         public static Attachment SetManagerCard()

@@ -564,7 +564,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
 
         private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
         {
-            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName, "In order to use Leave Bot we need your basic deatils, Please sign in", "Sign In", true).ConfigureAwait(false);
+            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName, "In order to use Leave Bot we need your basic details, Please sign in", "Sign In", true).ConfigureAwait(false);
             await context.PostAsync(reply);
 
             context.Wait(WaitForToken);
@@ -579,6 +579,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             {
                 // Use the token to do exciting things!
                 await AddUserToDatabase(context, tokenResponse);
+                context.Wait(MessageReceivedAsync);
             }
             else
             {
