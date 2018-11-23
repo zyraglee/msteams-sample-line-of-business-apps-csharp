@@ -173,8 +173,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
-
+                        ErrorLogService.LogError(ex);
                     }
 
                     await context.PostAsync(reply);
@@ -597,7 +596,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex);
+                            ErrorLogService.LogError(ex);
                         }
 
                         context.Wait(MessageReceivedAsync);
@@ -638,7 +637,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                ErrorLogService.LogError(ex);
                 profilePhotoUrl = null;
             }
 
@@ -736,6 +735,8 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             catch (Exception ex)
             {
                 // Handle the error.
+                ErrorLogService.LogError(ex);
+
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;
                 await context.PostAsync(msg);
@@ -774,6 +775,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
             catch (Exception ex)
             {
+                ErrorLogService.LogError(ex);
                 // Handle the error.
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;
