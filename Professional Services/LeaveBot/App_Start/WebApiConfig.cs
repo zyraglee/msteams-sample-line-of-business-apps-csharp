@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using ProfessionalServices.LeaveBot.Helpers;
 
 namespace ProfessionalServices.LeaveBot
 {
@@ -31,6 +32,9 @@ namespace ProfessionalServices.LeaveBot
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //register your filter with Web API pipeline
+            GlobalConfiguration.Configuration.Filters.Add(new LogExceptionFilterAttribute());
         }
     }
 }

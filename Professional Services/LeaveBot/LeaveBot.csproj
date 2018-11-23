@@ -268,6 +268,7 @@
     <Compile Include="Helpers\AdaptiveCardHelper.cs" />
     <Compile Include="Helpers\ApplicationSettings.cs" />
     <Compile Include="Helpers\DeeplinkHelper.cs" />
+    <Compile Include="Helpers\ExceptionLogger.cs" />
     <Compile Include="Helpers\SimpleGraphClient.cs" />
     <Compile Include="Models\CardActionValue.cs" />
     <Compile Include="Models\Employee.cs" />
