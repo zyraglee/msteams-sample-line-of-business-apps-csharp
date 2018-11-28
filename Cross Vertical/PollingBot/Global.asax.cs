@@ -13,6 +13,7 @@ using Microsoft.Bot.Builder.Azure;
 using System.Web.Routing;
 using System.Reflection;
 using CrossVertical.PollingBot.Repository;
+using CrossVertical.PollingBot.Helpers;
 
 namespace CrossVertical.PollingBot
 {
@@ -43,6 +44,14 @@ namespace CrossVertical.PollingBot
                             .SingleInstance();
 
                         });
+        }
+
+
+        //in global.asax or global.asax.cs
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+            ErrorLogService.LogError(ex);
         }
     }
 }

@@ -29,21 +29,20 @@ namespace CrossVertical.PollingBot.Controllers
             return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
-        private async Task<string> GetUserEmailId(Activity activity)
+        private async Task<string> GetUserEmailId(TeamsChannelData channelData, string userId, string serviceUrl)
         {
             // Fetch the members in the current conversation
-            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Email;
-            
-        }
+            ConnectorClient connector = new ConnectorClient(new Uri(serviceUrl));
+            var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+            return members.Where(m => m.Id == userId).First().AsTeamsChannelAccount().Email;
 
-        private async Task<string> GetUserName(Activity activity)
+        }
+        private async Task<string> GetUserName(TeamsChannelData channelData, string userId, string serviceUrl)
         {
             // Fetch the members in the current conversation
-            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Name;
+            ConnectorClient connector = new ConnectorClient(new Uri(serviceUrl)); 
+            var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+            return members.Where(m => m.Id == userId).First().AsTeamsChannelAccount().Name;
 
         }
 
@@ -60,6 +59,8 @@ namespace CrossVertical.PollingBot.Controllers
                 // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
                 // Not available in all channels
 
+                
+
                 for (int i = 0; i < message.MembersAdded.Count; i++)
                 {
                     if (message.MembersAdded[i].Id == message.Recipient.Id)
@@ -67,15 +68,20 @@ namespace CrossVertical.PollingBot.Controllers
                         // Bot is added. Let's send welcome message.
                         var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
                         var user = new UserDetails();
-                        user.EmaildId = await GetUserEmailId(message);
+                        var channelData = message.GetChannelData<TeamsChannelData>();
+                        user.EmaildId = await GetUserEmailId(channelData, message.From.Id, message.ServiceUrl);
                         user.UserId = message.From.Id;
-                        user.UserName = await GetUserName(message);
-                        if(user.UserName!=null)
+                        user.UserName = await GetUserName(channelData, message.From.Id, message.ServiceUrl);
+                        if (user.UserName != null)
                         {
                             user.UserName = user.UserName.Split(' ').FirstOrDefault();
                         }
                         user.Type = Helper.Constants.NewUser;
-                        var NewUserRecord = await DocumentDBRepository.CreateItemAsync(user);
+                        var existinguserRecord = await DocumentDBRepository.GetItemsAsync<UserDetails>(u => u.EmaildId == user.EmaildId && u.Type == Helper.Constants.NewUser);
+                        if (existinguserRecord.Count() == 0)
+                        {
+                            var NewUserRecord = await DocumentDBRepository.CreateItemAsync(user);
+                        }
                         ThumbnailCard card = EchoBot.GetWelcomeMessage();
                         //ThumbnailCard card = EchoBot.GetHelpMessage();
                         var reply = message.CreateReply();
@@ -88,12 +94,18 @@ namespace CrossVertical.PollingBot.Controllers
                     {
                         try
                         {
+                            
+                            
+                            var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
                             var userId = message.MembersAdded[i].Id;
                             var channelData = message.GetChannelData<TeamsChannelData>();
-                            var connectorClient = new ConnectorClient(new Uri(message.ServiceUrl));
                             var user = new UserDetails();
-                            user.EmaildId = await GetUserEmailId(message);
-                            user.UserId = message.From.Id;
+                            string emailid= await GetUserEmailId(channelData, userId, message.ServiceUrl);
+                            user.EmaildId =emailid;
+                            user.EmaildId = await GetUserEmailId(channelData, userId, message.ServiceUrl);
+
+                            user.UserId = userId;
+                            user.UserName = await GetUserName(channelData, userId, message.ServiceUrl);
                             var parameters = new ConversationParameters
                             {
                                 Members = new ChannelAccount[] { new ChannelAccount(userId) },
@@ -109,10 +121,16 @@ namespace CrossVertical.PollingBot.Controllers
                             var replyMessage = Activity.CreateMessageActivity();
                             replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
                             replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
-                            var name = message.MembersAdded[i].Name;
+                            var name = await GetUserName(channelData, userId, message.ServiceUrl);
                             if (name != null)
                             {
                                 name = name.Split(' ').First();
+                            }
+                            user.Type = Helper.Constants.NewUser;
+                            var existinguserRecord = await DocumentDBRepository.GetItemsAsync<UserDetails>(u => u.EmaildId == user.EmaildId && u.Type == Helper.Constants.NewUser);
+                            if (existinguserRecord.Count() == 0)
+                            {
+                                var NewUserRecord = await DocumentDBRepository.CreateItemAsync(user);
                             }
                             ThumbnailCard card = EchoBot.GetWelcomeMessage();
                             replyMessage.Attachments.Add(card.ToAttachment());
