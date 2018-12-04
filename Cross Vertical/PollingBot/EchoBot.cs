@@ -505,7 +505,7 @@ namespace CrossVertical.PollingBot
                                 {
                                     userUniqueId = usersData.UserId;
                                     userEmailId = usersData.EmaildId;
-                                    var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:";                                   
+                                    var MessageText = "Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:";                                   
                                     await SendNotification(context, userUniqueId, MessageText, attachments, null);
                                     reminderCount = reminderCount + 1;
                                 }
@@ -521,7 +521,7 @@ namespace CrossVertical.PollingBot
                         {
                             userUniqueId = usersData.UserId;
                             userEmailId = usersData.EmaildId;
-                            var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:";
+                            var MessageText = "Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:";
                             await SendNotification(context, userUniqueId, MessageText, attachments, null);
                             reminderCount = reminderCount + 1;
                         }
