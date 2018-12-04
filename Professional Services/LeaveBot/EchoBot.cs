@@ -220,8 +220,8 @@ namespace ProfessionalServices.LeaveBot
         public static Attachment LeaveRequest(LeaveDetails leaveDetails = null)
         {
             var durations = new List<AdaptiveChoice>();
-            durations.Add(new AdaptiveChoice() { Title = "FullDay", Value = DayType.FullDay.ToString() });
-            durations.Add(new AdaptiveChoice() { Title = "HalfDay", Value = DayType.HalfDay.ToString() });
+            durations.Add(new AdaptiveChoice() { Title = "Full Day", Value = DayType.FullDay.ToString() });
+            durations.Add(new AdaptiveChoice() { Title = "Half Day", Value = DayType.HalfDay.ToString() });
 
             var paidLeave = new AdaptiveChoice() { Title = "Paid Leave", Value = LeaveType.PaidLeave.ToString() };
             var sickLeave = new AdaptiveChoice() { Title = "Sick Leave", Value = LeaveType.SickLeave.ToString() };
@@ -360,7 +360,7 @@ namespace ProfessionalServices.LeaveBot
                                             Spacing = AdaptiveSpacing.Small,
                                             Items=new List<AdaptiveElement>()
                                             {
-                                                new AdaptiveTextBlock(){Text="Yay! have a great Vacation!"}
+                                                new AdaptiveTextBlock(){Text="Yay! Have a great vacation!"}
 
                                             }
 
@@ -558,7 +558,7 @@ namespace ProfessionalServices.LeaveBot
             switch (leaveDetails.Status)
             {
                 case LeaveStatus.Pending:
-                    leaveMessage = $"{employee.DisplayName} has requsted for {leaveType} for {dayCount} days";
+                    leaveMessage = $"{employee.DisplayName} has requested for {leaveType} for {dayCount} days";
                     break;
                 case LeaveStatus.Rejected:
                 case LeaveStatus.Approved:
@@ -606,7 +606,7 @@ namespace ProfessionalServices.LeaveBot
 
                                      new AdaptiveTextBlock(){Text=$"{startDay}   {endDay}", Size=AdaptiveTextSize.Default,Wrap=true},
                                      new AdaptiveTextBlock(){Text=$"{startDate}   - {endDate}, {leaveDetails.EndDate.Date.Year}",Size=AdaptiveTextSize.Default,Wrap=true},
-                                     new AdaptiveTextBlock(){Text=$"Reason:{leaveType}",Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Medium,Wrap=true},
+                                     new AdaptiveTextBlock(){Text=$"Reason: {leaveType}",Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Medium,Wrap=true},
                                     new AdaptiveTextBlock(){Text=leaveDetails.EmployeeComment,HorizontalAlignment=AdaptiveHorizontalAlignment.Left,Wrap=true }
 
                                 }
