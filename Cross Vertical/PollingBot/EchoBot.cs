@@ -149,7 +149,7 @@ namespace CrossVertical.PollingBot
             //Ask for manager details.
             var card = EchoBot.SetManagerCard(); // WelcomeLeaveCard(employee.Name.Split(' ').First());
             var msg = context.MakeMessage();
-            msg.Text = "Please set your admin so that we can create survey for users.";
+            msg.Text = "Please set your admin for the survey";
             msg.Attachments.Add(card);
             await context.PostAsync(msg);
         }
@@ -325,7 +325,7 @@ namespace CrossVertical.PollingBot
                         {
                             userUniqueId = usersData.UserId;
                             userEmailId = usersData.EmaildId;
-                            var MessageText = "**Hey " + usersData.UserName + "!!  Welcome to the survey application. Please fill the survey details**";
+                            var MessageText = "**Hey " + usersData.UserName + "!!  Welcome to the survey application. Please fill the survey details:";
                             await SendNotification(context, userUniqueId, MessageText, attachment, null);
                         }
                     }
@@ -359,7 +359,7 @@ namespace CrossVertical.PollingBot
             { 
                 var FeedBackDataInsert = context.ConversationData.GetValue<FeedbackData>(input.QuestionBankId);
                 var FeedbackInsert = await DocumentDBRepository.CreateItemAsync(FeedBackDataInsert);
-                await context.PostAsync("Thanks for your time, Your Feed Back completed");
+                await context.PostAsync("Thanks for your time. Your feedback is completed.");
             }
             else
             {
@@ -437,12 +437,12 @@ namespace CrossVertical.PollingBot
         {
             return new ThumbnailCard
             {
-                Text = @"Please go ahead and upload the excel file with survey details in following format:  
+                Text = @"Please go ahead and upload the spreadsheet with survey details in the following format:  
                         <ol>
                         <li><strong>Questions</strong>: String eg: <pre>How are you?</pre></li>
                         <li><strong>Options</strong> : Comma separated option names eg: <pre>option 1, option 2</pre></li>
                         <li><strong>Members</strong>  : Comma separated user emails eg: <pre>user1@org.com, user2@org.com</pre></li></ol>
-                         </br> <strong>Note: Please keep first row header as described above. You can provide details for multiple questions row by row. Members columns can be empty.</strong>",
+                         </br> <strong>Note: Please keep first row header as described above. You can provide details for multiple questions row by row. •	Members input box is not a mandatory field </strong>",
                 Buttons = new List<CardAction>(),
             };
         }
@@ -454,7 +454,7 @@ namespace CrossVertical.PollingBot
 
             ThumbnailCard card = GetThumbnailForTeamsAction();
             card.Title = "Create a new survey";
-            card.Subtitle = "Automate survey creation by sharing Question and options";
+            card.Subtitle = "Automate survey creation by sharing question and options";
 
             reply.TextFormat = TextFormatTypes.Xml;
             reply.Attachments.Add(card.ToAttachment());
@@ -505,7 +505,7 @@ namespace CrossVertical.PollingBot
                                 {
                                     userUniqueId = usersData.UserId;
                                     userEmailId = usersData.EmaildId;
-                                    var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details**";                                   
+                                    var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:**";                                   
                                     await SendNotification(context, userUniqueId, MessageText, attachments, null);
                                     reminderCount = reminderCount + 1;
                                 }
@@ -521,7 +521,7 @@ namespace CrossVertical.PollingBot
                         {
                             userUniqueId = usersData.UserId;
                             userEmailId = usersData.EmaildId;
-                            var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details**";
+                            var MessageText = "**Hey " + usersData.UserName + "!!  ATTENTION. Please fill the survey details:**";
                             await SendNotification(context, userUniqueId, MessageText, attachments, null);
                             reminderCount = reminderCount + 1;
                         }
@@ -577,7 +577,7 @@ namespace CrossVertical.PollingBot
                         CreateCSVFile(feedBack, ExcelPath);
                         String AnchorLink;
                         AnchorLink = "<" + "a href=" + feedbackdata + " target=_blank>" + "Download" + "</a>";
-                        Activity reply = activity.CreateReply("Download survery completed and please click on  " + AnchorLink);
+                        Activity reply = activity.CreateReply("Download completed. Click here" + AnchorLink+"to collect the results");
                         await context.PostAsync(reply);
                     }
                     catch (Exception e)
@@ -642,7 +642,7 @@ namespace CrossVertical.PollingBot
 
                         if (InsertTeamid == null)
                         {
-                            await context.PostAsync($"Attachment received but unfortunately we are not able to read your excel file. Please make sure that all the colums are correct.");
+                            await context.PostAsync($"Attachment received but unfortunately we are not able to read your file. Please make sure that all the columns are correct.");
                         }
                         else
                         {
@@ -651,7 +651,7 @@ namespace CrossVertical.PollingBot
                             if (context.UserData.TryGetValue(LastAction, out lastAction))
                             {
 
-                                await context.PostAsync($"Attachment received. Working on getting your Survey ready.");
+                                await context.PostAsync($"Attachment received. Working on getting your survey ready.");
                                 var questioBankData = await DocumentDBRepository.GetItemsAsync<QuestionBank>(l => l.Id == InsertTeamid.Result.ToString());
                                 Activity reply = activity.CreateReply();
                                 bool IsAdmin;
@@ -699,7 +699,7 @@ namespace CrossVertical.PollingBot
             ThumbnailCard card = new ThumbnailCard
             {
                 Title = "Welcome to Survey Application",
-                Subtitle = "Your survey delivered here",
+                Subtitle = "Your Survey Assistant ",
             };
 
             return card;
@@ -711,8 +711,8 @@ namespace CrossVertical.PollingBot
             {
                 Title = "Welcome to Polling Bot",
                 Subtitle = "Your aide in creating & collecting feedback from team members",
-                Text = @"Use the bot for following 
-                        <ol><li>Create a new survey by uploading excel file with memeber details</li><li>Download feedback from Team Members</li></ol>",
+                Text = @"Use the bot to: 
+                        <ol><li>Create a new survey by uploading a spreadsheet with member details</li><li>Download survey feedback from Team Members</li></ol>",
                 Buttons = new List<CardAction>(),
             };
 
