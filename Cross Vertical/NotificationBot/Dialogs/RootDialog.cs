@@ -342,7 +342,7 @@ namespace CrossVertical.NotificationBot
             O365ConnectorCard card = new O365ConnectorCard()
             {
                 ThemeColor = "#E67A9E",
-                Title = "Welcome to Notification bot",
+                Title = "Welcome to Notification Bot",
                 Summary = "",
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>
