@@ -476,7 +476,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                     else
                     {
                         var reply = activity.CreateReply();
-                        reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below";
+                        reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below:";
                         await context.PostAsync(reply);
 
                         var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
@@ -509,7 +509,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
 
             var msg = context.MakeMessage();
-            msg.Text = "Please set your manager so that we can send leaves for approval.";
+            msg.Text = "Please enter manager email ID for leave approval";
             msg.Attachments.Add(card);
             await context.PostAsync(msg);
         }
