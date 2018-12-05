@@ -85,8 +85,8 @@
     <Reference Include="Microsoft.Bot.Builder.Azure, Version=3.16.3.40383, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\Packages\Microsoft.Bot.Builder.Azure.3.16.3.40383\lib\net46\Microsoft.Bot.Builder.Azure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bot.Builder.History, Version=3.16.1.38846, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Packages\Microsoft.Bot.Builder.History.3.16.1.38846\lib\net46\Microsoft.Bot.Builder.History.dll</HintPath>
+    <Reference Include="Microsoft.Bot.Builder.History, Version=3.19.1.44133, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Bot.Builder.History.3.19.1.44133\lib\net46\Microsoft.Bot.Builder.History.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bot.Connector, Version=3.19.1.44133, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\Packages\Microsoft.Bot.Connector.3.19.1.44133\lib\net46\Microsoft.Bot.Connector.dll</HintPath>
