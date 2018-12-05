@@ -96,7 +96,7 @@ namespace Manufacturing.InventoryInfoBot.Helper
                 TotalCommited.Add(new AdaptiveTextBlock() { Text = total.Committed.ToString(), Weight = AdaptiveTextWeight.Default, Size = AdaptiveTextSize.Medium });
             }
             var RemainingList = new List<AdaptiveElement>();
-            RemainingList.Add(new AdaptiveTextBlock() { Text = "Availibile", Weight = AdaptiveTextWeight.Bolder, Size = AdaptiveTextSize.Medium, Wrap = true });
+            RemainingList.Add(new AdaptiveTextBlock() { Text = "Available", Weight = AdaptiveTextWeight.Bolder, Size = AdaptiveTextSize.Medium, Wrap = true });
             foreach (var total in product.locationList)
             {
                 int balance = total.Quantity - total.Committed;
@@ -289,7 +289,7 @@ namespace Manufacturing.InventoryInfoBot.Helper
                         new O365ConnectorCardFact("Location", product.Location),
                         new O365ConnectorCardFact("Total Inventory", product.Quantity.ToString()),
                         new O365ConnectorCardFact("Quantity committed",product.Committed.ToString()),
-                        new O365ConnectorCardFact("Quantity availibile",balanceItems.ToString()),
+                        new O365ConnectorCardFact("Quantity available",balanceItems.ToString()),
 
                     }
             };
