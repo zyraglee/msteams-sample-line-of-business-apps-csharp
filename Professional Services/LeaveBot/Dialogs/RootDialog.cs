@@ -558,7 +558,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Email;
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName;
         }
 
         private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)

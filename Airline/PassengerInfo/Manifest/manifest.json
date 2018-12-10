@@ -36,9 +36,6 @@
   "composeExtensions": [
     {
       "botId": "bcae082d-24e5-4f85-8b0b-07471c2619d7",
-      "scopes": [
-        "team"
-      ],
       "commands": [
         {
           "id": "search",
