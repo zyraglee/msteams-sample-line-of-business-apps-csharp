@@ -57,6 +57,7 @@ namespace Airline.FlightInfoBot.Web.Controllers
             {
                 case Constants.ShowFlights:
                     FlightInputDetails flightInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<FlightInputDetails>(o365CardQuery.Body);
+                    flightInfo.JourneyDate = flightInfo.JourneyDate + activity.LocalTimestamp.Value.Offset;
                     await ShowFlightInfo(flightInfo, replyActivity);
                     break;
                 case Constants.Rebook:
@@ -72,14 +73,14 @@ namespace Airline.FlightInfoBot.Web.Controllers
         }
         private static async Task ShowFlightInfo(FlightInputDetails flighinput, Activity replyActivity)
         {
-            DateTime local = flighinput.JourneyDate.ToLocalTime();
+            //DateTime local = flighinput.JourneyDate.ToUniversalTime();
 
             var list = await DocumentDBRepository<FlightInfo>.GetItemsAsync(d => d.FromCity == flighinput.From && d.ToCity == flighinput.To);/* && d.JourneyDate.ToShortDateString()==flighinput.JourneyDate.ToShortDateString());*/
 
             
             if (list.Count() > 0)
             {
-                var ListCard = AddListCardAttachment(replyActivity, list, flighinput.JourneyDate.Date);
+                var ListCard = AddListCardAttachment(replyActivity, list, flighinput.JourneyDate.ToUniversalTime().Date);
             }
             else
             {
