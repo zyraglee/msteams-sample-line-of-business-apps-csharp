@@ -53,25 +53,24 @@ namespace CrossVertical.PollingBot
             
             if (activity.Text == null)
                 activity.Text = string.Empty;
-            
-           
+                    
                 
                 if(activity.Text!=null)
                     message = Microsoft.Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant().Trim();
 
                 if (message.Equals("help") || message.Equals("hi") || message.Equals("hello"))
+            {
+                if (IsAdmin == true)
                 {
-                    if(IsAdmin==true)
-                    {
-                        await SendHelpMessage(context, activity);
-                    }
-                    else
-                    {
-                        await SendWelcomeMesssage(context, activity);
-                    }
-                    
+                    await SendHelpMessage(context, activity);
                 }
-                else if(activity.Value!=null && activity.Type!=message)
+                else
+                {
+                    await SendWelcomeMesssage(context, activity);
+                }
+                await AddDatabase(activity);
+            }
+            else if(activity.Value!=null && activity.Type!=message)
                 {
                     if (message == "create survey")
                     {
@@ -115,6 +114,24 @@ namespace CrossVertical.PollingBot
                     }
                 }
             
+        }
+
+        private static async Task AddDatabase(Activity activity)
+        {
+            UserDetails user = new UserDetails();
+            user.EmaildId = await GetUserEmailId(activity);
+            user.UserName = await GetUserName(activity);
+            user.UserId = activity.From.Id;
+            if (user.UserName != null)
+            {
+                user.UserName = user.UserName.Split(' ').FirstOrDefault();
+            }
+            user.Type = Helper.Constants.NewUser;
+            var existinguserRecord = await DocumentDBRepository.GetItemsAsync<UserDetails>(u => u.EmaildId == user.EmaildId && u.Type == Helper.Constants.NewUser);
+            if (existinguserRecord.Count() == 0)
+            {
+                var NewUserRecord = await DocumentDBRepository.CreateItemAsync(user);
+            }
         }
 
         private static async Task SetEmaployeeManager(IDialogContext context, Activity activity, InputDetails input)
@@ -374,6 +391,14 @@ namespace CrossVertical.PollingBot
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
             return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Email;
+        }
+
+        private static async Task<string> GetUserName(Activity activity)
+        {
+            // Fetch the members in the current conversation
+            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Name;
         }
         private static async Task GetFeedback(IDialogContext context, Activity activity, InputDetails input)
         {
