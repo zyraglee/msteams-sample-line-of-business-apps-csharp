@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ProfessionalServices.LeaveBot.Helpers;
 
 namespace ProfessionalServices.LeaveBot.Controllers
 {
@@ -138,7 +139,7 @@ namespace ProfessionalServices.LeaveBot.Controllers
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex);
+                            ErrorLogService.LogError(ex);
                         }
                     }
                 }

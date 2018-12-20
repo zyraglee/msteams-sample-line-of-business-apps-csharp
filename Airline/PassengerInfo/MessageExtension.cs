@@ -26,12 +26,12 @@ namespace Airline.PassengerInfo.Web
             var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "searchText");
             if (titleParam != null)
             {
-                title = titleParam.Value.ToString();
+                title = titleParam.Value.ToString().ToLower();
             }
 
             var attachments = new List<ComposeExtensionAttachment>();
 
-            var passengers = await DocumentDBRepository<Passenger>.GetItemsAsync(d => d != null && (d.Name.Contains(title) || d.Seat.Contains(title)));
+            var passengers = await DocumentDBRepository<Passenger>.GetItemsAsync(d => d != null && (d.Name.ToLower().Contains(title) || d.Seat.ToLower().Contains(title)));
 
 
             foreach (var passenger in passengers)

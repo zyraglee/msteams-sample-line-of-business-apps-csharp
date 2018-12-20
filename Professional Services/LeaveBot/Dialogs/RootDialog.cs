@@ -173,8 +173,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
-
+                        ErrorLogService.LogError(ex);
                     }
 
                     await context.PostAsync(reply);
@@ -477,7 +476,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                     else
                     {
                         var reply = activity.CreateReply();
-                        reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below";
+                        reply.Text = "Your leave request has been successfully submitted to your manager! Please review your details below:";
                         await context.PostAsync(reply);
 
                         var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(employeeCardReply);
@@ -510,7 +509,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
 
             var msg = context.MakeMessage();
-            msg.Text = "Please set your manager so that we can send leaves for approval.";
+            msg.Text = "Please enter manager email ID for leave approval";
             msg.Attachments.Add(card);
             await context.PostAsync(msg);
         }
@@ -559,12 +558,12 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().Email;
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName;
         }
 
         private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
         {
-            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName, "In order to use Leave Bot we need your basic deatils, Please sign in", "Sign In", true).ConfigureAwait(false);
+            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName, "In order to use Leave Bot we need your basic details, Please sign in", "Sign In", true).ConfigureAwait(false);
             await context.PostAsync(reply);
 
             context.Wait(WaitForToken);
@@ -579,6 +578,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             {
                 // Use the token to do exciting things!
                 await AddUserToDatabase(context, tokenResponse);
+                context.Wait(MessageReceivedAsync);
             }
             else
             {
@@ -596,7 +596,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex);
+                            ErrorLogService.LogError(ex);
                         }
 
                         context.Wait(MessageReceivedAsync);
@@ -637,7 +637,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                ErrorLogService.LogError(ex);
                 profilePhotoUrl = null;
             }
 
@@ -735,6 +735,8 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             catch (Exception ex)
             {
                 // Handle the error.
+                ErrorLogService.LogError(ex);
+
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;
                 await context.PostAsync(msg);
@@ -773,6 +775,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             }
             catch (Exception ex)
             {
+                ErrorLogService.LogError(ex);
                 // Handle the error.
                 var msg = context.MakeMessage();
                 msg.Text = ex.Message;

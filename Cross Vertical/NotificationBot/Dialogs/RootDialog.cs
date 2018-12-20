@@ -6,6 +6,7 @@ using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CrossVertical.NotificationBot
@@ -33,15 +34,14 @@ namespace CrossVertical.NotificationBot
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
                 var channelData = message.GetChannelData<TeamsChannelData>();
-                IList<ChannelAccount> members = null;
-                if (channelData.Team != null)
-                {
-                    members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
-                }
+                IList<ChannelAccount> members = await GetAllMembers(connector, channelData);
 
                 Activity reply = message.CreateReply();
                 var actionId = Guid.NewGuid().ToString();
                 reply.Attachments.Add(GetWelcomeMessage(actionId, members));
+
+                if (members != null)
+                    context.ConversationData.SetValue(channelData.Channel.Id, members.Select(m => m.Id).ToList());
 
                 var msgToUpdate = await connector.Conversations.ReplyToActivityAsync(reply);
                 context.ConversationData.SetValue(actionId, msgToUpdate.Id);
@@ -49,6 +49,17 @@ namespace CrossVertical.NotificationBot
             }
 
             context.Wait(MessageReceivedAsync);
+        }
+
+        private static async Task<IList<ChannelAccount>> GetAllMembers(ConnectorClient connector, TeamsChannelData channelData)
+        {
+            IList<ChannelAccount> members = null;
+            if (channelData.Team != null)
+            {
+                members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+            }
+
+            return members;
         }
 
         private async Task HandleConnectorAction(IDialogContext context, Activity message)
@@ -93,26 +104,38 @@ namespace CrossVertical.NotificationBot
                 context.ConversationData.RemoveValue(actionInfo.ActionId);
                 if (privateStorage.ContainsKey(actionInfo.ActionId))
                     privateStorage.Remove(actionInfo.ActionId);
-            }
-            else
-            {
-                await connector.Conversations.SendToConversationAsync(reply);
-            }
 
-            if (!string.IsNullOrEmpty(actionInfo.Members)) // Send private messages.
-            {
-                // Send private message to these users.
-                var members = actionInfo.Members.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var memberId in members)
+                // Send private messages.
+                if (!string.IsNullOrEmpty(actionInfo.Members))
                 {
-                    // Create or get existing chat conversation with user
-                    try
+                    // Send private message to these users.
+                    var members = actionInfo.Members.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (members.Any(x => x.Contains("ALL TEAM")))
                     {
-                        await SendNotification(context, reply, memberId, actionInfo.Value);
+                        // Provide option to send message to all members.
+                        var channelData = message.GetChannelData<TeamsChannelData>();
+                        if (context.ConversationData.ContainsKey(channelData.Channel.Id))
+                        {
+                            members = context.ConversationData.GetValue<List<string>>(channelData.Channel.Id).ToArray();
+                            context.ConversationData.RemoveValue(channelData.Channel.Id);
+                        }
+                        else
+                        {
+                            IList<ChannelAccount> allMembers = await GetAllMembers(connector, channelData);
+                            members = allMembers.Select(m => m.Id).ToArray();
+                        }
                     }
-                    catch (Exception ex)
+                    foreach (var memberId in members)
                     {
-                        Console.WriteLine(ex);
+                        // Create or get existing chat conversation with user
+                        try
+                        {
+                            await SendNotification(context, reply, memberId, actionInfo.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
                     }
                 }
             }
@@ -141,7 +164,7 @@ namespace CrossVertical.NotificationBot
             var replyMessage = Activity.CreateMessageActivity();
             replyMessage.From = new ChannelAccount(botId, botName);
             replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
-            replyMessage.ChannelData = new TeamsChannelData() {  Notification = new NotificationInfo(true) };
+            replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
 
             switch (notificationType)
             {
@@ -168,6 +191,7 @@ namespace CrossVertical.NotificationBot
             }
             catch (Exception ex)
             {
+                // Log the exception.
                 Console.WriteLine(ex);
             }
         }
@@ -321,6 +345,9 @@ namespace CrossVertical.NotificationBot
                     ,
                     "compact"
                     , true);
+
+                memberSelection.Choices.Add(new O365ConnectorCardMultichoiceInputChoice("ALL TEAM", "ALL TEAM"));
+
                 foreach (var member in members)
                 {
                     var nameParts = member.Name.Split(' ');
@@ -342,7 +369,7 @@ namespace CrossVertical.NotificationBot
             O365ConnectorCard card = new O365ConnectorCard()
             {
                 ThemeColor = "#E67A9E",
-                Title = "Welcome to Notification bot",
+                Title = "Welcome to Notification Bot",
                 Summary = "",
                 Sections = new List<O365ConnectorCardSection> { section },
                 PotentialAction = new List<O365ConnectorCardActionBase>

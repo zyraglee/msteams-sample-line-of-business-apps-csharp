@@ -21,7 +21,7 @@ namespace Airline.FlightInfoBot.Web.Helper
             int count = 0;
             foreach (var flight in flights)
             {
-                DateTime journeydate = JourneyDate.Date.AddDays(1);
+                DateTime journeydate = JourneyDate.Date;//.AddDays(1);
                 DateTime dabasedate =(flight.JourneyDate.Date);
                 if (journeydate.Date == dabasedate.Date)
                 {
