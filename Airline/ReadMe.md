@@ -1,21 +1,22 @@
-## Baggage Information:
+## Baggage information bot:
 
-This will help complete the below:
+The Baggage information bot will help Airline staff complete the following tasks:
+
 * Check baggage status
 * Track current location
 * Re-assign baggage
-* Report missing
+* Report missing baggage
 
-This is applicable when a passenger is enquiring an airline staff about the baggage status or when there is a need to reassign baggage when a passenger is rebooked on another flight due to reasons like flight overbooked, 
-passenger unfit etc. 
+This is applicable in scenarios when passengers inquire about their baggage status or when there is a need to reassign baggage when a passenger is rebooked on another flight due to reasons like flight overbooking, passenger unfit to fly, etc.
 
-
-The sample data to be given as input is mentioned as Ex: in each input box.  
-
+The data entered in each input box is marked as “Ex” in the instance below.
 
 ![1](Images/1.png)
 
- 
+ Once the user starts interacting with the “BaggageInfo ” Bot, the above message will be populated on the screen. 
+
+It displays three options for the user: “Baggage by PNR”, Baggage by Ticket#”, and “Baggage by Passenger Name”
+
 
 ## Fleet Information:
 
