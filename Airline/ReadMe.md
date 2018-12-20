@@ -17,6 +17,19 @@ The data entered in each input box is marked as “Ex” in the instance below.
 
 It displays three options for the user: “Baggage by PNR”, Baggage by Ticket#”, and “Baggage by Passenger Name”
 
+![21](Images/21.png)
+
+Once the Baggage by PNR is selected, Bot provides three options to the user. Clicking on Show Baggage Details, below screen will be displayed: 
+
+![22](Images/22.png)
+
+![23](Images/23.png)
+
+Two options are provided to the user: “Rebook Baggage” and “Report Missing, clicking on “Report Missing” will display the information.
+
+![24](Images/24.png)
+
+Clicking on “Rebook Baggage” will display the flight information on which the baggage has been reassigned.
 
 ## Fleet Information:
 
