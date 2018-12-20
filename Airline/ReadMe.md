@@ -61,22 +61,37 @@ Clicking on “Assign the new aircraft” will change the status to “assigned” as sh
 
 ## Flight Information:
 
-This is used to get a glance of the flights between two locations across dates and also their availability. This can be used to rebook a passenger or in general to look up details of a particular flight. The sample data to be given as input is mentioned as Ex: in each input box. 
-
+The Flight info bot offers insight into flight information such as destination, dates, and aircraft availability. This information can be used to rebook a passenger or to look up the travel details for a given flight. The data to be entered in each input box is marked as “Ex” in the instance below:
  
-![1](Images/5.png)
+![41](Images/41.png)
 
-![1](Images/6.png)
- 
+Above message and screen appears once the user starts the conversation  with the bot.
 
+![42](Images/42.png)
+
+Enter the departure and arrival destinations and the initial trip date and click on “Show  flights”
+
+![43](Images/43.png)
+
+Flight options are displayed based on the inputs entered (shown in screenshot above).
+
+![44](Images/44.png)
+
+Upon click on any of the available flights, bot provides the details  of the flight and user needs to enter the PNR#. Once the PNR# is entered”, Rebook the Passenger” CTA is enabled. Click on the CTA and the passenger with the respective PNR will be rebooked on the selected flight.
 
 
 ## Passenger Information:
 
-This has a bot and message extension to look up details about passengers on a flight. Has various scenarios to look up like those requiring special assistance, those with membership etc. 
-
+This application has a bot and message extension to look up details about passengers on a flight. It can help in various scenarios including looking up passengers requiring special assistance, those enrolled in loyalty programs, etc.
  
+![51](Images/51.png)
  
-![1](Images/7.png)
+Above message and screen appears once the user initiates chat with “PassengerInfoBot”.  CTA options available for selection are: “See All Passengers”, “See Frequent Flyers”, “Passengers with Special Assistance”, “Passengers by Zone”, and ‘Passengers by Seat#”
 
-![1](Images/8.png)
+![52](Images/52.png)
+
+Given the user selected “See All Passengers”, bot displays the list of passengers in  the flight.
+
+![53](Images/53.png)
+
+If the user is interested in seeing passenger details for those who require special assistance, they can select that option and the information will displayed (screenshot above).
