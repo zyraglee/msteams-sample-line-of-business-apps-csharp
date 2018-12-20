@@ -36,7 +36,7 @@ Scenario 3: Personal leave board 
 
 This board gives a quick overview of everything related to one's history of leave requests, status, etc.
  
-![41](Images/41.png)
+![45](Images/45.png)
 
 Manager Workflow
 
