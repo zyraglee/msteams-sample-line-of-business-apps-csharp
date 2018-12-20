@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using CrossVertical.PollingBot.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -29,6 +30,9 @@ namespace CrossVertical.PollingBot
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //register your filter with Web API pipeline
+            GlobalConfiguration.Configuration.Filters.Add(new LogExceptionFilterAttribute());
         }
     }
 }

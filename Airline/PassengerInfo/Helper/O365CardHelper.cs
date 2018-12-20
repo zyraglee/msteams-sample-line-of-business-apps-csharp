@@ -51,8 +51,9 @@ namespace Airline.PassengerInfo.Web.Helper
             {
                 Title = passenger.Name,
                 Text = "Seat: " + passenger.Seat + (passenger.LoyaltyStatus == LoyaltyStatus.None ? "" : $" | {passenger.LoyaltyStatus.ToString()} member") + (string.IsNullOrEmpty(passenger.SpecialAssistance) ? "" : " | Special Assistance Required"),
-                Images = { new CardImage(BaseUrl + $"/public/resources/{GetPictureName(passenger.Name)}.jpg") }
             };
+            preview.Images = new List<CardImage>();
+            preview.Images.Add(new CardImage(BaseUrl + $"/public/resources/{GetPictureName(passenger.Name)}.jpg"));
             return preview;
         }
 
