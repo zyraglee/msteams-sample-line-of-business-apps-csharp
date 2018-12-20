@@ -1,10 +1,19 @@
 ## Inventory bot
 
-This bot lets the user choose from a industry & display the relevant inventories available across different locations. 
-It also allows the user to block inventory for a particular project and also request re-ordering of inventory if required. 
- 
-![1](Images/1.png)
+Scenario 1: View inventory List <br>
 
-![2](Images/2.png)
+The bot lets the user choose an industry and display the relevant inventories available across different locations. 
 
-![3](Images/3.png)
+![21](Images/21.png)
+
+Scenario 2: Check product details <br>
+
+Choose a product from the inventory list to view its details. The bot displays quantity of product in stock along with certain actions the user can take (block inventory, add inventory, re-order inventory).
+
+![22](Images/22.png)
+
+Scenario 3: Perform inventory updates <br>
+
+The bot allows user to specify required quantity and location where the inventory change is to be done. The bot updates the changes and refreshes the card to show new quantities
+
+![23](Images/23.png)
