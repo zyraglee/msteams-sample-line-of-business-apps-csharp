@@ -1,5 +1,6 @@
 ﻿using CrossVertical.Announcement.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CrossVertical.Announcement.Repository
@@ -13,9 +14,22 @@ namespace CrossVertical.Announcement.Repository
         public static DBCache<Campaign> Announcements { get; set; } = new DBCache<Campaign>();
     }
 
-    public class DBCache<T> where T : class
+    public class DBCache<T> where T : DatabaseItem
     {
         private Dictionary<string, T> CachedItems { get; set; } = new Dictionary<string, T>();
+
+        public async Task<List<T>> GetAllItemsAsync()
+        {
+            if (CachedItems.Count == 0) // Try to fetch from DB.
+            {
+                var items = await DocumentDBRepository.GetItemsAsync<T>(u => u.Type == typeof(T).Name);
+                foreach (T item in items)
+                {
+                    CachedItems.Add(item.Id, item);
+                }
+            }
+            return CachedItems.Values.ToList();
+        }
 
         public async Task<T> GetItemAsync(string id)
         {

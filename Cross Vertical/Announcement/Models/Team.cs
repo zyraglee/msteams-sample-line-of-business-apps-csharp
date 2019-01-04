@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 namespace CrossVertical.Announcement.Models
 {
-    public class Team
+    public class Team : DatabaseItem
     {
         [JsonProperty("type")]
-        public string Type { get; set; } = nameof(Team);
-
-        public string Id { get; set; }
+        public override string Type { get; set; } = nameof(Team);
 
         public string Name { get; set; }
 

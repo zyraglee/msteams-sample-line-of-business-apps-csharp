@@ -158,15 +158,15 @@ namespace CrossVertical.Announcement.Dialogs
                 userDetails = new User()
                 {
                     BotConversationId = activity.From.Id,
-                    EmailId = userEmailId,
+                    Id = userEmailId,
                     Name = activity.From.Name
                 };
-                await Cache.Users.AddOrUpdateItemAsync(userDetails.EmailId, userDetails);
+                await Cache.Users.AddOrUpdateItemAsync(userDetails.Id, userDetails);
 
                 Tenant tenantData = await CheckAndAddTenantDetails(channelData);
-                if (!tenantData.Users.Contains(userDetails.EmailId))
+                if (!tenantData.Users.Contains(userDetails.Id))
                 {
-                    tenantData.Users.Add(userDetails.EmailId);
+                    tenantData.Users.Add(userDetails.Id);
                     await Cache.Tenants.AddOrUpdateItemAsync(tenantData.Id, tenantData);
                 }
             }
@@ -230,7 +230,8 @@ namespace CrossVertical.Announcement.Dialogs
                     await SendConfigurationCard(context, activity, channelData);
                     break;
                 case Constants.SendAnnouncement:
-                    await SendAnnouncement(context, activity, channelData);
+                case Constants.ScheduleAnnouncement:
+                    await SendOrScheduleAnnouncement(type, context, activity, channelData);
                     break;
                 case Constants.Acknowledge:
                     await SaveAcknowledgement(context, activity, channelData);
@@ -271,7 +272,7 @@ namespace CrossVertical.Announcement.Dialogs
             foreach (var announcementId in tenatInfo.Announcements)
             {
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
-                if (announcement != null && announcement.Status == Status.Draft)
+                if (announcement != null && (announcement.Status == Status.Draft || announcement.Status == Status.Scheduled))
                 {
                     var item = new Item
                     {
@@ -280,7 +281,7 @@ namespace CrossVertical.Announcement.Dialogs
                         id = announcement.Id,
                         title = announcement.Title,
                         subtitle = "Author: " + announcement.Author?.Name
-                             + $" | Created Date: {announcement.CreatedTime.ToShortDateString()}",
+                             + $" | Created Date: {announcement.CreatedTime.ToShortDateString()} | { (announcement.Status == Status.Scheduled ? "Scheduled" : "Draft") }",
                         tap = new Tap()
                         {
                             type = ActionTypes.MessageBack,
@@ -346,7 +347,7 @@ namespace CrossVertical.Announcement.Dialogs
             }
         }
 
-        private async Task SendAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData)
+        private async Task SendOrScheduleAnnouncement(string type, IDialogContext context, Activity activity, TeamsChannelData channelData)
         {
             // Get all the details for announcement.
             var details = JsonConvert.DeserializeObject<AnnouncementActionDetails>(activity.Value.ToString());
@@ -362,7 +363,7 @@ namespace CrossVertical.Announcement.Dialogs
                 await context.PostAsync("This announcement is already sent and can not be resent. Please create new announcement.");
                 return;
             }
-            else
+            else if (type == Constants.SendAnnouncement)
                 await context.PostAsync("Please wait while we send this announcement to all recipients.");
 
             if (campaign.Recipients.Channels.Count == 0 && campaign.Recipients.Groups.Count == 0)
@@ -371,89 +372,10 @@ namespace CrossVertical.Announcement.Dialogs
                 return;
             }
 
-            var card = campaign.GetPreviewCard().ToAttachment();
-
-            int successCount = 0;
-            int failureCount = 0;
-            int duplicateUsers = 0;
-            List<string> notifiedUsers = new List<string>();
-            foreach (var group in campaign.Recipients.Groups)
-            {
-                foreach (var recipient in group.Users)
-                {
-                    var user = await Cache.Users.GetItemAsync(recipient.Id);
-                    if (user == null)
-                    {
-                        recipient.FailureMessage = "App not installed";
-                        failureCount++;
-                        await context.PostAsync("App not installed " + recipient.Id);
-                    }
-                    else
-                    {
-                        if (notifiedUsers.Contains(recipient.Id))
-                        {
-                            recipient.FailureMessage = "Duplicated. Message already sent.";
-                            duplicateUsers++;
-                            continue;
-                        }
-
-                        var campaignCard = AdaptiveCardDesigns.GetCardWithAcknowledgementDetails(card, campaign.Id, user.EmailId, group.GroupId);
-                        var response = await SendNotification(activity.ServiceUrl, channelData.Tenant.Id, user.BotConversationId, null, card);
-                        if (response.IsSuccessful)
-                        {
-                            recipient.MessageId = response.MessageId;
-                            successCount++;
-                            notifiedUsers.Add(recipient.Id);
-                        }
-                        else
-                        {
-                            recipient.FailureMessage = response.FailureMessage;
-                            failureCount++;
-                            await context.PostAsync($"User: {user.Name}. Error: " + recipient.FailureMessage);
-                        }
-                    }
-                }
-            }
-
-            foreach (var recipient in campaign.Recipients.Channels)
-            {
-                var team = await Cache.Teams.GetItemAsync(recipient.TeamId);
-                if (team == null)
-                {
-                    recipient.Channel.FailureMessage = "App not installed";
-                    failureCount++;
-                    await context.PostAsync("App not installed " + recipient.TeamId);
-                }
-                else
-                {
-                    var campaignCard = AdaptiveCardDesigns.GetCardWithoutAcknowledgementAction(card);
-
-                    if (notifiedUsers.Contains(recipient.Channel.Id))
-                    {
-                        recipient.Channel.FailureMessage = "Duplicated. Message already sent.";
-                        duplicateUsers++;
-                        continue;
-                    }
-
-                    var response = await SendChannelNotification(activity.From, activity.ServiceUrl, recipient.Channel.Id, null, card);
-                    if (response.IsSuccessful)
-                    {
-                        recipient.Channel.MessageId = response.MessageId;
-                        successCount++;
-                        notifiedUsers.Add(recipient.Channel.Id);
-                    }
-                    else
-                    {
-                        recipient.Channel.FailureMessage = response.FailureMessage;
-                        failureCount++;
-                        await context.PostAsync($"Team: {team.Name}. Error: " + recipient.Channel.FailureMessage);
-                    }
-                }
-            }
-
-            await context.PostAsync($"Process completed. Successful: {successCount}. Failure: {failureCount}. Duplicate: {duplicateUsers}");
-            campaign.Status = Status.Sent;
-            await Cache.Announcements.AddOrUpdateItemAsync(campaign.Id, campaign);
+            if (type == Constants.SendAnnouncement)
+                await SendAnnouncement(context, activity, channelData, campaign);
+            else
+                await ScheduleAnnouncement(context, activity, channelData, campaign);
 
             var oldAnnouncementDetails = context.ConversationData.GetValueOrDefault<PreviewCardMessageDetails>(campaign.Id);
             if (oldAnnouncementDetails != null)
@@ -464,16 +386,58 @@ namespace CrossVertical.Announcement.Dialogs
                 var updateCard = campaign.GetPreviewCard().ToAttachment();
 
                 var updateMessage = context.MakeMessage();
-                updateMessage.Attachments.Add(AdaptiveCardDesigns.GetCardToUpdatePreviewCard(updateCard));
+
+                updateMessage.Attachments.Add(AdaptiveCardDesigns.GetCardToUpdatePreviewCard(updateCard,
+                    $"Note: This announcement is { (type == Constants.SendAnnouncement ? "sent" : "scheduled") } successfully."));
                 await connectorClient.Conversations.UpdateActivityAsync(activity.Conversation.Id, oldAnnouncementDetails.MessageCardId, (Activity)updateMessage);
 
                 // Update action card.
-                var updateAnnouncement = AdaptiveCardDesigns.GetUpdateMessageCard("We have send this announcement successfully. Please create new announcement to send again.");
+                var message = type == Constants.SendAnnouncement ? "We have send this announcement successfully. Please create new announcement to send again." :
+                    $"We have scheduled this announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}. Note that announcements scheduled for past date will be sent immediately.";
+
+                var updateAnnouncement = AdaptiveCardDesigns.GetUpdateMessageCard(message);
                 updateMessage = context.MakeMessage();
                 updateMessage.Attachments.Add(updateAnnouncement);
                 await connectorClient.Conversations.UpdateActivityAsync(activity.Conversation.Id, oldAnnouncementDetails.MessageActionId, (Activity)updateMessage);
                 context.ConversationData.RemoveValue(campaign.Id);
             }
+        }
+
+        private static async Task ScheduleAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData, Campaign campaign)
+        {
+            // Get all the details for announcement.
+            var details = JsonConvert.DeserializeObject<ScheduleAnnouncementActionDetails>(activity.Value.ToString());
+            var dateTime = DateTime.Parse(details.Date + " " + details.Time);
+            var offset = activity.LocalTimestamp.Value.Offset;
+            DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime, offset);
+            if (campaign.Schedule == null)
+                campaign.Schedule = new Models.Schedule()
+                {
+                    ScheduleId = string.Empty
+                };
+            campaign.Schedule.ScheduledTime = dateTimeOffset;
+            var scheduleDate = campaign.Schedule.GetScheduleTimeUTC(); // Handle timezone differences.
+            if (!Scheduler.UpdateSchedule(campaign.Schedule.ScheduleId, scheduleDate))
+            {
+                campaign.Schedule.ScheduleId = Scheduler.AddSchedule(
+                       scheduleDate,
+                       new AnnouncementSender()
+                       {
+                           AnnouncementId = campaign.Id
+                       }.Execute);
+            }
+
+
+            campaign.Status = Status.Scheduled;
+            await Cache.Announcements.AddOrUpdateItemAsync(campaign.Id, campaign);
+        }
+
+        private static async Task SendAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData, Campaign campaign)
+        {
+            await AnnouncementSender.SendAnnouncement(campaign);
+            campaign.Status = Status.Sent;
+            await Cache.Announcements.AddOrUpdateItemAsync(campaign.Id, campaign);
+
         }
 
         private async Task CreateOrEditAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData)
@@ -509,7 +473,11 @@ namespace CrossVertical.Announcement.Dialogs
 
                 // Send action buttons.
                 reply = activity.CreateReply();
-                reply.Attachments.Add(AdaptiveCardDesigns.GetConfirmationCard(campaign.Id));
+                DateTimeOffset dateTimeOffset = activity.LocalTimestamp.Value.AddHours(1);
+                if (campaign.Schedule != null)
+                    dateTimeOffset = campaign.Schedule.ScheduledTime;
+
+                reply.Attachments.Add(AdaptiveCardDesigns.GetConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm")));
                 messageResouce = await connector.Conversations.SendToConversationAsync(reply);
                 previewMessageDetails.MessageActionId = messageResouce.Id;
                 context.ConversationData.SetValue(campaign.Id, previewMessageDetails);
@@ -579,7 +547,12 @@ namespace CrossVertical.Announcement.Dialogs
             announcement.Id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id; // Assing the Existing Announcement Id
             announcement.TenantId = tenantId;
 
-            var recipients = new RecipientInfo();
+            var recipients = new RecipientInfo
+            {
+                ServiceUrl = activity.ServiceUrl,
+                TenantId = tenantId
+            };
+
             if (data.Channels != null)
             {
                 var channels = data.Channels.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -647,76 +620,5 @@ namespace CrossVertical.Announcement.Dialogs
 
             return announcement;
         }
-
-        public static async Task<NotificationSendStatus> SendNotification(string serviceUrl, string tenantId, string userId, string messageText, Attachment attachment)
-        {
-            var connectorClient = new ConnectorClient(new Uri(serviceUrl));
-
-            var parameters = new ConversationParameters
-            {
-                Members = new ChannelAccount[] { new ChannelAccount(userId) },
-                ChannelData = new TeamsChannelData
-                {
-                    Tenant = new TenantInfo(tenantId),
-                    Notification = new NotificationInfo() { Alert = true }
-                }
-            };
-
-            try
-            {
-                var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
-                var replyMessage = Activity.CreateMessageActivity();
-                replyMessage.Conversation = new ConversationAccount(id: conversationResource.Id.ToString());
-                replyMessage.ChannelData = new TeamsChannelData() { Notification = new NotificationInfo(true) };
-                replyMessage.Text = messageText;
-                if (attachment != null)
-                    replyMessage.Attachments.Add(attachment);
-
-                var resourceResponse = await connectorClient.Conversations.SendToConversationAsync(conversationResource.Id, (Activity)replyMessage);
-                return new NotificationSendStatus() { MessageId = resourceResponse.Id, IsSuccessful = true };
-
-            }
-            catch (Exception ex)
-            {
-                // Handle the error.
-                ErrorLogService.LogError(ex);
-                return new NotificationSendStatus() { IsSuccessful = false, FailureMessage = ex.Message };
-            }
-        }
-
-        private static async Task<NotificationSendStatus> SendChannelNotification(ChannelAccount botAccount, string serviceUrl, string channelId, string messageText, Attachment attachment)
-        {
-            try
-            {
-                var replyMessage = Activity.CreateMessageActivity();
-                replyMessage.Text = messageText;
-
-                if (attachment != null)
-                    replyMessage.Attachments.Add(attachment);
-
-                var connectorClient = new ConnectorClient(new Uri(serviceUrl));
-
-                var parameters = new ConversationParameters
-                {
-                    Bot = botAccount,
-                    ChannelData = new TeamsChannelData
-                    {
-                        Channel = new ChannelInfo(channelId),
-                        Notification = new NotificationInfo() { Alert = true }
-                    },
-                    IsGroup = true,
-                    Activity = (Activity)replyMessage
-                };
-
-                var conversationResource = await connectorClient.Conversations.CreateConversationAsync(parameters);
-                return new NotificationSendStatus() { MessageId = conversationResource.Id, IsSuccessful = true };
-            }
-            catch (Exception ex)
-            {
-                ErrorLogService.LogError(ex);
-                return new NotificationSendStatus() { IsSuccessful = false, FailureMessage = ex.Message };
-            }
-        }
-
     }
 }

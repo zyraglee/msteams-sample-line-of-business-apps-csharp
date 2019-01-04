@@ -469,44 +469,6 @@ namespace CrossVertical.Announcement.Models
                 },
                 Actions = new List<AdaptiveAction>()
                 {
-                    //new AdaptiveShowCardAction()
-                    //{
-                    //    Title="⏱️ Schedule",
-                    //    Card=new AdaptiveCard()
-                    //    {
-                    //        Body=new List<AdaptiveElement>()
-                    //        {
-                    //            new AdaptiveContainer()
-                    //            {
-                    //                Items=new List<AdaptiveElement>()
-                    //                {
-                    //                    new AdaptiveTextBlock()
-                    //                    {
-                    //                        Text="Schedule your anouncement here"
-                    //                    },
-                    //                    new AdaptiveDateInput()
-                    //                    {
-                    //                        Id = "Date",
-                    //                        Placeholder="Select Date"
-                    //                    },
-                    //                    new AdaptiveTimeInput()
-                    //                    {
-                    //                        Id = "Time",
-                    //                        Placeholder="Select time"
-                    //                    }
-                    //                }
-                    //            }
-                    //        },
-                    //        Actions=new List<AdaptiveAction>()
-                    //        {
-                    //          new AdaptiveSubmitAction()
-                    //          {
-                    //              Title="Submit",
-                    //              Data = new ActionDetails(){  ActionType = Constants.CreateAnnouncement}
-                    //          }
-                    //        }
-                    //    }
-                    //},
                     new AdaptiveSubmitAction()
                     {
                         Title="✔️ Submit",
@@ -514,11 +476,6 @@ namespace CrossVertical.Announcement.Models
                         new AnnouncementActionDetails(){  ActionType = Constants.CreateOrEditAnnouncement, Id = Id }
                         :new ActionDetails(){  ActionType = Constants.CreateOrEditAnnouncement }
                     },
-                    // new AdaptiveSubmitAction()
-                    //{
-                    //    Title="⏱️ Schedule",
-                    //    Data = new ActionDetails(){  ActionType = Constants.ScheduleAnnouncement }
-                    //},
                     new AdaptiveSubmitAction()
                     {
                         Title="❌ Cancel",

@@ -15,6 +15,13 @@ namespace CrossVertical.Announcement.Models
         public string Id { get; set; }
     }
 
+    public class ScheduleAnnouncementActionDetails : AnnouncementActionDetails
+    {
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+    }
+
     public class AnnouncementAcknowledgeActionDetails : AnnouncementActionDetails
     {
         public string GroupId { get; set; }

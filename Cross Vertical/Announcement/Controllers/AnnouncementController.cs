@@ -100,20 +100,20 @@ namespace CrossVertical.Announcement.Controllers
         [Route("create")]
         public async Task<ActionResult> Create(string Emailid)
         {
-            User user1 = new User() { BotConversationId = "id1", EmailId = "user@microsoft.com", Name = "User 1" };
-            User user2 = new User() { BotConversationId = "id2", EmailId = "user2@microsoft.com", Name = "User 2" };
-            User user3 = new User() { BotConversationId = "id3", EmailId = "user3@microsoft.com", Name = "User 3" };
+            User user1 = new User() { BotConversationId = "id1", Id = "user@microsoft.com", Name = "User 1" };
+            User user2 = new User() { BotConversationId = "id2", Id = "user2@microsoft.com", Name = "User 2" };
+            User user3 = new User() { BotConversationId = "id3", Id = "user3@microsoft.com", Name = "User 3" };
             Group group1 = new Group()
             {
                 Id = "GroupId1",
                 Name = "Group 1",
-                Users = new List<string>() { user1.EmailId, user2.EmailId }
+                Users = new List<string>() { user1.Id, user2.Id }
             };
             Group group2 = new Group()
             {
                 Id = "GroupId2",
                 Name = "Group 2",
-                Users = new List<string>() { user2.EmailId, user3.EmailId }
+                Users = new List<string>() { user2.Id, user3.Id }
             };
 
             Team team1 = new Team()
@@ -144,7 +144,7 @@ namespace CrossVertical.Announcement.Controllers
             {
                 Id = "Tenant1",
                 Groups = new List<string>() { group1.Id, group2.Id },
-                Users = new List<string>() { user1.EmailId, user2.EmailId, user3.EmailId },
+                Users = new List<string>() { user1.Id, user2.Id, user3.Id },
                 Teams = new List<string>() { team1.Id, team2.Id }
             };
 
@@ -193,11 +193,11 @@ namespace CrossVertical.Announcement.Controllers
                 Users = new List<RecipientDetails>() {
                     new RecipientDetails()
                     {
-                        Id = user1.EmailId,
+                        Id = user1.Id,
                     },
                     new RecipientDetails()
                     {
-                        Id = user2.EmailId,
+                        Id = user2.Id,
                     },
                 }
             });

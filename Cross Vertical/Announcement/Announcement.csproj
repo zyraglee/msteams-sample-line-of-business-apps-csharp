@@ -278,10 +278,14 @@
     </Compile>
     <Compile Include="Helpers\AdaptiveCardHelper.cs" />
     <Compile Include="Helpers\AdaptiveCardDesigns.cs" />
+    <Compile Include="Helpers\AnnouncementScheduler.cs" />
+    <Compile Include="Helpers\AnnouncementSender.cs" />
     <Compile Include="Helpers\ApplicationSettings.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
     <Compile Include="Helpers\ExceptionLogger.cs" />
+    <Compile Include="Helpers\ProactiveMessageHelper.cs" />
+    <Compile Include="Helpers\Scheduler.cs" />
     <Compile Include="Helpers\SimpleGraphClient.cs" />
     <Compile Include="Models\ActionButtonInputDetails.cs" />
     <Compile Include="Models\Author.cs" />
@@ -291,6 +295,7 @@
     <Compile Include="Models\CampaignAdaptiveCard.cs" />
     <Compile Include="Models\CardActionValue.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\DatabaseItem.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\ListCard.cs" />
     <Compile Include="Models\MessageSensitivity.cs" />
