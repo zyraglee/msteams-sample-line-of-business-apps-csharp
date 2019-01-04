@@ -1,0 +1,379 @@
+﻿@model IEnumerable<CrossVertical.Announcement.Models.PostDetails>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <title></title>
+    <style>
+        .date {
+            height: 16px;
+            width: 25px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 10px;
+        }
+
+        .day {
+            height: 16px;
+            width: 21px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 15px;
+        }
+
+        .event {
+            height: 16px;
+            width: 29px;
+            color: rgba(37,36,36,0.65);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            line-height: 16px;
+            padding: 15px;
+        }
+
+        .row-date {
+            height: 25px;
+            width:32%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px;
+        }
+
+        .row-day {
+            height: 15px;
+            width:32%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .row-event {
+            height: 15px;
+            width:16%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            padding: 6px;
+        }
+        .row-last {
+            height: 15px;
+            width: 8%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            /*padding: 6px;*/
+            padding-left:0px;
+        }
+
+
+
+        .containers {
+            background-color: #f3f2f1;
+            width: 100%;
+            height: 100%;
+            overflow: scroll;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .panel-group {
+            width: 100%;
+            opacity: 1.5;
+            border: 10px solid transparent;
+            display: block;
+            margin: 10px auto;
+            border: 1px solid transparent;
+        }
+
+        .rect {
+            float: right;
+            height: 32px;
+            width: 100px;
+            color: white;
+            border: 1px solid rgba(37,36,36,0.15);
+            border-radius: 2px;
+            background-color: #6264A7;
+            box-shadow: 0 2px 4px -0.75px rgba(0,0,0,0.1);
+            font-family: "Segoe UI";
+            font-size: 12px;
+            margin-right: 2px;
+        }
+        
+
+        .body {
+            background-color: #f3f2f1;
+            width: 100%
+        }
+
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            font-weight:500;
+            padding: 4px;
+        }
+        td {
+            padding: 4px;
+        }
+
+        .glyphicon {
+            font-size: 12px;
+        }
+
+        .rowstyle {
+            background-color: white;
+            border-bottom: 2px solid #f3f2f1;
+            width: 100%;
+            padding: 6px;
+            left: 0;
+            right: 0;
+        }
+        .btn-primary{
+            background-color:white;
+            color:black;
+            font-size:12px;
+            border:0px;
+        }
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+        .row-line{
+            width:10%;
+        }
+        .imgstyle {
+            font-size:14px;
+            height:15px;
+            opacity:0.8;
+            vertical-align:bottom;
+        }
+        .imgstyle:hover{
+            background-color:#f3f2f1;
+        }
+       
+        
+    </style>
+</head>
+<body class="body">
+    
+    <div class="containers">
+        
+        <span><button class="rect"><i style="font-size:10px" class="glyphicon glyphicon-edit"></i>  New Post</button></span>
+        <br />
+        <div class="panel-group">
+            <div class="body">
+                <table rules="none" border="0" cellpadding="8" cellspacing="8" align="center">
+                    <thead>
+                        <tr style="opacity:0.7">
+                            <th>  </th>
+                            <th class="date">
+                                Title
+                            </th>
+                            <th class="day">
+                                Recipients
+                            </th>
+                            <th class="day">
+                                Responses
+                            </th>
+
+                            <th class="event">
+                                State
+                            </th>
+                            <th class="event">
+                                Action
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+
+                            <tr class="rowstyle">
+                                @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
+                                {
+                                <td style="padding-right:2px;">
+                                    ❗
+                                </td>
+                                }
+                                else if(item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Important)
+                                {
+                                <td>❕</td>
+                                }
+                                else
+                                { <td>📄</td>}
+
+                                <td class="row-date">
+                                    <span>@item.Title</span>
+                                </td>
+                               
+                                <td class="row-day">
+                                    <img class="imgstyle"src="~/Resources/Group_img.PNG"/>
+                                    <span>@item.RecipientCount</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>@item.Recipients</span>
+                                </td>
+                               
+                                
+                                <td class="row-event">
+                                    <img class="imgstyle" src="~/Resources/arrow.PNG" />
+                                    <span style="vertical-align:bottom">@item.AckCount</span>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <img class="imgstyle" src="~/Resources/Likes.PNG"/>
+                                    
+                                    <span style="vertical-align:bottom">@item.LikeCount</span>
+
+                                </td>
+                                <td class="row-event">
+                                    <table>
+                                        <tr class="row-event">
+                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Draft)
+                                            {
+                                            <td class="row-last">
+                                                <img class="imgstyle" src="~/Resources/Draft.PNG" />
+                                                
+                                            </td>
+                                            }
+                                            else if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
+                                            {
+                                                <td class="row-last">
+                                                    <img class="imgstyle" src="~/Resources/sent.PNG" />
+                                                   
+                                                </td>
+
+                                            }
+                                            else
+                                            {
+                                                <td class="row-last">
+                                                    <img class="imgstyle" src="~/Resources/schedule.PNG" />
+                                                   
+                                                </td>
+                                            }
+                                            <td><span class="row-line">@item.Date.ToString("dd/mm/yyyy")</span>&nbsp;&nbsp;<span>@item.Status</span></td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <td class="row-last">
+                                    <table>
+
+                                        <tr class="row-event">
+                                            <td>
+                                                <img class="imgstyle" src="~/Resources/pencil.PNG" />
+                                               
+                                            </td>
+                                        
+
+                                        @if (item.Status == CrossVertical.Announcement.Models.Status.Draft)
+                                        {
+                                            
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <img class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown"/>
+                                                        
+                                                        <table class="dropdown-menu">
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Edit Message</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/template.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                            </tr>
+                                                        </table>
+                                                        @*<ul class="dropdown-menu">
+                                                            <li><a href="#"><img class="imgstyle" src="~/Resources/edit.PNG"/>Edit Message</a></li>
+                                                            <li><a href="#"><img class="imgstyle"src="~/Resources/template.PNG" />Use as Template</a></li>
+
+
+                                                        </ul>*@
+                                                    </div>
+                                                </td>
+
+
+
+                                            
+                                        }
+                                        else if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
+                                        {
+                                            
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <img class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown" />
+                                                        
+                                                        <table class="dropdown-menu">
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit.PNG" /></a></td>
+                                                            <td><a style="color:#333;" href="#">Edit Message</a></td></tr>
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/schedule.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Modify Schedule</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/template.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                            </tr>
+                                                            
+
+                                                        </table>
+                                                    </div>
+                                                </td>
+
+
+
+                                           
+                                        }
+                                        else
+                                        {
+                                            
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <img class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown" />
+                                                        
+                                                        <table class="dropdown-menu ">
+                                                            <tr>
+                                                                <td><a style="color:#333;height:8px;"href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/view.PNG" /></a></td>
+                                                                <td><a  style="color:#333;"href="#">View Analytics</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><a style="color:#333;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/template.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                            </tr>
+
+                                                           
+
+
+                                                        </table>
+                                                    </div>
+                                                </td>
+
+
+
+                                            
+                                        }
+                                     </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
