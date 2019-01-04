@@ -56,6 +56,13 @@
             font-size: 12px;
             padding: 8px;
         }
+        .row-info {
+            height: 15px;
+            width: 32%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+        }
 
         .row-event {
             height: 15px;
@@ -64,6 +71,22 @@
             font-family: "Segoe UI";
             font-size: 12px;
             padding: 6px;
+        }
+        .row-count {
+            height: 15px;
+            width: 7%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            padding: 6px;
+        }
+        .row-recept {
+            height: 15px;
+            
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+            
         }
 
         .row-last {
@@ -173,8 +196,7 @@
             }
     </style>
 </head>
-@if (Model != null)
-{
+
     <body class="body">
 
         <div class="containers">
@@ -183,32 +205,40 @@
             <br />
             <div class="panel-group">
                 <div class="body">
-                    <table rules="none" border="0" cellpadding="8" cellspacing="8" align="center">
-                        <thead>
-                            <tr style="opacity:0.7">
-                                <th>  </th>
-                                <th class="date">
-                                    Title
-                                </th>
-                                <th class="day">
-                                    Recipients
-                                </th>
-                                <th class="day">
-                                    Responses
-                                </th>
+                    @if (Model != null)
+                    {
+                        <table rules="none" border="0" cellpadding="8" cellspacing="0" align="center">
+                            <thead>
+                                <tr style="opacity:0.7">
+                                    <th>  </th>
+                                    <th class="date">
+                                        Title
+                                    </th>
+                                    <th class="day">
+                                        Recipients
+                                    </th>
+                                    <th> </th>
+                                    <th class="day">
+                                        Responses
+                                    </th>
+                                    <th>
 
-                                <th class="event">
-                                    State
-                                </th>
-                                <th class="event">
-                                    Action
-                                </th>
+                                    </th>
+                                    <th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
+                                    </th>
+                                    <th class="event">
+                                        State
+                                    </th>
+                                    <th class="event">
+                                        Action
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
 
                                 <tr class="rowstyle">
                                     @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
@@ -228,21 +258,71 @@
                                     <td class="row-date">
                                         <span>@item.Title</span>
                                     </td>
-
-                                    <td class="row-day">
-                                        <img class="imgstyle" src="~/Resources/Group_img.PNG" />
-                                        <span>@item.RecipientCount</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>@item.Recipients</span>
-                                    </td>
+                                    @if (item.Recipients == string.Empty|| item.Recipients == ", ")
+                                    {
+                                        <td class="row-recept">
 
 
-                                    <td class="row-event">
+                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <span>@item.RecipientCount</span>
+
+                                        </td>
+
+
+                                        <td class="row-info">
+
+                                            <span>@item.RecipientChannelNames</span>
+
+                                        </td>
+                                    }
+                                    else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
+                                    {
+                                        <td class="row-recept">
+
+
+                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <span>@item.RecipientCount</span>
+
+                                        </td>
+
+
+                                        <td class="row-info">
+
+                                            <span>@item.Recipients</span>
+
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="row-recept">
+
+
+                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <span>@item.RecipientCount</span><br />
+                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <span>@item.RecipientCount</span>
+
+                                        </td>
+
+
+                                        <td class="row-info">
+
+                                            <span>@item.Recipients</span><br/>
+                                            <span>@item.RecipientChannelNames</span>
+
+                                        </td>
+                                    }
+                                    <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/arrow.PNG" />
                                         <span style="vertical-align:bottom">@item.AckCount</span>
-                                        &nbsp;&nbsp;&nbsp;
+                                    </td>
+                                    <td class="row-count">
+                                        <img class="imgstyle" src="~/Resources/ack.PNG" />
+                                        <span style="vertical-align:bottom">@item.AckCount</span>
+                                    </td>
+                                    <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
-
                                         <span style="vertical-align:bottom">@item.LikeCount</span>
-
                                     </td>
                                     <td class="row-event">
                                         <table>
@@ -302,11 +382,11 @@
                                                                 </tr>
                                                             </table>
                                                             @*<ul class="dropdown-menu">
-                                                                    <li><a href="#"><img class="imgstyle" src="~/Resources/edit.PNG"/>Edit Message</a></li>
-                                                                    <li><a href="#"><img class="imgstyle"src="~/Resources/template.PNG" />Use as Template</a></li>
+                                    <li><a href="#"><img class="imgstyle" src="~/Resources/edit.PNG"/>Edit Message</a></li>
+                                    <li><a href="#"><img class="imgstyle"src="~/Resources/template.PNG" />Use as Template</a></li>
 
 
-                                                                </ul>*@
+                                </ul>*@
                                                         </div>
                                                     </td>
 
@@ -377,19 +457,18 @@
                                     </td>
                                 </tr>
 
-                            }
-                        </tbody>
-                    </table>
-
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No announcements yet.Please go ahead and create new announcement</p>
+                    }
                 </div>
             </div>
         </div>
     </body>
-}.
-else
-{
-    <body>
-        <p>No announcements yet.Please go ahead and create new announcement</p>
-    </body>
-}
+
+
 </html>

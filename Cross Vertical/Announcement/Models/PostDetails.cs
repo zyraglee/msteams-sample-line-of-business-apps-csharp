@@ -15,6 +15,7 @@ namespace CrossVertical.Announcement.Models
         public DateTime Date { get; set; }
         public Status Status { get; set; }
         public string Recipients { get; set; }
+        public string RecipientChannelNames { get; set; }
         public string RecipientCount { get; set; }
     }
 }

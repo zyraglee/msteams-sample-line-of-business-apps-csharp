@@ -315,6 +315,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resources\ack.PNG" />
     <Content Include="Manifest\color.png" />
     <Content Include="Manifest\outline.png" />
     <None Include="Properties\PublishProfiles\announcement - Web Deploy.pubxml" />
@@ -352,6 +353,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Authentication\ConsentPage.cshtml" />
     <Content Include="Views\Announcement\Index.cshtml" />
+    <Content Include="Views\Announcement\TabInfo.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
