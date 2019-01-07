@@ -7,6 +7,8 @@ using System.Linq;
 using CrossVertical.Announcement.Dialogs;
 using Microsoft.Bot.Connector;
 using CrossVertical.Announcement.Models;
+using Newtonsoft.Json.Linq;
+using CrossVertical.Announcement.Helpers;
 
 namespace CrossVertical.Announcement.Controllers
 {
@@ -37,9 +39,8 @@ namespace CrossVertical.Announcement.Controllers
             }
 
             List<PostDetails> postDetails = new List<PostDetails>();
-            foreach (var announcement in myTenantAnnouncements)
+            foreach (var announcement in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime))
             {
-                announcement.GetPreviewCard();
                 //var campaign = announcement.Post as Campaign;
                 PostDetails post = new PostDetails();
                 post.Id = announcement.Id;
@@ -254,6 +255,24 @@ namespace CrossVertical.Announcement.Controllers
             var allAnnouncements = await DocumentDBRepository.GetItemsAsync<Campaign>(u => u.Type == nameof(Campaign));
             var myTenantAnnouncements = allAnnouncements.Where(a => a.TenantId == tenant.Id);
             return View();
+        }
+
+        [Route("getCreateNewCard")]
+        public async Task<JObject> GetCreateNewCard(string tid)
+        {
+            return JObject.FromObject(await AdaptiveCardDesigns.GetCreateNewAnnouncementCard(tid));
+        }
+
+        [Route("getEditCard")]
+        public async Task<JObject> GetEditCard(string id, string tid)
+        {
+            return JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCard(id, tid));
+        }
+
+        [Route("getTemplateCard")]
+        public async Task<JObject> GetTemplateCard(string id, string tid)
+        {
+            return JObject.FromObject(await AdaptiveCardDesigns.GetTemplateCard(id, tid));
         }
     }
 }

@@ -9,7 +9,6 @@ using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -83,16 +82,17 @@ namespace CrossVertical.Announcement.Controllers
 
             JObject card = null;
             // Fetch Tenant Id and pass it.
+            var channelData = activity.GetChannelData<TeamsChannelData>();
             switch (action.Data.Data.ActionType)
             {
                 case Constants.CreateOrEditAnnouncement:
                     taskInfo["title"] = "New Announcement";
-                    card = await CreateNewAnnouncement(activity);
+                    card = JObject.FromObject(await AdaptiveCardDesigns.GetCreateNewAnnouncementCard(channelData.Tenant.Id));
                     break;
                 case Constants.ShowMoreDetails:
                     taskInfo["title"] = "Announcement";
                     var showDetails = JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<AnnouncementActionDetails>>(activityValue);
-                    card = await PreviewAnnouncement(showDetails.Data.Data.Id, activity);
+                    card = JObject.FromObject(await AdaptiveCardDesigns.GetPreviewAnnouncementCard(showDetails.Data.Data.Id));
                     taskInfo["height"] = 900;
                     taskInfo["width"] = 600;
 
@@ -100,7 +100,7 @@ namespace CrossVertical.Announcement.Controllers
                 case Constants.ShowEditAnnouncementTaskModule:
                     taskInfo["title"] = "Edit Announcement";
                     var editAnnouncement = JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<AnnouncementActionDetails>>(activityValue);
-                    card = await EditAnnouncement(editAnnouncement.Data.Data.Id, activity);
+                    card = JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCard(editAnnouncement.Data.Data.Id, channelData.Tenant.Id));
                     break;
                 default:
                     break;
@@ -109,59 +109,6 @@ namespace CrossVertical.Announcement.Controllers
             taskEnvelope["task"] = taskObj;
 
             return Request.CreateResponse(HttpStatusCode.OK, taskEnvelope);
-        }
-
-        private static async Task<JObject> EditAnnouncement(string announcementId, Activity activity)
-        {
-            var campaign = await Cache.Announcements.GetItemAsync(announcementId);
-
-            var channelData = activity.GetChannelData<TeamsChannelData>();
-            var tenant = await Cache.Tenants.GetItemAsync(channelData.Tenant.Id);
-
-            var groups = new List<Group>();
-            foreach (var groupID in tenant.Groups)
-            {
-                groups.Add(await Cache.Groups.GetItemAsync(groupID));
-            }
-
-            var teams = new List<Team>();
-            foreach (var teamID in tenant.Teams)
-            {
-                teams.Add(await Cache.Teams.GetItemAsync(teamID));
-            }
-
-            var card = JObject.FromObject(campaign.GetCreateNewCard(groups, teams, true).ToAttachment());
-            return card;
-        }
-
-        private static async Task<JObject> PreviewAnnouncement(string announcementId, Activity activity)
-        {
-            var campaign = await Cache.Announcements.GetItemAsync(announcementId);
-
-            campaign.ShowAllDetailsButton = false;
-            var card = JObject.FromObject(campaign.GetPreviewCard().ToAttachment());
-            campaign.ShowAllDetailsButton = true;
-            return card;
-        }
-
-        private static async Task<JObject> CreateNewAnnouncement(Activity activity)
-        {
-            var channelData = activity.GetChannelData<TeamsChannelData>();
-            var tenant = await Cache.Tenants.GetItemAsync(channelData.Tenant.Id);
-
-            var groups = new List<Group>();
-            foreach (var groupID in tenant.Groups)
-            {
-                groups.Add(await Cache.Groups.GetItemAsync(groupID));
-            }
-
-            var teams = new List<Team>();
-            foreach (var teamID in tenant.Teams)
-            {
-                teams.Add(await Cache.Teams.GetItemAsync(teamID));
-            }
-            var card = JObject.FromObject(new Campaign().GetCreateNewCard(groups, teams, false).ToAttachment());
-            return card;
         }
 
         private async Task<Activity> HandleSystemMessage(Activity message)
