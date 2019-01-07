@@ -1,15 +1,16 @@
 ﻿using Autofac;
+using CrossVertical.Announcement.Helpers;
+using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
-using CrossVertical.Announcement.Helpers;
-using CrossVertical.Announcement.Repository;
 using System;
+using System.Linq;
 using System.Configuration;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Filters;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -20,6 +21,11 @@ namespace CrossVertical.Announcement
         protected void Application_Start()
         {
             DocumentDBRepository.Initialize();
+
+            new Task(async () =>
+            {
+                await AnnouncementScheduler.InitializeSchedulesFromDB();
+            }).Start();
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
@@ -44,6 +50,8 @@ namespace CrossVertical.Announcement
 
             });
         }
+
+        
 
         //in global.asax or global.asax.cs
         protected void Application_Error(object sender, EventArgs e)

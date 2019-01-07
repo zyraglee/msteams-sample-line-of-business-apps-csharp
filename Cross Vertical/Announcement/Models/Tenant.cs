@@ -6,12 +6,11 @@ using System.Web;
 
 namespace CrossVertical.Announcement.Models
 {
-    public class Tenant
+
+    public class Tenant: DatabaseItem
     {
         [JsonProperty("type")]
-        public string Type { get; set; } = nameof(Tenant);
-
-        public string Id { get; set; }
+        public override string Type { get; set; } = nameof(Tenant);
 
         public bool IsAdminConsented { get; set; }
 

@@ -2,22 +2,20 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CrossVertical.Announcement.Models
 {
-    public abstract class AnnouncementBase
+    public abstract class AnnouncementBase : DatabaseItem
     {
-        [JsonProperty("id")]
-        public string Id { get; set; }
+        [JsonProperty("type")]
+        public override string Type { get; set; } = nameof(AnnouncementBase);
 
         [JsonProperty("tenantId")]
         public string TenantId { get; set; }
 
         [JsonProperty("ownerId")]
         public string OwnerId { get; set; }
-
-        [JsonProperty("type")]
-        public abstract string Type { get; set; }
 
         public DateTime CreatedTime { get; set; }
 

@@ -2,13 +2,11 @@
 
 namespace CrossVertical.Announcement.Models
 {
-    public class User
+    public class User : DatabaseItem
     {
         [JsonProperty("type")]
-        public string Type { get; set; } = nameof(User);
+        public override string Type { get; set; } = nameof(User);
 
-        [JsonProperty("id")]
-        public string EmailId { get; set; }
         public string Name { get; set; }
         public string BotConversationId { get; set; }
     }

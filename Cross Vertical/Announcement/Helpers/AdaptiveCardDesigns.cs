@@ -2,6 +2,7 @@
 using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Models;
 using Microsoft.Bot.Connector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaskModule;
@@ -76,7 +77,7 @@ namespace CrossVertical.Announcement.Helpers
                         new AdaptiveSubmitAction()
                         {
                             Id="showdrafts",
-                            Title="⏱️ View Drafts",
+                            Title="⏱️ View Drafts & Schedules",
                             Data = new ActionDetails() { ActionType = Constants.ShowAllDrafts}
                         },
                         new AdaptiveOpenUrlAction()
@@ -99,8 +100,6 @@ namespace CrossVertical.Announcement.Helpers
                         }
                 };
 
-
-
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,
@@ -109,7 +108,7 @@ namespace CrossVertical.Announcement.Helpers
         }
 
 
-        public static Attachment GetConfirmationCard(string announcementId)
+        public static Attachment GetConfirmationCard(string announcementId, string date, string time)
         {
             var Card = new AdaptiveCard()
             {
@@ -129,15 +128,61 @@ namespace CrossVertical.Announcement.Helpers
                 },
                 Actions = new List<AdaptiveAction>()
                           {
-                                new AdaptiveSubmitAction()
+                            new AdaptiveSubmitAction()
                             {
-                                Title = "Good to GO",
-                                Data = new AnnouncementActionDetails() {
+                                Id = "sendNow",
+                                Title = "Send Now",
+                                Data = new AnnouncementActionDetails()
+                                {
                                     ActionType = Constants.SendAnnouncement ,
-                                    Id = announcementId }
+                                    Id = announcementId
+                                }
                             },
+                            new AdaptiveShowCardAction()
+                            {
+                                Id = "sendLater",
+                                Title="Send Later",
+                                Card=new AdaptiveCard()
+                                {
+                                    Body=new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveContainer()
+                                        {
+                                            Items=new List<AdaptiveElement>()
+                                            {
+                                                new AdaptiveTextBlock()
+                                                {
+                                                    Text="Schedule your anouncement here"
+                                                },
+                                                new AdaptiveDateInput()
+                                                {
+                                                    Id = "Date",
+                                                    Placeholder="Select Date",
+                                                    Value = date
+                                                },
+                                                new AdaptiveTimeInput()
+                                                {
+                                                    Id = "Time",
+                                                    Placeholder="Select time",
+                                                    Value = time
+                                                }
+                                            }
+                                        }
+                                    },
+                                    Actions=new List<AdaptiveAction>()
+                                    {
+                                      new AdaptiveSubmitAction()
+                                      {
+                                          Id= "schedule",
+                                          Title="Schedule",
+                                          Data = new AnnouncementActionDetails(){ Id = announcementId,  ActionType = Constants.ScheduleAnnouncement}
+                                      }
+                                    }
+                                }
+                              },
                               new AdaptiveSubmitAction()
                               {
+                                  Id = "editAnnouncement",
                                   Title="Edit",
                                   Data = new AdaptiveCardValue<AnnouncementActionDetails>() {
                                       Data = new AnnouncementActionDetails() {
@@ -200,7 +245,7 @@ namespace CrossVertical.Announcement.Helpers
             return campaignAttachment;
         }
 
-        public static Attachment GetCardToUpdatePreviewCard(Attachment campaignAttachment)
+        public static Attachment GetCardToUpdatePreviewCard(Attachment campaignAttachment, string message)
         {
 
             var campaign = campaignAttachment.Content as AdaptiveCard;
@@ -212,7 +257,7 @@ namespace CrossVertical.Announcement.Helpers
                                 {
                                     new AdaptiveTextBlock()
                                     {
-                                        Text="Note: This announcement is sent successfully.",
+                                        Text= message,
                                         Wrap=true,
                                         HorizontalAlignment=AdaptiveHorizontalAlignment.Left,
                                         Spacing=AdaptiveSpacing.None,
