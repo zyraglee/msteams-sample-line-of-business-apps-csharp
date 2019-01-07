@@ -39,6 +39,7 @@ namespace CrossVertical.Announcement.Controllers
             List<PostDetails> postDetails = new List<PostDetails>();
             foreach (var announcement in myTenantAnnouncements)
             {
+                announcement.GetPreviewCard();
                 //var campaign = announcement.Post as Campaign;
                 PostDetails post = new PostDetails();
                 post.Id = announcement.Id;
@@ -48,7 +49,8 @@ namespace CrossVertical.Announcement.Controllers
                 post.MessageSensitivity = announcement.Sensitivity;
 
                 var recipientCount = 0;
-                var groupsAndChannelNames = new List<string>();
+                var groupsNames = new List<string>();
+                var channelNames = new List<string>();
 
                 // Create anew class
                 foreach (var group in announcement.Recipients.Groups)
@@ -57,7 +59,7 @@ namespace CrossVertical.Announcement.Controllers
                     if (groupname == null)
                         continue;
 
-                    groupsAndChannelNames.Add(groupname.Name);
+                    groupsNames.Add(groupname.Name);
                     recipientCount += group.Users.Count;
                     post.LikeCount += group.Users.Sum(u => u.LikeCount);
                     post.AckCount += group.Users.Where(u => u.IsAcknoledged).Count();
@@ -67,7 +69,7 @@ namespace CrossVertical.Announcement.Controllers
                     var teamname = await Cache.Teams.GetItemAsync(team.TeamId);
                     if (teamname == null)
                         continue;
-                    groupsAndChannelNames.Add(teamname.Name);
+                    channelNames.Add(teamname.Name);
                     post.LikeCount += team.Channel.LikeCount;
                 }
                 if (recipientCount == 0 && announcement.Recipients != null && announcement.Recipients.Channels != null)
@@ -75,28 +77,48 @@ namespace CrossVertical.Announcement.Controllers
 
                 var maxChar = 40;
                 var recipientNames = string.Empty;
-                for (int i = 0; i < groupsAndChannelNames.Count; i++)
+                var recipientChannelNames = string.Empty;
+                for (int i = 0; i < groupsNames.Count; i++)
                 {
                     if (i != 0)
                         recipientNames += ", ";
-                    recipientNames += groupsAndChannelNames[i];
+                    recipientNames += groupsNames[i];
 
                     if (recipientNames.Length >= maxChar)
                     {
                         // Check the actual count
-                        recipientNames += " +" + (groupsAndChannelNames.Count - i);
+                        recipientNames += " +" + (groupsNames.Count - i);
+                        break;
+                    }
+
+                }
+                for (int i = 0; i < channelNames.Count; i++)
+                {
+                    if (i != 0)
+                        recipientNames += ", ";
+                    recipientChannelNames += channelNames[i];
+
+                    if (recipientNames.Length >= maxChar)
+                    {
+                        // Check the actual count
+                        recipientChannelNames += " +" + (channelNames.Count - i);
                         break;
                     }
 
                 }
                 post.RecipientCount = $"{recipientCount}";
                 post.Recipients = $"{recipientNames}";
+                post.RecipientChannelNames = $"{recipientChannelNames}";
                 postDetails.Add(post);
             }
 
             return View(postDetails);
         }
-
+        [Route("tabinfo")]
+        public async Task<ActionResult> TabInfo()
+        {
+            return View();
+        }
         [Route("create")]
         public async Task<ActionResult> Create(string Emailid)
         {
