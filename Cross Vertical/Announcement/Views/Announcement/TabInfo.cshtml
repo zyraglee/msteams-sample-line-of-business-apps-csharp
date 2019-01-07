@@ -12,7 +12,10 @@
             margin: 0;
             padding: 0;
         }
-
+        td {
+            
+           
+        }
         html, body, #container {
             height: 100%;
             background-color: #f3f2f1;
@@ -25,11 +28,122 @@
         main {
             height: calc(100% - 50px);
         }
+        .panel-group {
+            width: 30%;
+            
+            opacity: 1.5;
+            
+            border: 10px solid transparent;
+            display: block;
+            border: 1px solid transparent;
+            
+            box-shadow: 0 0 8px 0 #D3D3D3;
+        }
+        .panel-heading {
+            padding: 34px 15px;
+            border-bottom: 1px solid transparent;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+        .heading {
+            
+            background-color: white;
+            
+            
+           
+            border-bottom:1px solid #f3f2f1;
+        }
+
+        .body {
+            background-color: white;
+            padding: 7px;
+            
+        }
+        .panel-body {
+            padding: 15px 15px;
+            border-bottom: 1px solid transparent;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+        .dot {
+            height: 40px;
+            width: 40px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            float: left;
+        }
+
+        
     </style>
 </head>
 <body>
     <div id="container">
-        <header></header>
+        @*upper div*@
+        <br/>
+        <br/>
+        <header>
+            <div class="row">
+                <div class="col-md-4">
+                    <div style="padding-left:15px;">
+                        <div class="heading">
+                            <div class="panel-heading text-center">
+                                <span style="font-size:22px;padding-top:40px;">64%</span> <br style="line-height:25px;" />OpenRate
+                            </div>
+                        </div>
+                        <div class="body">
+                            <table rules="none">
+                                <tr>
+                                    <td style="padding-right: 150px;padding-bottom:10px;">Contoso All Employees</td>
+                                    <td style="padding-right:5px;padding-bottom:10px;">56%</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-right: 150px;padding-bottom:10px;">Contoso LT</td>
+                                    <td style="padding-right:5px;padding-bottom:10px;">88%</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div style="padding-left:15px;">
+                        <div class="heading">
+                            <div class="panel-heading text-center">
+                                <span style="font-size:22px;">21</span><br style="line-height:25px;"/>Replies
+                            </div>
+                        </div>
+                        <div class="body">
+                            <table rules="none">
+                                <tr>
+                                    <td class="cent"><img class="dot" src="~/Resources/download.jpg"/></td>
+                                    <td style="padding-left:20px;"><p style="font-weight:bold">Will Little</p><br style="line-height:12px;"/>Awesome News! Can we all work there?</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div style="padding-left:15px;">
+                        <div class="heading">
+                            <div class="panel-heading text-center">
+                                <span style="font-size:22px;">125</span><br style="line-height:25px;"/>Reactions
+                            </div>
+                        </div>
+                        <div class="body">
+                            <div class="panel-body text-center">
+                                👍 40
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+           
+        </header>
+        @*Lower div*@
         <main>
 
 

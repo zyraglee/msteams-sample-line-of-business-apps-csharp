@@ -328,6 +328,8 @@
     <Content Include="Resources\Action.PNG" />
     <Content Include="Resources\analytics.PNG" />
     <Content Include="Resources\arrow.PNG" />
+    <Content Include="Resources\channel.PNG" />
+    <Content Include="Resources\download.jpg" />
     <Content Include="Resources\Draft.PNG" />
     <Content Include="Resources\edit.PNG" />
     <Content Include="Resources\Group_img.PNG" />

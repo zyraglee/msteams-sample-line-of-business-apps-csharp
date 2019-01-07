@@ -25,7 +25,7 @@
             font-family: "Segoe UI";
             font-size: 12px;
             line-height: 16px;
-            padding: 15px;
+           padding-left:5px;
         }
 
         .event {
@@ -35,12 +35,12 @@
             font-family: "Segoe UI";
             font-size: 12px;
             line-height: 16px;
-            padding: 15px;
+            /*padding: 15px;*/
         }
 
         .row-date {
             height: 25px;
-            width: 32%;
+            width: 30%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -50,7 +50,7 @@
 
         .row-day {
             height: 15px;
-            width: 32%;
+            width: 30%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -58,7 +58,7 @@
         }
         .row-info {
             height: 15px;
-            width: 32%;
+            width: 30%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -66,7 +66,7 @@
 
         .row-event {
             height: 15px;
-            width: 16%;
+            width: 18%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -74,7 +74,7 @@
         }
         .row-count {
             height: 15px;
-            width: 7%;
+            width: 9%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -146,7 +146,7 @@
 
         th {
             font-weight: 500;
-            padding: 4px;
+           
         }
 
         td {
@@ -260,13 +260,16 @@
                                     </td>
                                     @if (item.Recipients == string.Empty|| item.Recipients == ", ")
                                     {
-                                        <td class="row-recept">
-
-
-                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                        
+                                    <td class="row-recept">
+                                        
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
+                                        
 
-                                        </td>
+                                       
+
+                                    </td>
 
 
                                         <td class="row-info">
@@ -297,8 +300,8 @@
                                         <td class="row-recept">
 
 
-                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
-                                            <span>@item.RecipientCount</span><br />
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
+                                            <span>@item.RecipientCount</span><br style="vertical-align:bottom"/>
                                             <img class="imgstyle" src="~/Resources/Group_img.PNG" />
                                             <span>@item.RecipientCount</span>
 
@@ -306,15 +309,15 @@
 
 
                                         <td class="row-info">
+                                            <span>@item.RecipientChannelNames</span><br style="line-height:17px;"/>
+                                            <span>@item.Recipients</span>
 
-                                            <span>@item.Recipients</span><br/>
-                                            <span>@item.RecipientChannelNames</span>
 
                                         </td>
                                     }
                                     <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/arrow.PNG" />
-                                        <span style="vertical-align:bottom">@item.AckCount</span>
+                                        <span style="vertical-align:bottom">0</span>
                                     </td>
                                     <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
