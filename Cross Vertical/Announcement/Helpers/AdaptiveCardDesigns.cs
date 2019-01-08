@@ -3,7 +3,6 @@ using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Models;
 using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Connector;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -130,21 +129,36 @@ namespace CrossVertical.Announcement.Helpers
             return campaign.GetCreateNewCard(groups, teams, true).ToAttachment();
         }
 
-        public static async Task<Attachment> GetTemplateCard(string announcementId, string tenantId)
+        public static async Task<Attachment> GetEditAnnouncementCardForTab(string announcementId, string tenantId)
         {
             var card = await GetEditAnnouncementCard(announcementId, tenantId);
-
-            var campaign = card.Content as AdaptiveCard;
-            var action = campaign.Actions.FirstOrDefault();
-            if (action != null && action.Title == "✔️ Submit")// TODO: change this
+            return SetSubmitAction(card, new AnnouncementActionDetails()
             {
-                var acknowledgeAction = action as AdaptiveSubmitAction;
-                acknowledgeAction.Data = new ActionDetails() { ActionType = Constants.CreateOrEditAnnouncement };
+                ActionType = Constants.EditAnnouncementFromTab,
+                Id = announcementId
+            });
+        }
+
+        private static Attachment SetSubmitAction(Attachment card, ActionDetails action)
+        {
+            var campaign = card.Content as AdaptiveCard;
+            var submitAction = campaign.Actions.FirstOrDefault();
+            if (submitAction != null && submitAction.Title == "✔️ Submit")// TODO: change this
+            {
+                var acknowledgeAction = submitAction as AdaptiveSubmitAction;
+                acknowledgeAction.Data = action;
             }
             return card;
         }
 
-            public static async Task<Attachment> GetPreviewAnnouncementCard(string announcementId)
+        public static async Task<Attachment> GetTemplateCard(string announcementId, string tenantId)
+        {
+            var card = await GetEditAnnouncementCard(announcementId, tenantId);
+
+            return SetSubmitAction(card, new ActionDetails() { ActionType = Constants.CreateOrEditAnnouncement });
+        }
+
+        public static async Task<Attachment> GetPreviewAnnouncementCard(string announcementId)
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
 
@@ -172,7 +186,15 @@ namespace CrossVertical.Announcement.Helpers
             return new Campaign().GetCreateNewCard(groups, teams, false).ToAttachment();
         }
 
-        public static Attachment GetConfirmationCard(string announcementId, string date, string time)
+        public static async Task<Attachment> GetScheduleConfirmationCard(string announcementId)
+        {
+            var campaign = await Cache.Announcements.GetItemAsync(announcementId);
+            var date = campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy");
+            var time = campaign.Schedule.ScheduledTime.ToString("HH:mm");
+            return GetScheduleConfirmationCard(campaign.Id, date, time, false);
+        }
+
+        public static Attachment GetScheduleConfirmationCard(string announcementId, string date, string time, bool allowEdit)
         {
             var Card = new AdaptiveCard()
             {
@@ -243,18 +265,28 @@ namespace CrossVertical.Announcement.Helpers
                                       }
                                     }
                                 }
-                              },
-                              new AdaptiveSubmitAction()
-                              {
-                                  Id = "editAnnouncement",
-                                  Title="Edit",
-                                  Data = new AdaptiveCardValue<AnnouncementActionDetails>() {
-                                      Data = new AnnouncementActionDetails() {
-                                          ActionType = Constants.ShowEditAnnouncementTaskModule,
-                                          Id = announcementId } }
                               }
+                            
                           }
             };
+
+            if(allowEdit)
+            {
+                Card.Actions.Add(
+                new AdaptiveSubmitAction()
+                {
+                    Id = "editAnnouncement",
+                    Title = "Edit",
+                    Data = new AdaptiveCardValue<AnnouncementActionDetails>()
+                    {
+                        Data = new AnnouncementActionDetails()
+                        {
+                            ActionType = Constants.ShowEditAnnouncementTaskModule,
+                            Id = announcementId
+                        }
+                    }
+                });
+            }
 
             return new Attachment()
             {

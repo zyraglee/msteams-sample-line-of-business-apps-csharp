@@ -12,6 +12,7 @@ namespace CrossVertical.Announcement.Helpers
         public const string Cancel = "Cancel";
 
         public const string CreateOrEditAnnouncement = "CreateOrEditAnnouncement";
+        public const string EditAnnouncementFromTab = "EditAnnouncementFromTab";
         public const string ScheduleAnnouncement = "ScheduleAnnouncement";
         public const string ShowMoreDetails = "ShowMoreDetails";
         public const string SendAnnouncement = "SendAnnouncement";

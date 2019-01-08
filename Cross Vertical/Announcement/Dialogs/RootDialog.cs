@@ -222,6 +222,7 @@ namespace CrossVertical.Announcement.Dialogs
             switch (type)
             {
                 case Constants.CreateOrEditAnnouncement:
+                case Constants.EditAnnouncementFromTab:
                     // Save in DB & Send preview card
                     await CreateOrEditAnnouncement(context, activity, channelData);
                     break;
@@ -444,7 +445,10 @@ namespace CrossVertical.Announcement.Dialogs
 
             // Add announcemnet in DB.
             var campaign = await AddAnnouncecmentInDB(activity, details.Data, channelData.Tenant.Id);
-            await SendPreviewCard(context, activity, campaign, true);
+            bool isEditPeview = true;
+            if (details.Data.ActionType == Constants.EditAnnouncementFromTab)
+                isEditPeview = false;
+            await SendPreviewCard(context, activity, campaign, isEditPeview);
 
         }
 
@@ -474,7 +478,7 @@ namespace CrossVertical.Announcement.Dialogs
                 if (campaign.Schedule != null)
                     dateTimeOffset = campaign.Schedule.ScheduledTime;
 
-                reply.Attachments.Add(AdaptiveCardDesigns.GetConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm")));
+                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), true));
                 messageResouce = await connector.Conversations.SendToConversationAsync(reply);
                 previewMessageDetails.MessageActionId = messageResouce.Id;
                 context.ConversationData.SetValue(campaign.Id, previewMessageDetails);
@@ -544,7 +548,7 @@ namespace CrossVertical.Announcement.Dialogs
             announcement.Id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id; // Assing the Existing Announcement Id
             announcement.TenantId = tenantId;
 
-            if(!string.IsNullOrEmpty(data.Id))
+            if (!string.IsNullOrEmpty(data.Id))
             {
                 var dbAnnouncement = await Cache.Announcements.GetItemAsync(data.Id);
                 if (dbAnnouncement.Status == Status.Scheduled)

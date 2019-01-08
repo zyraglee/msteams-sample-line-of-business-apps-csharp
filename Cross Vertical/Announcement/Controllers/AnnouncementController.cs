@@ -266,13 +266,19 @@ namespace CrossVertical.Announcement.Controllers
         [Route("getEditCard")]
         public async Task<JObject> GetEditCard(string id, string tid)
         {
-            return JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCard(id, tid));
+            return JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCardForTab(id, tid));
         }
 
         [Route("getTemplateCard")]
         public async Task<JObject> GetTemplateCard(string id, string tid)
         {
             return JObject.FromObject(await AdaptiveCardDesigns.GetTemplateCard(id, tid));
+        }
+
+        [Route("getModifyScheduleCard")]
+        public async Task<JObject> GetModifyScheduleCard(string id)
+        {
+            return JObject.FromObject(await AdaptiveCardDesigns.GetScheduleConfirmationCard(id));
         }
     }
 }
