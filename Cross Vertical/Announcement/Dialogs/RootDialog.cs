@@ -378,6 +378,12 @@ namespace CrossVertical.Announcement.Dialogs
                 return;
             }
 
+            // Handle old records.
+            if(string.IsNullOrEmpty(campaign.Recipients.TenantId))
+            {
+                campaign.Recipients.TenantId = channelData.Tenant.Id;
+                campaign.Recipients.ServiceUrl  = activity.ServiceUrl;
+            }
             if (type == Constants.SendAnnouncement)
                 await SendAnnouncement(context, activity, channelData, campaign);
             else
