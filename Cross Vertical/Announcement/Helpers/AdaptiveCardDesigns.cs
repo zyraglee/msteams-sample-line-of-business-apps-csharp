@@ -1,10 +1,12 @@
 ﻿using AdaptiveCards;
 using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Models;
+using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TaskModule;
 
 namespace CrossVertical.Announcement.Helpers
@@ -107,6 +109,68 @@ namespace CrossVertical.Announcement.Helpers
             };
         }
 
+        public static async Task<Attachment> GetEditAnnouncementCard(string announcementId, string tenantId)
+        {
+            var campaign = await Cache.Announcements.GetItemAsync(announcementId);
+
+            var tenant = await Cache.Tenants.GetItemAsync(tenantId);
+
+            var groups = new List<Group>();
+            foreach (var groupID in tenant.Groups)
+            {
+                groups.Add(await Cache.Groups.GetItemAsync(groupID));
+            }
+
+            var teams = new List<Team>();
+            foreach (var teamID in tenant.Teams)
+            {
+                teams.Add(await Cache.Teams.GetItemAsync(teamID));
+            }
+
+            return campaign.GetCreateNewCard(groups, teams, true).ToAttachment();
+        }
+
+        public static async Task<Attachment> GetTemplateCard(string announcementId, string tenantId)
+        {
+            var card = await GetEditAnnouncementCard(announcementId, tenantId);
+
+            var campaign = card.Content as AdaptiveCard;
+            var action = campaign.Actions.FirstOrDefault();
+            if (action != null && action.Title == "✔️ Submit")// TODO: change this
+            {
+                var acknowledgeAction = action as AdaptiveSubmitAction;
+                acknowledgeAction.Data = new ActionDetails() { ActionType = Constants.CreateOrEditAnnouncement };
+            }
+            return card;
+        }
+
+            public static async Task<Attachment> GetPreviewAnnouncementCard(string announcementId)
+        {
+            var campaign = await Cache.Announcements.GetItemAsync(announcementId);
+
+            campaign.ShowAllDetailsButton = false;
+            var card = campaign.GetPreviewCard().ToAttachment();
+            campaign.ShowAllDetailsButton = true;
+            return card;
+        }
+
+        public static async Task<Attachment> GetCreateNewAnnouncementCard(string tenantId)
+        {
+            var tenant = await Cache.Tenants.GetItemAsync(tenantId);
+
+            var groups = new List<Group>();
+            foreach (var groupID in tenant.Groups)
+            {
+                groups.Add(await Cache.Groups.GetItemAsync(groupID));
+            }
+
+            var teams = new List<Team>();
+            foreach (var teamID in tenant.Teams)
+            {
+                teams.Add(await Cache.Teams.GetItemAsync(teamID));
+            }
+            return new Campaign().GetCreateNewCard(groups, teams, false).ToAttachment();
+        }
 
         public static Attachment GetConfirmationCard(string announcementId, string date, string time)
         {

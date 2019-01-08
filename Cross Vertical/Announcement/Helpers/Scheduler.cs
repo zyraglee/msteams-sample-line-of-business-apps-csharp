@@ -23,7 +23,11 @@ namespace CrossVertical.Announcement.Helpers
             // Hook up the Elapsed event for the timer.
             mainScheduleTimer.Elapsed += OnTimedEvent;
             mainScheduleTimer.AutoReset = true;
-            mainScheduleTimer.Enabled = true;
+        }
+
+        private static void CheckAndEnableScheduler()
+        {
+            mainScheduleTimer.Enabled = ScheduleQueue.Where(s => !s.Value.IsScheduled).Count() != 0;
         }
 
         public static string AddSchedule(DateTime dateTime, Func<Task> action)
@@ -56,6 +60,8 @@ namespace CrossVertical.Announcement.Helpers
                     ScheduledTimers[scheduleId].Interval = diff.TotalMilliseconds > 0 ? diff.TotalMilliseconds : 1;
                 }
             }
+            else
+                RefreshSchedules();
             return true;
         }
 
@@ -95,6 +101,7 @@ namespace CrossVertical.Announcement.Helpers
                     timer.Enabled = true;
                 }
             }
+            CheckAndEnableScheduler();
         }
 
         public static void Stop()
@@ -126,6 +133,7 @@ namespace CrossVertical.Announcement.Helpers
                 ScheduledTimers[id] = null;
                 ScheduledTimers.Remove(id);
             }
+            CheckAndEnableScheduler();
         }
     }
 

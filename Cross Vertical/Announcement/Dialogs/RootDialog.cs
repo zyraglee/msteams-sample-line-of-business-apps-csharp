@@ -426,8 +426,6 @@ namespace CrossVertical.Announcement.Dialogs
                            AnnouncementId = campaign.Id
                        }.Execute);
             }
-
-
             campaign.Status = Status.Scheduled;
             await Cache.Announcements.AddOrUpdateItemAsync(campaign.Id, campaign);
         }
@@ -437,7 +435,6 @@ namespace CrossVertical.Announcement.Dialogs
             await AnnouncementSender.SendAnnouncement(campaign);
             campaign.Status = Status.Sent;
             await Cache.Announcements.AddOrUpdateItemAsync(campaign.Id, campaign);
-
         }
 
         private async Task CreateOrEditAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData)
@@ -547,6 +544,16 @@ namespace CrossVertical.Announcement.Dialogs
             announcement.Id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id; // Assing the Existing Announcement Id
             announcement.TenantId = tenantId;
 
+            if(!string.IsNullOrEmpty(data.Id))
+            {
+                var dbAnnouncement = await Cache.Announcements.GetItemAsync(data.Id);
+                if (dbAnnouncement.Status == Status.Scheduled)
+                {
+                    announcement.Schedule = dbAnnouncement.Schedule;
+                    Scheduler.RemoveSchedule(announcement.Schedule.ScheduleId);// Clear the schedule
+                    // Remove schedule
+                }
+            }
             var recipients = new RecipientInfo
             {
                 ServiceUrl = activity.ServiceUrl,
