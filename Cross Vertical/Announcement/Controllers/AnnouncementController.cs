@@ -130,8 +130,9 @@ namespace CrossVertical.Announcement.Controllers
             AnnouncementDetails announcementinfo = new AnnouncementDetails();
             if (announcement!=null)
             {
-                
+                announcement.ShowAllDetailsButton = false;
                 var html = announcement.GetPreviewCard();
+                announcement.ShowAllDetailsButton = true;
                 RenderedAdaptiveCard renderedCard = renderer.RenderCard(html);
                 HtmlTag cardhtml = renderedCard.Html;
                 

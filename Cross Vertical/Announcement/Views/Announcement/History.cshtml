@@ -198,6 +198,15 @@
             opacity: 0.8;
             vertical-align: bottom;
         }
+        .imgstyle1 {
+            font-size: 14px;
+            height: 15px;
+            opacity: 0.8;
+            vertical-align: bottom;
+            cursor:pointer;
+        }
+
+
 
             .imgstyle:hover {
                 background-color: #f3f2f1;
@@ -268,8 +277,8 @@
                                     {
 
                                         <td class="row-recept">
-
-                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <span>   </span>
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
 
 
@@ -287,9 +296,9 @@
                                     else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
                                     {
                                         <td class="row-recept">
+                                            <span>   </span>
 
-
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
+                                            <img class="imgstyle" src="~/Resources/group.PNG" />
                                             <span>@item.RecipientCount</span>
 
                                         </td>
@@ -304,10 +313,11 @@
                                     else
                                     {
                                         <td class="row-recept">
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
+                                            <span>   </span>
+                                            <img class="imgstyle" src="~/Resources/group.PNG" />
                                             <span>@item.RecipientCount</span>
 
-                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span><br style="vertical-align:bottom" />
 
 
@@ -369,32 +379,32 @@
                                             <tr class="row-event">
                                                 <td>
                                                     <div class="dropdown">
-                                                        <img class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown" />
+                                                        <img class="imgstyle1" src="~/Resources/Action.PNG" data-toggle="dropdown" />
 
                                                         <table class="dropdown-menu">
                                                             @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
                                                             {
                                                                 <tr onclick="submit('edit', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit2.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">Edit Message</a></td>
                                                                 </tr>
                                                             }
                                                             @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
                                                             {
                                                                 <tr>
-                                                                    <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/view.PNG" /></a></td>
+                                                                    <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/anal.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">View Analytics</a></td>
                                                                 </tr>
                                                             }
                                                             @if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
                                                             {
                                                                 <tr onclick="submit('schedule', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/schedule.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/sched.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">Modify Schedule</a></td>
                                                                 </tr>
                                                             }
                                                             <tr onclick="submit('template', '@item.Id')">
-                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/template.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
                                                                 <td><a style="color:#333;" href="#">Use as Template</a></td>
                                                             </tr>
                                                         </table>
