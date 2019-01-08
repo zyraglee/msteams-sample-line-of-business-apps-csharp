@@ -25,7 +25,7 @@
             font-family: "Segoe UI";
             font-size: 12px;
             line-height: 16px;
-           padding-left:5px;
+            padding-left: 5px;
         }
 
         .event {
@@ -56,6 +56,7 @@
             font-size: 12px;
             padding: 8px;
         }
+
         .row-info {
             height: 15px;
             width: 30%;
@@ -72,21 +73,28 @@
             font-size: 12px;
             padding: 6px;
         }
+
         .row-count {
             height: 15px;
             width: 9%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
-           
         }
-        .row-recept {
+
+        .responserow {
             height: 15px;
-            
+            width: 6%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
-            
+        }
+
+        .row-recept {
+            height: 15px;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
         }
 
         .row-last {
@@ -146,7 +154,6 @@
 
         th {
             font-weight: 500;
-           
         }
 
         td {
@@ -164,7 +171,7 @@
             padding: 6px;
             left: 0;
             right: 0;
-            height:43px;
+            height: 43px;
         }
 
         .btn-primary {
@@ -244,19 +251,16 @@
                                 <tr class="rowstyle">
                                     @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
                                     {
-                                        <td style="padding-right:2px;">
-                                            
-                                        </td>
+                                        <td style="padding-right:2px;"></td>
                                     }
                                     else if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Important)
                                     {
-                                        <td><img class="imgstyle" src="~/Resources/exclamation.PNG"/></td>
+                                        <td><img class="imgstyle" src="~/Resources/exclamation.PNG" /></td>
                                     }
                                     else
                                     {
                                         <td> </td>
                                     }
-
                                     <td class="row-date">
                                         <span>@item.Title</span>
                                     </td>
@@ -265,7 +269,7 @@
 
                                         <td class="row-recept">
 
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
+                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
                                             <span>@item.RecipientCount</span>
 
 
@@ -303,8 +307,6 @@
                                             <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
 
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
-                                            <span>@item.RecipientCount</span><br style="vertical-align:bottom" />
                                             <img class="imgstyle" src="~/Resources/Group_img.PNG" />
                                             <span>@item.RecipientCount</span><br style="vertical-align:bottom" />
 
@@ -313,23 +315,24 @@
 
 
                                         <td class="row-info">
-                                            <span>@item.RecipientChannelNames</span><br style="line-height:17px;" />
-                                            <span>@item.Recipients</span>
+                                            <span>@item.Recipients</span><br style="line-height:17px;" />
+                                            <span>@item.RecipientChannelNames</span>
+
 
 
                                         </td>
                                     }
-                                    <td class="row-count">
+                                    <td class="responserow">
                                         <img class="imgstyle" src="~/Resources/arrow.PNG" />
-                                        <span style="vertical-align:bottom">012</span>
+                                        <span style="vertical-align:bottom">0</span>
                                     </td>
-                                    <td class="row-count">
+                                    <td class="responserow">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom">@*@item.AckCount*@01</span>
+                                        <span style="vertical-align:bottom">@item.AckCount</span>
                                     </td>
-                                    <td class="row-count">
+                                    <td class="responserow">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
-                                        <span style="vertical-align:bottom">@*@item.LikeCount*@0123</span>
+                                        <span style="vertical-align:bottom">@item.LikeCount</span>
                                     </td>
                                     <td class="row-event">
                                         <table>
@@ -364,39 +367,39 @@
                                     <td class="row-last">
                                         <table>
                                             <tr class="row-event">
-                                                    <td>
-                                                        <div class="dropdown">
-                                                            <img    class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown" />
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <img class="imgstyle" src="~/Resources/Action.PNG" data-toggle="dropdown" />
 
-                                                            <table class="dropdown-menu">
-                                                                @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
-                                                                {
+                                                        <table class="dropdown-menu">
+                                                            @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
+                                                            {
                                                                 <tr onclick="submit('edit', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img  class="imgstyle" src="~/Resources/edit.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">Edit Message</a></td>
                                                                 </tr>
-                                                                }
-                                                                @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
-                                                                {
-                                                                    <tr>
-                                                                        <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/view.PNG" /></a></td>
-                                                                        <td><a style="color:#333;" href="#">View Analytics</a></td>
-                                                                    </tr>
-                                                                }
-                                                                @if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
-                                                                {
-                                                                    <tr onclick="submit('schedule', '@item.Id')">
-                                                                        <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/schedule.PNG" /></a></td>
-                                                                        <td><a style="color:#333;" href="#">Modify Schedule</a></td>
-                                                                    </tr>
-                                                                }
-                                                                <tr onclick="submit('template', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/template.PNG" /></a></td>
-                                                                    <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                            }
+                                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
+                                                            {
+                                                                <tr>
+                                                                    <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/view.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#">View Analytics</a></td>
                                                                 </tr>
-                                                            </table>
-                                                        </div>
-                                                    </td>
+                                                            }
+                                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
+                                                            {
+                                                                <tr onclick="submit('schedule', '@item.Id')">
+                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/schedule.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#">Modify Schedule</a></td>
+                                                                </tr>
+                                                            }
+                                                            <tr onclick="submit('template', '@item.Id')">
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/template.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>
@@ -452,8 +455,14 @@
                 taskInfo.title = "Edit";
             }
             else if (type.includes('template')) {
-                url = '/getTemplateCard?id=' + id + '&tid=' + tenantId;;
+                url = '/getTemplateCard?id=' + id + '&tid=' + tenantId;
                 taskInfo.title = "Create New";
+            }
+            else if (type.includes('schedule')) {
+                url = '/getModifyScheduleCard?id=' + id;
+                taskInfo.title = "Modify Schedule";
+                taskInfo.height = "270";
+                taskInfo.width = "400";
             }
 
             $.ajax({

@@ -353,6 +353,11 @@ namespace CrossVertical.Announcement.Dialogs
             // Get all the details for announcement.
             var details = JsonConvert.DeserializeObject<AnnouncementActionDetails>(activity.Value.ToString());
             // Add announcemnet in DB.
+            if (details == null || details.Id == null)
+            {
+                details = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<AnnouncementActionDetails>>
+                    (activity.Value.ToString()).Data;
+            }
             var campaign = await Cache.Announcements.GetItemAsync(details.Id);
             if (campaign == null)
             {
@@ -402,12 +407,22 @@ namespace CrossVertical.Announcement.Dialogs
                 await connectorClient.Conversations.UpdateActivityAsync(activity.Conversation.Id, oldAnnouncementDetails.MessageActionId, (Activity)updateMessage);
                 context.ConversationData.RemoveValue(campaign.Id);
             }
+            else
+            {
+                var message =  $"We have scheduled this announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}. Note that announcements scheduled for past date will be sent immediately.";
+                await context.PostAsync(message);
+            }
         }
 
         private static async Task ScheduleAnnouncement(IDialogContext context, Activity activity, TeamsChannelData channelData, Campaign campaign)
         {
             // Get all the details for announcement.
             var details = JsonConvert.DeserializeObject<ScheduleAnnouncementActionDetails>(activity.Value.ToString());
+            if (details == null || details.Id == null)
+            {
+                details = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<ScheduleAnnouncementActionDetails>>
+                    (activity.Value.ToString()).Data;
+            }
             var dateTime = DateTime.Parse(details.Date + " " + details.Time);
             var offset = activity.LocalTimestamp.Value.Offset;
             DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime, offset);

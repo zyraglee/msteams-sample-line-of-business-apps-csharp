@@ -47,10 +47,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdaptiveCards, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Packages\AdaptiveCards.1.1.0\lib\net452\AdaptiveCards.dll</HintPath>
+      <HintPath>..\..\Packages\AdaptiveCards.1.1.1\lib\net452\AdaptiveCards.dll</HintPath>
     </Reference>
     <Reference Include="AdaptiveCards.Rendering.Html, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Packages\AdaptiveCards.Rendering.Html.1.1.0\lib\net452\AdaptiveCards.Rendering.Html.dll</HintPath>
+      <HintPath>..\..\Packages\AdaptiveCards.Rendering.Html.1.1.1\lib\net452\AdaptiveCards.Rendering.Html.dll</HintPath>
     </Reference>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>

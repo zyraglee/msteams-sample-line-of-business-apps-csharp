@@ -40,7 +40,14 @@ namespace CrossVertical.Announcement.Repository
                 var tenant = await DocumentDBRepository.GetItemAsync<T>(id);
                 if (tenant != null)
                 {
-                    CachedItems.Add(id, tenant);
+                    try
+                    {
+                        CachedItems.Add(id, tenant);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Helpers.ErrorLogService.LogError(ex);
+                    }
                     return tenant;
                 }
                 return null; // Not found in DB.
