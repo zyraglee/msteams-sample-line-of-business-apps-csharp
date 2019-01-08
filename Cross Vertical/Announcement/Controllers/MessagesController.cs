@@ -57,10 +57,15 @@ namespace CrossVertical.Announcement.Controllers
             }
             else if (activity.Name == "task/submit")
             {
-                var action = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<ActionDetails>>(activityValue);
+                // Run this on a task so that 
+                new Task(async () =>
+                {
+                    var action = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<ActionDetails>>(activityValue);
+                    activity.Name = action.Data.ActionType;
+                    await Conversation.SendAsync(activity, () => new RootDialog());
+                }).Start();
 
-                activity.Name = action.Data.ActionType;
-                await Conversation.SendAsync(activity, () => new RootDialog());
+                await Task.Delay(TimeSpan.FromSeconds(2));// Give it some time to start showing output.
             }
             return new HttpResponseMessage(HttpStatusCode.Accepted);
         }

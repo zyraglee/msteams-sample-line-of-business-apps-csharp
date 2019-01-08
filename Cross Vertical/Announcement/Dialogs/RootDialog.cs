@@ -407,9 +407,9 @@ namespace CrossVertical.Announcement.Dialogs
                 await connectorClient.Conversations.UpdateActivityAsync(activity.Conversation.Id, oldAnnouncementDetails.MessageActionId, (Activity)updateMessage);
                 context.ConversationData.RemoveValue(campaign.Id);
             }
-            else
+            else if(type == Constants.ScheduleAnnouncement)
             {
-                var message =  $"We have scheduled this announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}. Note that announcements scheduled for past date will be sent immediately.";
+                var message = $"We have re-scheduled this announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}.";
                 await context.PostAsync(message);
             }
         }
