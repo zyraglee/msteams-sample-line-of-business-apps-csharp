@@ -1,4 +1,5 @@
 ﻿using AdaptiveCards;
+using AdaptiveCards.Rendering.Html;
 using CrossVertical.Announcement.Helpers;
 using System;
 using System.Collections.Generic;
@@ -504,7 +505,7 @@ namespace CrossVertical.Announcement.Models
                 default:
                     break;
             }
-
+            AdaptiveCardRenderer renderer = new AdaptiveCardRenderer();
             var previewCard = new AdaptiveCard()
             {
                 Body = new List<AdaptiveElement>()
@@ -598,6 +599,25 @@ namespace CrossVertical.Announcement.Models
                     }
                 },
             };
+            try
+            {
+                // Render the card
+                RenderedAdaptiveCard renderedCard = renderer.RenderCard(previewCard);
+
+                // Get the output HTML 
+                HtmlTag html = renderedCard.Html;
+                              // (Optional) Check for any renderer warnings
+                // This includes things like an unknown element type found in the card
+                // Or the card exceeded the maxmimum number of supported actions, etc
+                IList<AdaptiveWarning> warnings = renderedCard.Warnings;
+            }
+            catch (AdaptiveException ex)
+            {
+                throw ex;
+                // Failed rendering
+            }
+
+
 
             previewCard.Actions = new List<AdaptiveAction>();
             if (ShowAllDetailsButton)

@@ -78,7 +78,7 @@
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
-            padding: 6px;
+           
         }
         .row-recept {
             height: 15px;
@@ -164,6 +164,7 @@
             padding: 6px;
             left: 0;
             right: 0;
+            height:43px;
         }
 
         .btn-primary {
@@ -244,16 +245,17 @@
                                     @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
                                     {
                                         <td style="padding-right:2px;">
-                                            ❗
+                                            
                                         </td>
                                     }
                                     else if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Important)
                                     {
-                                        <td>❕</td>
+                                        <td><img class="imgstyle" src="~/Resources/exclamation.PNG"/></td>
                                     }
                                     else
                                     {
-                                        <td>📄</td>}
+                                        <td> </td>
+                                    }
 
                                     <td class="row-date">
                                         <span>@item.Title</span>
@@ -283,7 +285,7 @@
                                         <td class="row-recept">
 
 
-                                            <img class="imgstyle" src="~/Resources/Group_img.PNG" />
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
 
                                         </td>
@@ -298,12 +300,14 @@
                                     else
                                     {
                                         <td class="row-recept">
-
+                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
+                                            <span>@item.RecipientCount</span>
 
                                             <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span><br style="vertical-align:bottom" />
                                             <img class="imgstyle" src="~/Resources/Group_img.PNG" />
-                                            <span>@item.RecipientCount</span>
+                                            <span>@item.RecipientCount</span><br style="vertical-align:bottom" />
+
 
                                         </td>
 
@@ -317,15 +321,15 @@
                                     }
                                     <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/arrow.PNG" />
-                                        <span style="vertical-align:bottom">0</span>
+                                        <span style="vertical-align:bottom">012</span>
                                     </td>
                                     <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom">@item.AckCount</span>
+                                        <span style="vertical-align:bottom">@*@item.AckCount*@01</span>
                                     </td>
                                     <td class="row-count">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
-                                        <span style="vertical-align:bottom">@item.LikeCount</span>
+                                        <span style="vertical-align:bottom">@*@item.LikeCount*@0123</span>
                                     </td>
                                     <td class="row-event">
                                         <table>

@@ -9,6 +9,8 @@ using Microsoft.Bot.Connector;
 using CrossVertical.Announcement.Models;
 using Newtonsoft.Json.Linq;
 using CrossVertical.Announcement.Helpers;
+using AdaptiveCards.Rendering;
+using AdaptiveCards.Rendering.Html;
 
 namespace CrossVertical.Announcement.Controllers
 {
@@ -115,10 +117,29 @@ namespace CrossVertical.Announcement.Controllers
 
             return View(postDetails);
         }
-        [Route("tabinfo")]
-        public async Task<ActionResult> TabInfo()
+        [Route("details")]
+        public async Task<ActionResult> Details(string announcementid)
         {
-            return View();
+            AdaptiveCardRenderer renderer = new AdaptiveCardRenderer();
+            if (string.IsNullOrEmpty(announcementid))
+            {
+                return HttpNotFound();
+            }
+           
+            var announcement = await Cache.Announcements.GetItemAsync(announcementid);
+            AnnouncementDetails announcementinfo = new AnnouncementDetails();
+            if (announcement!=null)
+            {
+                
+                var html = announcement.GetPreviewCard();
+                RenderedAdaptiveCard renderedCard = renderer.RenderCard(html);
+                HtmlTag cardhtml = renderedCard.Html;
+                
+                announcementinfo.Title = announcement.Title;
+                announcementinfo.html = cardhtml;
+                
+            }
+            return View(announcementinfo);
         }
         [Route("create")]
         public async Task<ActionResult> Create(string Emailid)

@@ -46,8 +46,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdaptiveCards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Packages\AdaptiveCards.1.0.3\lib\net452\AdaptiveCards.dll</HintPath>
+    <Reference Include="AdaptiveCards, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\AdaptiveCards.1.1.0\lib\net452\AdaptiveCards.dll</HintPath>
+    </Reference>
+    <Reference Include="AdaptiveCards.Rendering.Html, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\AdaptiveCards.Rendering.Html.1.1.0\lib\net452\AdaptiveCards.Rendering.Html.dll</HintPath>
     </Reference>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
@@ -69,6 +72,9 @@
     </Reference>
     <Reference Include="Faker.NET4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Faker.Net.1.0.3\lib\net40\Faker.NET4.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack.NetCore, Version=1.5.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\net45\HtmlAgilityPack.NetCore.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\Packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
@@ -151,6 +157,9 @@
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.5.1.4\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.MarkedNet, Version=1.0.11.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.MarkedNet.1.0.11\lib\net452\Microsoft.MarkedNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.2\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
@@ -288,6 +297,7 @@
     <Compile Include="Helpers\Scheduler.cs" />
     <Compile Include="Helpers\SimpleGraphClient.cs" />
     <Compile Include="Models\ActionButtonInputDetails.cs" />
+    <Compile Include="Models\AnnouncementDetails.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Models\Celebration.cs" />
     <Compile Include="Models\AnnouncementBase.cs" />
@@ -332,6 +342,7 @@
     <Content Include="Resources\download.jpg" />
     <Content Include="Resources\Draft.PNG" />
     <Content Include="Resources\edit.PNG" />
+    <Content Include="Resources\exclamation.PNG" />
     <Content Include="Resources\Group_img.PNG" />
     <Content Include="Resources\Likes.PNG" />
     <Content Include="Resources\pencil.PNG" />
@@ -360,7 +371,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Authentication\ConsentPage.cshtml" />
     <Content Include="Views\Announcement\Index.cshtml" />
-    <Content Include="Views\Announcement\TabInfo.cshtml" />
+    <Content Include="Views\Announcement\Details.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
