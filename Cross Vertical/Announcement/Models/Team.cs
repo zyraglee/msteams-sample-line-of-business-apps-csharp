@@ -11,5 +11,7 @@ namespace CrossVertical.Announcement.Models
         public string Name { get; set; }
 
         public List<Channel> Channels { get; set; } = new List<Channel>();
+
+        public int MemberCount { get; set; }
     }
 }

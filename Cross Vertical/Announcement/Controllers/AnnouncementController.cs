@@ -54,6 +54,7 @@ namespace CrossVertical.Announcement.Controllers
                 var recipientCount = 0;
                 var groupsNames = new List<string>();
                 var channelNames = new List<string>();
+                
 
                 // Create anew class
                 foreach (var group in announcement.Recipients.Groups)
@@ -72,11 +73,18 @@ namespace CrossVertical.Announcement.Controllers
                     var teamname = await Cache.Teams.GetItemAsync(team.TeamId);
                     if (teamname == null)
                         continue;
-                    channelNames.Add(teamname.Name);
+                    if (!channelNames.Contains(teamname.Name))
+                    {
+                        channelNames.Add(teamname.Name);
+                        
+                        post.RecipientChannelCount += teamname.MemberCount;
+                    }
+                    
                     post.LikeCount += team.Channel.LikeCount;
                 }
                 if (recipientCount == 0 && announcement.Recipients != null && announcement.Recipients.Channels != null)
                     recipientCount = announcement.Recipients.Channels.Count;
+               
 
                 var maxChar = 40;
                 var recipientNames = string.Empty;
@@ -112,6 +120,7 @@ namespace CrossVertical.Announcement.Controllers
                 post.RecipientCount = $"{recipientCount}";
                 post.Recipients = $"{recipientNames}";
                 post.RecipientChannelNames = $"{recipientChannelNames}";
+                
                 postDetails.Add(post);
             }
 
