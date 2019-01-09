@@ -133,6 +133,7 @@ namespace CrossVertical.Announcement.Controllers
 
         private static async Task HandleConversationUpdate(Activity message)
         {
+            ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
             var channelData = message.GetChannelData<TeamsChannelData>();
             var tenant = await RootDialog.CheckAndAddTenantDetails(channelData);
             switch (channelData.EventType)
@@ -146,12 +147,22 @@ namespace CrossVertical.Announcement.Controllers
                         await Conversation.SendAsync(message, () => new RootDialog());
                         await AddTeamDetails(message, channelData, tenant);
                     }
+                    else
+                    {
+                        
+                        await UpdateTeamCount(message, channelData, tenant);
+                    }
                     break;
                 case "teamMemberRemoved":
                     // Add team & channel details 
                     if (message.MembersRemoved.Any(m => m.Id.Contains(message.Recipient.Id)))
                     {
                         await RemoveTeamDetails(channelData, tenant);
+                    }
+                    else
+                    {
+                        
+                        await UpdateTeamCount(message, channelData, tenant);
                     }
                     break;
                 case "teamRenamed":
@@ -299,10 +310,15 @@ namespace CrossVertical.Announcement.Controllers
             if (!tenant.Teams.Contains(channelData.Team.Id))
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+                int count = members.Count;
                 var team = new Team
                 {
                     Id = channelData.Team.Id,
-                    Name = channelData.Team.Name
+                    Name = channelData.Team.Name,
+                    MemberCount=count
+                    
+                    
                 };
                 // Add all teams and channels
                 ConversationList channels = connector.GetTeamsConnectorClient().Teams.FetchChannelList(message.GetChannelData<TeamsChannelData>().Team.Id);
@@ -316,6 +332,20 @@ namespace CrossVertical.Announcement.Controllers
                 await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
             }
             await RootDialog.CheckAndAddUserDetails(message, channelData);
+        }
+        private static async Task UpdateTeamCount(Activity message, TeamsChannelData channelData, Tenant tenant)
+        {
+            if (tenant.Teams.Contains(channelData.Team.Id))
+            {
+                ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
+                int count = members.Count;
+
+                var team = await Cache.Teams.GetItemAsync(channelData.Team.Id);
+                team.MemberCount = count;
+                await Cache.Teams.AddOrUpdateItemAsync(team.Id, team);
+            }
+
         }
     }
 }
