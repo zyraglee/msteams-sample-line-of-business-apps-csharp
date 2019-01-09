@@ -191,7 +191,62 @@ namespace CrossVertical.Announcement.Helpers
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
             var date = campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy");
             var time = campaign.Schedule.ScheduledTime.ToString("HH:mm");
-            return GetScheduleConfirmationCard(campaign.Id, date, time, false);
+
+            var card = new AdaptiveCard()
+            {
+                Body = new List<AdaptiveElement>()
+                {
+                    new AdaptiveContainer()
+                                        {
+                                            Items=new List<AdaptiveElement>()
+                                            {
+                                                new AdaptiveTextBlock()
+                                                {
+                                                    Text="Please select schedule for your anouncement:"
+                                                },
+                                                new AdaptiveDateInput()
+                                                {
+                                                    Id = "Date",
+                                                    Value = date
+                                                },
+                                                new AdaptiveTimeInput()
+                                                {
+                                                    Id = "Time",
+                                                    Value = time
+                                                }
+                                            }
+                                        }
+                },
+                Actions = new List<AdaptiveAction>()
+                          {
+                            new AdaptiveSubmitAction()
+                            {
+                                Id = "sendNow",
+                                Title = "Send Now",
+                                Data = new AnnouncementActionDetails()
+                                {
+                                    ActionType = Constants.SendAnnouncement,
+                                    Id = announcementId
+                                }
+                            },
+                            new AdaptiveSubmitAction()
+                            {
+                                Id= "schedule",
+                                Title="Schedule",
+                                Data = new AnnouncementActionDetails()
+                                {
+                                    Id = announcementId,
+                                    ActionType = Constants.ScheduleAnnouncement
+                                }
+                            }
+                          }
+            };
+
+            return new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card
+            };
         }
 
         public static Attachment GetScheduleConfirmationCard(string announcementId, string date, string time, bool allowEdit)
@@ -266,11 +321,11 @@ namespace CrossVertical.Announcement.Helpers
                                     }
                                 }
                               }
-                            
+
                           }
             };
 
-            if(allowEdit)
+            if (allowEdit)
             {
                 Card.Actions.Add(
                 new AdaptiveSubmitAction()

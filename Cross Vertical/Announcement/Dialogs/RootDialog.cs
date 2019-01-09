@@ -379,10 +379,10 @@ namespace CrossVertical.Announcement.Dialogs
             }
 
             // Handle old records.
-            if(string.IsNullOrEmpty(campaign.Recipients.TenantId))
+            if (string.IsNullOrEmpty(campaign.Recipients.TenantId))
             {
                 campaign.Recipients.TenantId = channelData.Tenant.Id;
-                campaign.Recipients.ServiceUrl  = activity.ServiceUrl;
+                campaign.Recipients.ServiceUrl = activity.ServiceUrl;
             }
             if (type == Constants.SendAnnouncement)
                 await SendAnnouncement(context, activity, channelData, campaign);
@@ -413,10 +413,26 @@ namespace CrossVertical.Announcement.Dialogs
                 await connectorClient.Conversations.UpdateActivityAsync(activity.Conversation.Id, oldAnnouncementDetails.MessageActionId, (Activity)updateMessage);
                 context.ConversationData.RemoveValue(campaign.Id);
             }
-            else if(type == Constants.ScheduleAnnouncement)
+            else if (type == Constants.ScheduleAnnouncement)
             {
-                var message = $"We have re-scheduled this announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}.";
+                var message = $"We have re-scheduled the announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}.";
                 await context.PostAsync(message);
+                var reply = activity.CreateReply();
+                reply.Attachments.Add(
+                    new ThumbnailCard()
+                    {
+                        Images = new List<CardImage>() {
+                            new CardImage() {
+                            Url = (Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
+                            campaign.Author?.ProfilePhoto : null)
+                            }
+                        },
+                        Title = campaign.Title,
+                        Subtitle = "Author: " + campaign.Author?.Name,
+                        Text=    $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
+                    }.ToAttachment()
+                    );
+                await context.PostAsync(reply);
             }
         }
 
@@ -499,7 +515,7 @@ namespace CrossVertical.Announcement.Dialogs
                 if (campaign.Schedule != null)
                     dateTimeOffset = campaign.Schedule.ScheduledTime;
 
-                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), true));
+                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), campaign.Status != Status.Sent ));
                 messageResouce = await connector.Conversations.SendToConversationAsync(reply);
                 previewMessageDetails.MessageActionId = messageResouce.Id;
                 context.ConversationData.SetValue(campaign.Id, previewMessageDetails);
