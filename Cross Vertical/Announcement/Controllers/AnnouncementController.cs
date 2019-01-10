@@ -383,6 +383,8 @@ namespace CrossVertical.Announcement.Controllers
                 var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
                 GraphHelper helper = new GraphHelper(token);
 
+                var allAckUsers = new List<string>();
+                var allReactionUsers = new List<string>();
                 foreach (var group in announcement.Recipients.Groups)
                 {
                     foreach (var user in group.Users)
@@ -391,14 +393,22 @@ namespace CrossVertical.Announcement.Controllers
                         var userDetails = await helper.GetUser(user.Id);
                         if (user.IsAcknoledged)
                         {
-                            var item = await GetUserItem(tid, helper, userDetails);
-                            analyticsInfo.FirstTab.Items.Add(item);
+                            if (!allAckUsers.Contains(user.Id))
+                            {
+                                var item = await GetUserItem(tid, helper, userDetails);
+                                analyticsInfo.FirstTab.Items.Add(item);
+                                allAckUsers.Add(user.Id);
+                            }
                         }
                         if (user.LikeCount != 0)
                         {
-                            var item = await GetUserItem(tid, helper, userDetails);
-                            item.EnableLikeButton = true;
-                            analyticsInfo.SecondTab.Items.Add(item);
+                            if (!allReactionUsers.Contains(user.Id))
+                            {
+                                var item = await GetUserItem(tid, helper, userDetails);
+                                item.EnableLikeButton = true;
+                                analyticsInfo.SecondTab.Items.Add(item);
+                                allReactionUsers.Add(user.Id);
+                            }
                         }
                     }
                 }
@@ -416,7 +426,8 @@ namespace CrossVertical.Announcement.Controllers
                 Title = userDetails.DisplayName ?? userDetails.GivenName,
                 SubTitle = userDetails.JobTitle ?? userDetails.UserPrincipalName,
                 EnableLikeButton = false,
-                ChatUrl = $"https://teams.microsoft.com/l/chat/0/0?users={userDetails.Id}"
+                // ChatUrl = $"https://teams.microsoft.com/l/chat/0/0?users={userDetails.UserPrincipalName}"
+                ChatUrl = $"https://teams.microsoft.com/_#/conversations/8:orgid:{userDetails.Id}?ctx=chat"
             };
         }
 
@@ -435,21 +446,29 @@ namespace CrossVertical.Announcement.Controllers
                 var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
                 GraphHelper helper = new GraphHelper(token);
 
-                var ackUserList = new List<User>();
-                var reactedUserList = new List<User>();
+                var allUsers = new List<string>();
                 foreach (var group in announcement.Recipients.Groups)
                 {
                     foreach (var user in group.Users)
                     {
+                        if (allUsers.Contains(user.Id))
+                        {
+                            continue;
+                        }
+                        else
+                            allUsers.Add(user.Id);
+
                         // var userDetails = await Cache.Users.GetItemAsync(user.Id);
-                        var userDetails = await helper.GetUser(user.Id);
+                            var userDetails = await helper.GetUser(user.Id);
                         var item = await GetUserItem(tid, helper, userDetails);
+                        
                         audianceInfo.FirstTab.Items.Add(item);
                     }
                 }
 
                 foreach (var channel in announcement.Recipients.Channels)
                 {
+                    var messageId = channel.Channel.MessageId;
                     var team = await Cache.Teams.GetItemAsync(channel.TeamId);
                     if (team == null)
                         continue;
@@ -469,8 +488,8 @@ namespace CrossVertical.Announcement.Controllers
                              SubTitle = team.Name,
                              EnableLikeButton = false,
                              DeepLinkUrl =
-                             string.IsNullOrEmpty(channel.Channel.MessageId) ?
-                             "https://teams.microsoft.com/l/message/" + channel.Channel.MessageId?.Replace(";messageid=", "")
+                             !string.IsNullOrEmpty(messageId) ?
+                             "https://teams.microsoft.com/l/message/" + messageId?.Replace(";messageid=", "/")
                              : $"https://teams.microsoft.com/l/channel/{channel.TeamId}/General"
                          });
                 }

@@ -29,7 +29,6 @@
 
         .rect {
             height: 32px;
-            width: 160px;
             color: #6264A7;
             border: 1px solid #6264A7;
             border-radius: 2px;
@@ -45,7 +44,7 @@
     <div class="container">
         @if (Model != null && Model.Items.Count != 0)
         {
-        <table rules="none" style="width:auto;height:auto;">
+        <table rules="none" style="width:100%;height:auto;">
             @foreach (var item in Model.Items)
             {
                 <tr style="border:2px solid white">
@@ -58,14 +57,14 @@
                     }
                     else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
                     {
-                        <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle1" /></td>
+                        <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
                     }
                     else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
                     {
                         <td>
-                            <button class="rect">
-                                View Conversation
-                            </button>
+                            <a target="_blank" href="@(item.DeepLinkUrl)"><button class="rect">
+                                    View Conversation
+                             </button></a>
                         </td>
                     }
                 </tr>
@@ -74,7 +73,7 @@
         }
         else
         {
-            <p>There are no @Model.Title to show.</p>
+            <p style="margin:5px;">User @(Model.Title)s will be shown here.</p>
         }
     </div>
 </body>

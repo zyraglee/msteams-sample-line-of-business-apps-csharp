@@ -9,6 +9,7 @@ using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -158,7 +159,6 @@ namespace CrossVertical.Announcement.Controllers
                     }
                     else
                     {
-                        
                         await UpdateTeamCount(message, channelData, tenant);
                     }
                     break;
@@ -170,7 +170,7 @@ namespace CrossVertical.Announcement.Controllers
                     }
                     else
                     {
-                        
+
                         await UpdateTeamCount(message, channelData, tenant);
                     }
                     break;
@@ -325,9 +325,7 @@ namespace CrossVertical.Announcement.Controllers
                 {
                     Id = channelData.Team.Id,
                     Name = channelData.Team.Name,
-                    MemberCount=count
-                    
-                    
+                    MemberCount = count
                 };
                 // Add all teams and channels
                 ConversationList channels = connector.GetTeamsConnectorClient().Teams.FetchChannelList(message.GetChannelData<TeamsChannelData>().Team.Id);
@@ -338,10 +336,46 @@ namespace CrossVertical.Announcement.Controllers
                 await Cache.Teams.AddOrUpdateItemAsync(team.Id, team);
 
                 tenant.Teams.Add(channelData.Team.Id);
+
                 await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
+
+                await SendWelcomeMessageToAllMembers(tenant, message,  channelData, members.AsTeamsChannelAccounts());
+
             }
             await RootDialog.CheckAndAddUserDetails(message, channelData);
         }
+
+        private static async Task SendWelcomeMessageToAllMembers(Tenant tenant, Activity message, TeamsChannelData channelData, IEnumerable<TeamsChannelAccount> members)
+        {
+            var card = AdaptiveCardDesigns.GetWelcomeScreen(false);
+            foreach (var member in members)
+            {
+                var userDetails = await Cache.Users.GetItemAsync(member.UserPrincipalName);
+                if (userDetails == null)
+                {
+                    userDetails = new User()
+                    {
+                        BotConversationId = member.Id,
+                        Id = member.UserPrincipalName,
+                        Name = member.Name ?? member.GivenName
+                    };
+                    await Cache.Users.AddOrUpdateItemAsync(userDetails.Id, userDetails);
+
+                    tenant.Users.Add(userDetails.Id);
+                    await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
+
+                    var result = await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id, null, card);
+                    if (!result.IsSuccessful)
+                    {
+                        ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                        var reply = message.CreateReply();
+                        reply.Text = $"Failed to send welcome message to {member.UserPrincipalName}. Error: {result.FailureMessage}";
+                        connector.Conversations.ReplyToActivity(reply);
+                    }
+                }
+            }
+        }
+
         private static async Task UpdateTeamCount(Activity message, TeamsChannelData channelData, Tenant tenant)
         {
             if (tenant.Teams.Contains(channelData.Team.Id))
