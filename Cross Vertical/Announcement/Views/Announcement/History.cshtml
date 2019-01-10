@@ -40,7 +40,7 @@
 
         .row-date {
             height: 25px;
-            width: 30%;
+            width: 25%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -85,6 +85,13 @@
         .responserow {
             height: 15px;
             width: 6%;
+            color: #252424;
+            font-family: "Segoe UI";
+            font-size: 12px;
+        }
+        .responserow2 {
+            height: 15px;
+            width: 10%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -239,9 +246,7 @@
                                 <th class="day">
                                     Responses
                                 </th>
-                                <th>
-
-                                </th>
+                               
                                 <th>
 
                                 </th>
@@ -324,17 +329,14 @@
 
                                         </td>
                                     }
-                                    <td class="responserow">
-                                        <img class="imgstyle" src="~/Resources/arrow.PNG" />
-                                        <span style="vertical-align:bottom">0</span>
-                                    </td>
-                                    <td onclick="submit('viewAckAnalytics', '@item.Id')" class="responserow">
+                                    
+                                    <td onclick="submit('viewAckAnalytics', '@item.Id')"  class="responserow">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom">@item.AckCount</span>
+                                        <span style="vertical-align:bottom">@*@item.AckCount*@123</span>
                                     </td>
-                                    <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow">
+                                    <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow2">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
-                                        <span style="vertical-align:bottom">@item.LikeCount</span>
+                                        <span style="vertical-align:bottom">@*@item.LikeCount*@123</span>
                                     </td>
                                     <td class="row-event">
                                         <table>

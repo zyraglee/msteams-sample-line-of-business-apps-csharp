@@ -149,6 +149,57 @@ namespace CrossVertical.Announcement.Controllers
             }
             return View(announcementinfo);
         }
+        [Route("person")]
+        public async Task<ActionResult> Person()
+        {
+            var viewModel = new ListItemsViewModel();
+            viewModel.ListItems = new List<ListItem>()
+            {
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Niana Seril",
+                    SubTitle ="Senior Manager",
+                    EnableLikeButton = true,
+                    ChatUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+                },
+
+
+                new ListItem(){ImageUrl="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="My ChanelName",
+                    SubTitle ="Team Name",
+                    DeepLinkUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+                },
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Antonio Clausen",
+                    SubTitle ="Sales Manager",
+                ChatUrl="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                EnableLikeButton=false,
+                },
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Omar Mast",
+                    SubTitle ="Solution Specialist",
+                EnableLikeButton = true,
+                    ChatUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"},
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Nelson Morales",
+                    SubTitle ="Chief Business Operator",
+                    DeepLinkUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+
+                },
+
+        };
+            return View(viewModel);
+        }
+
         [Route("create")]
         public async Task<ActionResult> Create(string Emailid)
         {
