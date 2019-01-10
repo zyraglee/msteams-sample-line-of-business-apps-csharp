@@ -113,11 +113,6 @@ namespace CrossVertical.Announcement.Helpers
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
 
-            if (campaign == null || campaign.Status == Status.Sent)
-            {
-                return GetUpdateMessageCard("This announcement is already sent and not allowed to edit.");
-            }
-
             var tenant = await Cache.Tenants.GetItemAsync(tenantId);
 
             var groups = new List<Group>();
