@@ -213,6 +213,15 @@
             vertical-align: bottom;
             cursor: pointer;
         }
+        .imgstyle3 {
+            
+            font-size: 14px;
+            height: 15px;
+            opacity: 0.8;
+            vertical-align: bottom;
+            cursor:pointer;
+       
+        }
 
 
 
@@ -277,17 +286,17 @@
                                         <td> </td>
                                     }
                                     <td onclick="submit('preview', '@item.Id')" class="row-date">
-                                        <span>@item.Title</span>
+                                        <span style="cursor:pointer">@item.Title</span>
                                     </td>
                                     @if (item.Recipients == string.Empty || item.Recipients == ", ")
                                     {
                                         <td  onclick="submit('viewGroupAudiance', '@item.Id')"  class="row-recept">
                                             <span>   </span>
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
-                                            <span>@item.RecipientCount</span>
+                                            <img class="imgstyle3" src="~/Resources/channel.PNG" />
+                                            <span style="cursor:pointer">@item.RecipientCount</span>
                                         </td>
                                         <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
-                                            <span>@item.RecipientChannelNames</span>
+                                            <span style="cursor:pointer">@item.RecipientChannelNames</span>
                                         </td>
                                     }
                                     else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
@@ -295,15 +304,15 @@
                                         <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
                                             <span>   </span>
 
-                                            <img class="imgstyle" src="~/Resources/group.PNG" />
-                                            <span>@item.RecipientCount</span>
+                                            <img class="imgstyle3" src="~/Resources/group.PNG" />
+                                            <span style="cursor:pointer">@item.RecipientCount</span>
 
                                         </td>
 
 
                                         <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
 
-                                            <span>@item.Recipients</span>
+                                            <span style="cursor:pointer">@item.Recipients</span>
 
                                         </td>
                                     }
@@ -311,19 +320,19 @@
                                     {
                                         <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
                                             <span>   </span>
-                                            <img class="imgstyle" src="~/Resources/group.PNG" />
-                                            <span>@item.RecipientCount</span>
+                                            <img class="imgstyle3" src="~/Resources/group.PNG" />
+                                            <span style="cursor:pointer">@item.RecipientCount</span>
 
-                                            <img class="imgstyle" src="~/Resources/channel.PNG" />
-                                            <span>@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
+                                            <img class="imgstyle3" src="~/Resources/channel.PNG" />
+                                            <span style="cursor:pointer">@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
 
 
                                         </td>
 
 
                                         <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
-                                            <span>@item.Recipients</span><br style="line-height:19px;" />
-                                            <span>@item.RecipientChannelNames</span>
+                                            <span style="cursor:pointer">@item.Recipients</span><br style="line-height:19px;" />
+                                            <span style="cursor:pointer">@item.RecipientChannelNames</span>
 
 
 
@@ -331,12 +340,12 @@
                                     }
                                     
                                     <td onclick="submit('viewAckAnalytics', '@item.Id')"  class="responserow">
-                                        <img class="imgstyle" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom">@item.AckCount</span>
+                                        <img class="imgstyle3" src="~/Resources/ack.PNG" />
+                                        <span style="vertical-align:bottom;cursor:pointer">@item.AckCount</span>
                                     </td>
                                     <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow2">
-                                        <img class="imgstyle" src="~/Resources/Likes.PNG" />
-                                        <span style="vertical-align:bottom">@item.LikeCount</span>
+                                        <img class="imgstyle3" src="~/Resources/Likes.PNG" />
+                                        <span style="vertical-align:bottom;cursor:pointer">@item.LikeCount</span>
                                     </td>
                                     <td class="row-event">
                                         <table>
@@ -478,7 +487,7 @@
             {
                 taskInfo.title = "View Analytics";
                 taskInfo.height = "400";
-                taskInfo.width = "500";
+                taskInfo.width = "450";
                 taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAnalytics?id=' + id + '&tid=' + tenantId+  "&page=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
@@ -487,7 +496,7 @@
             {
                 taskInfo.title = "View Audiance";
                 taskInfo.height = "400";
-                taskInfo.width = "500";
+                taskInfo.width = "450";
                 taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAudiance?id=' + id + '&tid=' + tenantId+ "&page=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }

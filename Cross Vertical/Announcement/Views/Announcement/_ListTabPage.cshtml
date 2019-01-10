@@ -54,11 +54,11 @@
                     @if (item.EnableLikeButton)
                     {
                         <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
-                        <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle" /></td>
+                        <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle1" /></td>
                     }
                     else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
                     {
-                        <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle" /></td>
+                        <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle1" /></td>
                     }
                     else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
                     {
