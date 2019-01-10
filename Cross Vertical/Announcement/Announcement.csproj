@@ -310,6 +310,7 @@
     <Compile Include="Models\ListCard.cs" />
     <Compile Include="Models\MessageSensitivity.cs" />
     <Compile Include="Models\NotificationSendStatus.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="Models\PostDetails.cs" />
     <Compile Include="Models\PreviewCardMessageDetails.cs" />
     <Compile Include="Models\Recipient.cs" />
@@ -339,13 +340,16 @@
     <Content Include="Resources\anal.PNG" />
     <Content Include="Resources\arrow.PNG" />
     <Content Include="Resources\channel.PNG" />
+    <Content Include="Resources\chat.PNG" />
     <Content Include="Resources\download.jpg" />
     <Content Include="Resources\Draft.PNG" />
     <Content Include="Resources\edit.PNG" />
     <Content Include="Resources\edit2.PNG" />
     <Content Include="Resources\exclamation.PNG" />
     <Content Include="Resources\group.PNG" />
+    <Content Include="Resources\Like.png" />
     <Content Include="Resources\Likes.PNG" />
+    <Content Include="Resources\lines.PNG" />
     <Content Include="Resources\pencil.PNG" />
     <Content Include="Resources\sched.PNG" />
     <Content Include="Resources\schedule.PNG" />
@@ -375,6 +379,7 @@
     <Content Include="Views\Authentication\ConsentPage.cshtml" />
     <Content Include="Views\Announcement\Index.cshtml" />
     <Content Include="Views\Announcement\Details.cshtml" />
+    <Content Include="Views\Announcement\Person.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

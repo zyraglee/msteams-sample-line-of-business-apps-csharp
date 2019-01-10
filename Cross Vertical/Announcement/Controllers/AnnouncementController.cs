@@ -54,7 +54,7 @@ namespace CrossVertical.Announcement.Controllers
                 var recipientCount = 0;
                 var groupsNames = new List<string>();
                 var channelNames = new List<string>();
-                
+
 
                 // Create anew class
                 foreach (var group in announcement.Recipients.Groups)
@@ -76,15 +76,15 @@ namespace CrossVertical.Announcement.Controllers
                     if (!channelNames.Contains(teamname.Name))
                     {
                         channelNames.Add(teamname.Name);
-                        
+
                         post.RecipientChannelCount += teamname.MemberCount;
                     }
-                    
+
                     post.LikeCount += team.Channel.LikeCount;
                 }
                 if (recipientCount == 0 && announcement.Recipients != null && announcement.Recipients.Channels != null)
                     recipientCount = announcement.Recipients.Channels.Count;
-               
+
 
                 var maxChar = 40;
                 var recipientNames = string.Empty;
@@ -120,7 +120,7 @@ namespace CrossVertical.Announcement.Controllers
                 post.RecipientCount = $"{recipientCount}";
                 post.Recipients = $"{recipientNames}";
                 post.RecipientChannelNames = $"{recipientChannelNames}";
-                
+
                 postDetails.Add(post);
             }
 
@@ -134,23 +134,74 @@ namespace CrossVertical.Announcement.Controllers
             {
                 return HttpNotFound();
             }
-           
+
             var announcement = await Cache.Announcements.GetItemAsync(announcementid);
             AnnouncementDetails announcementinfo = new AnnouncementDetails();
-            if (announcement!=null)
+            if (announcement != null)
             {
                 announcement.ShowAllDetailsButton = false;
                 var html = announcement.GetPreviewCard();
                 announcement.ShowAllDetailsButton = true;
                 RenderedAdaptiveCard renderedCard = renderer.RenderCard(html);
                 HtmlTag cardhtml = renderedCard.Html;
-                
+
                 announcementinfo.Title = announcement.Title;
                 announcementinfo.html = cardhtml;
-                
+
             }
             return View(announcementinfo);
         }
+        [Route("person")]
+        public async Task<ActionResult> Person()
+        {
+            var viewModel = new ListItemsViewModel();
+            viewModel.ListItems = new List<ListItem>()
+            {
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Niana Seril",
+                    SubTitle ="Senior Manager",
+                    EnableLikeButton = true,
+                    ChatUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+                },
+
+
+                new ListItem(){ImageUrl="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="My ChanelName",
+                    SubTitle ="Team Name",
+                    DeepLinkUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+                },
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Antonio Clausen",
+                    SubTitle ="Sales Manager",
+                ChatUrl="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                EnableLikeButton=false,
+                },
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Omar Mast",
+                    SubTitle ="Solution Specialist",
+                EnableLikeButton = true,
+                    ChatUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"},
+
+
+                new ListItem(){
+                    ImageUrl ="https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                    Title ="Nelson Morales",
+                    SubTitle ="Chief Business Operator",
+                    DeepLinkUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+
+                },
+
+        };
+            return View(viewModel);
+        }
+
         [Route("create")]
         public async Task<ActionResult> Create(string Emailid)
         {
