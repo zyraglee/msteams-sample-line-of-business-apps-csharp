@@ -328,11 +328,11 @@
                                         <img class="imgstyle" src="~/Resources/arrow.PNG" />
                                         <span style="vertical-align:bottom">0</span>
                                     </td>
-                                    <td class="responserow">
+                                    <td onclick="submit('viewAckAnalytics', '@item.Id')" class="responserow">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
                                         <span style="vertical-align:bottom">@item.AckCount</span>
                                     </td>
-                                    <td class="responserow">
+                                    <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
                                         <span style="vertical-align:bottom">@item.LikeCount</span>
                                     </td>
@@ -383,7 +383,7 @@
                                                             }
                                                             @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
                                                             {
-                                                                <tr onclick="submit('viewAnalytics', '@item.Id')">
+                                                                <tr onclick="submit('viewAckAnalytics', '@item.Id')">
                                                                     <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/anal.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">View Analytics</a></td>
                                                                 </tr>
@@ -477,7 +477,7 @@
                 taskInfo.title = "View Analytics";
                 taskInfo.height = "400";
                 taskInfo.width = "200";
-                taskInfo.url = taskInfo.fallbackUrl = '/viewAnalytics?id=' + id + "&startTab=" + type;
+                taskInfo.url =  '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAnalytics?id=' + id + "&startTab=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
             else if (type == "viewGroupAudiance" ||
@@ -486,7 +486,7 @@
                 taskInfo.title = "View Audiance";
                 taskInfo.height = "400";
                 taskInfo.width = "200";
-                taskInfo.url = taskInfo.fallbackUrl = '/viewAudiance?id=' + id + "&startTab=" + type;
+                taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAudiance?id=' + id + "&startTab=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
             else {

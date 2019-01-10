@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace CrossVertical.Announcement.ViewModels
 {
     public class TabListViewModel
     {
-        public string SelectedTab { get; set; }
-        public ListDetails FirstTab { get; set; }
-        public ListDetails SecondTab { get; set; }
+        public bool SelectFirstTab { get; set; }
+        public ListDetails FirstTab { get; set; } = new ListDetails();
+        public ListDetails SecondTab { get; set; } = new ListDetails();
     }
 
     public class ListDetails

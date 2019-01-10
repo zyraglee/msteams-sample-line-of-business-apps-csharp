@@ -33,6 +33,9 @@ namespace CrossVertical.Announcement.Repository
 
         public async Task<T> GetItemAsync(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
             if (CachedItems.ContainsKey(id))
                 return CachedItems[id];
             else

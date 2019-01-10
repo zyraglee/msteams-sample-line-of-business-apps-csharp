@@ -321,6 +321,10 @@ namespace CrossVertical.Announcement.Controllers
         {
             var announcement = await Cache.Announcements.GetItemAsync(announcementid);
             TabListViewModel analyticsInfo = new TabListViewModel();
+            analyticsInfo.FirstTab = new ListDetails();
+            analyticsInfo.FirstTab.Title = "Acknowledgement";
+            analyticsInfo.SecondTab.Title = "Reaction";
+            // Fill in analyticsInfo model.
             if (announcement != null)
             {
                 var ackUserList = new List<User>();
@@ -335,6 +339,7 @@ namespace CrossVertical.Announcement.Controllers
                             reactedUserList.Add(await Cache.Users.GetItemAsync(user.Id));
                     }
                 }
+
             }
             return View("TabListView", analyticsInfo);
         }
@@ -344,6 +349,10 @@ namespace CrossVertical.Announcement.Controllers
         {
             var announcement = await Cache.Announcements.GetItemAsync(announcementid);
             TabListViewModel audianceInfo = new TabListViewModel();
+            audianceInfo.FirstTab = new ListDetails();
+            audianceInfo.FirstTab.Title = "Acknowledgement";
+            audianceInfo.SecondTab.Title = "Reaction";
+            // Fill in audianceInfo model.
             if (announcement != null)
             {
                 var ackUserList = new List<User>();
@@ -356,7 +365,7 @@ namespace CrossVertical.Announcement.Controllers
                     }
                 }
             }
-            return View(audianceInfo);
+            return View("TabListView", audianceInfo);
         }
 
 

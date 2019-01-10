@@ -12,7 +12,17 @@
     <title>TabListView</title>
 </head>
 <body>
-    <div> 
+
+    @* Make this a Tab View
+        @Model.SelectedTab property to decide selected tab.
+    *@
+    <div>
+        @Model.FirstTab.Title
+        @Html.Partial("_ListTabPage", Model.FirstTab)
+    </div>
+    <div>
+        @Model.SecondTab.Title
+        @Html.Partial("_ListTabPage", Model.SecondTab)
     </div>
 </body>
 </html>

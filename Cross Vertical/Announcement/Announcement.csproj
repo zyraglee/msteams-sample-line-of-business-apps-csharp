@@ -377,6 +377,7 @@
     <Content Include="Views\Announcement\Index.cshtml" />
     <Content Include="Views\Announcement\Details.cshtml" />
     <Content Include="Views\Announcement\TabListView.cshtml" />
+    <Content Include="Views\Announcement\_ListTabPage.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
