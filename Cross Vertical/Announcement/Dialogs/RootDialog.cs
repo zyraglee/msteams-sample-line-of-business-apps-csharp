@@ -653,7 +653,7 @@ namespace CrossVertical.Announcement.Dialogs
                 {
                     announcement.Author.Name = userDetails.DisplayName;
                     announcement.Author.Role = userDetails.JobTitle ?? userDetails.UserPrincipalName;
-                    announcement.Author.ProfilePhoto = await helper.GetProfilePhoto(userDetails.Id);
+                    announcement.Author.ProfilePhoto = await helper.GetUserProfilePhoto(tenantId, userDetails.Id);
                 }
             }
 

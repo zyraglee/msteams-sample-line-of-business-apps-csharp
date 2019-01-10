@@ -71,20 +71,21 @@ namespace CrossVertical.Announcement.Helpers
             return null;
         }
 
-        public async Task<string> GetProfilePhoto(string userId)
+        public async Task<string> GetUserProfilePhoto(string tenantId, string userId)
         {
             var graphClient = GetAuthenticatedClient();
             var profilePhotoUrl = string.Empty;
             try
             {
-                var fileName = userId + "-ProflePhoto.png";
-                string imagePath = System.Web.Hosting.HostingEnvironment.MapPath("~/ProfilePhotos/");
+                var baseDirectory = $"/ProfilePhotos/{tenantId}/";
+                var fileName = userId + ".png";
+                string imagePath = System.Web.Hosting.HostingEnvironment.MapPath("~" + baseDirectory);
                 if (!System.IO.Directory.Exists(imagePath))
                     System.IO.Directory.CreateDirectory(imagePath);
                 imagePath += fileName;
 
-                if(System.IO.File.Exists(imagePath))
-                    return ApplicationSettings.BaseUrl + "/ProfilePhotos/" + fileName;
+                if (System.IO.File.Exists(imagePath))
+                    return ApplicationSettings.BaseUrl + baseDirectory + fileName;
 
                 var photo = await graphClient.Users[userId].Photo.Content.Request().GetAsync();
                 using (var fileStream = System.IO.File.Create(imagePath))
@@ -92,7 +93,39 @@ namespace CrossVertical.Announcement.Helpers
                     photo.Seek(0, SeekOrigin.Begin);
                     photo.CopyTo(fileStream);
                 }
-                profilePhotoUrl = ApplicationSettings.BaseUrl + "/ProfilePhotos/" + fileName;
+                profilePhotoUrl = ApplicationSettings.BaseUrl + baseDirectory + fileName;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogService.LogError(ex);
+                profilePhotoUrl = null;
+            }
+            return profilePhotoUrl;
+        }
+
+        public async Task<string> GetTeamPhoto(string tenantId, string teamId)
+        {
+            var graphClient = GetAuthenticatedClient();
+            var profilePhotoUrl = string.Empty;
+            try
+            {
+                var baseDirectory = $"/ProfilePhotos/{tenantId}/";
+                var fileName = teamId + ".png";
+                string imagePath = System.Web.Hosting.HostingEnvironment.MapPath("~" + baseDirectory);
+                if (!System.IO.Directory.Exists(imagePath))
+                    System.IO.Directory.CreateDirectory(imagePath);
+                imagePath += fileName;
+
+                if (System.IO.File.Exists(imagePath))
+                    return ApplicationSettings.BaseUrl + baseDirectory + fileName;
+
+                var photo = await graphClient.Groups[teamId].Photo.Content.Request().GetAsync();
+                using (var fileStream = System.IO.File.Create(imagePath))
+                {
+                    photo.Seek(0, SeekOrigin.Begin);
+                    photo.CopyTo(fileStream);
+                }
+                profilePhotoUrl = ApplicationSettings.BaseUrl + baseDirectory + fileName;
             }
             catch (Exception ex)
             {

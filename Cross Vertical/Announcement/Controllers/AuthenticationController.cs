@@ -34,7 +34,7 @@ namespace CrossVertical.Announcement.Controllers
         {
             var token = await GraphHelper.GetAccessToken("0d9b645f-597b-41f0-a2a3-ef103fbd91bb", ApplicationSettings.AppId, ApplicationSettings.AppSecret);
             GraphHelper helper = new GraphHelper(token);
-            var photo = await helper.GetProfilePhoto("Mungo");
+            var photo = await helper.GetUserProfilePhoto("0d9b645f-597b-41f0-a2a3-ef103fbd91bb", "mungo@blrdev.onmicrosoft.com");
             return View();
         }
     }

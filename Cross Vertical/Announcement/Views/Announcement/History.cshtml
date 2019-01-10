@@ -198,19 +198,20 @@
             opacity: 0.8;
             vertical-align: bottom;
         }
+
         .imgstyle1 {
             font-size: 14px;
             height: 15px;
             opacity: 0.8;
             vertical-align: bottom;
-            cursor:pointer;
+            cursor: pointer;
         }
 
 
 
-            .imgstyle:hover {
-                background-color: #f3f2f1;
-            }
+        .imgstyle:hover {
+            background-color: #f3f2f1;
+        }
     </style>
 </head>
 
@@ -270,27 +271,18 @@
                                     {
                                         <td> </td>
                                     }
-                                    <td class="row-date">
+                                    <td onclick="submit('preview', '@item.Id')" class="row-date">
                                         <span>@item.Title</span>
                                     </td>
                                     @if (item.Recipients == string.Empty || item.Recipients == ", ")
                                     {
-
                                         <td class="row-recept">
                                             <span>   </span>
                                             <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
-
-
-
-
                                         </td>
-
-
                                         <td class="row-info">
-
                                             <span>@item.RecipientChannelNames</span>
-
                                         </td>
                                     }
                                     else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
@@ -391,7 +383,7 @@
                                                             }
                                                             @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
                                                             {
-                                                                <tr>
+                                                                <tr onclick="submit('viewAnalytics', '@item.Id')">
                                                                     <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/anal.PNG" /></a></td>
                                                                     <td><a style="color:#333;" href="#">View Analytics</a></td>
                                                                 </tr>
@@ -464,6 +456,10 @@
                 url = '/getEditCard?id=' + id + '&tid=' + tenantId;
                 taskInfo.title = "Edit";
             }
+            else if (type.includes('preview')) {
+                url = '/getPreviewCard?id=' + id ;
+                taskInfo.title = "Preview";
+            }
             else if (type.includes('template')) {
                 url = '/getTemplateCard?id=' + id + '&tid=' + tenantId;
                 taskInfo.title = "Create New";
@@ -475,18 +471,38 @@
                 taskInfo.width = "400";
             }
 
-            $.ajax({
-                url: url,
-                type: 'get',
-                contentType: 'application/json',
-                success: function (data, textStatus, jQxhr) {
-                    taskInfo.card = data;
-                    microsoftTeams.tasks.startTask(taskInfo);
-                },
-                error: function (jqXhr, textStatus, errorThrown) {
-                    console.log('error', errorThrown);
-                }
-            });
+            if (type == "viewAckAnalytics" ||
+                type == "viewReactionAnalytics")
+            {
+                taskInfo.title = "View Analytics";
+                taskInfo.height = "400";
+                taskInfo.width = "200";
+                taskInfo.url = taskInfo.fallbackUrl = '/viewAnalytics?id=' + id + "&startTab=" + type;
+                microsoftTeams.tasks.startTask(taskInfo);
+            }
+            else if (type == "viewGroupAudiance" ||
+                type == "viewChannelAudiance")
+            {
+                taskInfo.title = "View Audiance";
+                taskInfo.height = "400";
+                taskInfo.width = "200";
+                taskInfo.url = taskInfo.fallbackUrl = '/viewAudiance?id=' + id + "&startTab=" + type;
+                microsoftTeams.tasks.startTask(taskInfo);
+            }
+            else {
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    contentType: 'application/json',
+                    success: function (data, textStatus, jQxhr) {
+                        taskInfo.card = data;
+                        microsoftTeams.tasks.startTask(taskInfo);
+                    },
+                    error: function (jqXhr, textStatus, errorThrown) {
+                        console.log('error', errorThrown);
+                    }
+                });
+            }
         }
     </script>
 </body>

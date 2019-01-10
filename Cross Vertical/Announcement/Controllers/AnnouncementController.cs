@@ -1,16 +1,14 @@
-﻿using CrossVertical.Announcement.Repository;
-using System.Web.Mvc;
-using System;
-using System.Threading.Tasks;
+﻿using AdaptiveCards.Rendering.Html;
+using CrossVertical.Announcement.Helper;
+using CrossVertical.Announcement.Helpers;
+using CrossVertical.Announcement.Models;
+using CrossVertical.Announcement.Repository;
+using CrossVertical.Announcement.ViewModels;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using CrossVertical.Announcement.Dialogs;
-using Microsoft.Bot.Connector;
-using CrossVertical.Announcement.Models;
-using Newtonsoft.Json.Linq;
-using CrossVertical.Announcement.Helpers;
-using AdaptiveCards.Rendering;
-using AdaptiveCards.Rendering.Html;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace CrossVertical.Announcement.Controllers
 {
@@ -54,7 +52,7 @@ namespace CrossVertical.Announcement.Controllers
                 var recipientCount = 0;
                 var groupsNames = new List<string>();
                 var channelNames = new List<string>();
-                
+
 
                 // Create anew class
                 foreach (var group in announcement.Recipients.Groups)
@@ -76,15 +74,15 @@ namespace CrossVertical.Announcement.Controllers
                     if (!channelNames.Contains(teamname.Name))
                     {
                         channelNames.Add(teamname.Name);
-                        
+
                         post.RecipientChannelCount += teamname.MemberCount;
                     }
-                    
+
                     post.LikeCount += team.Channel.LikeCount;
                 }
                 if (recipientCount == 0 && announcement.Recipients != null && announcement.Recipients.Channels != null)
                     recipientCount = announcement.Recipients.Channels.Count;
-               
+
 
                 var maxChar = 40;
                 var recipientNames = string.Empty;
@@ -120,7 +118,7 @@ namespace CrossVertical.Announcement.Controllers
                 post.RecipientCount = $"{recipientCount}";
                 post.Recipients = $"{recipientNames}";
                 post.RecipientChannelNames = $"{recipientChannelNames}";
-                
+
                 postDetails.Add(post);
             }
 
@@ -134,20 +132,20 @@ namespace CrossVertical.Announcement.Controllers
             {
                 return HttpNotFound();
             }
-           
+
             var announcement = await Cache.Announcements.GetItemAsync(announcementid);
             AnnouncementDetails announcementinfo = new AnnouncementDetails();
-            if (announcement!=null)
+            if (announcement != null)
             {
                 announcement.ShowAllDetailsButton = false;
                 var html = announcement.GetPreviewCard();
                 announcement.ShowAllDetailsButton = true;
                 RenderedAdaptiveCard renderedCard = renderer.RenderCard(html);
                 HtmlTag cardhtml = renderedCard.Html;
-                
+
                 announcementinfo.Title = announcement.Title;
                 announcementinfo.html = cardhtml;
-                
+
             }
             return View(announcementinfo);
         }
@@ -310,6 +308,65 @@ namespace CrossVertical.Announcement.Controllers
         public async Task<JObject> GetModifyScheduleCard(string id)
         {
             return JObject.FromObject(await AdaptiveCardDesigns.GetScheduleConfirmationCard(id));
+        }
+
+        [Route("getPreviewCard")]
+        public async Task<JObject> GetPreviewCard(string id)
+        {
+            return JObject.FromObject(await AdaptiveCardDesigns.GetPreviewAnnouncementCard(id));
+        }
+
+        [Route("viewAnalytics")]
+        public async Task<ActionResult> ViewAnalytics(string announcementid)
+        {
+            var announcement = await Cache.Announcements.GetItemAsync(announcementid);
+            TabListViewModel analyticsInfo = new TabListViewModel();
+            if (announcement != null)
+            {
+                var ackUserList = new List<User>();
+                var reactedUserList = new List<User>();
+                foreach (var group in announcement.Recipients.Groups)
+                {
+                    foreach (var user in group.Users)
+                    {
+                        if (user.IsAcknoledged)
+                            ackUserList.Add(await Cache.Users.GetItemAsync(user.Id));
+                        if (user.LikeCount != 0)
+                            reactedUserList.Add(await Cache.Users.GetItemAsync(user.Id));
+                    }
+                }
+            }
+            return View("TabListView", analyticsInfo);
+        }
+
+        [Route("viewAudiance")]
+        public async Task<ActionResult> ViewAudiance(string announcementid)
+        {
+            var announcement = await Cache.Announcements.GetItemAsync(announcementid);
+            TabListViewModel audianceInfo = new TabListViewModel();
+            if (announcement != null)
+            {
+                var ackUserList = new List<User>();
+                var reactedUserList = new List<User>();
+                foreach (var group in announcement.Recipients.Groups)
+                {
+                    foreach (var user in group.Users)
+                    {
+                        var userDetails = await Cache.Users.GetItemAsync(user.Id);
+                    }
+                }
+            }
+            return View(audianceInfo);
+        }
+
+
+        [Route("fetchProfilePhoto")]
+        public async Task<string> FetchProfilePhoto(string tid, string id)
+        {
+            var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
+            GraphHelper helper = new GraphHelper(token);
+            var photo = await helper.GetUserProfilePhoto(tid, id);
+            return photo;
         }
     }
 }
