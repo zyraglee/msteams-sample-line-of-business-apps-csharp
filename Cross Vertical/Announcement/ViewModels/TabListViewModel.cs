@@ -11,14 +11,17 @@ namespace CrossVertical.Announcement.ViewModels
 
     public class ListDetails
     {
-        public List<Item> Items { get; set; }
+        public List<Item> Items { get; set; } = new List<Item>();
         public string Title { get; set; }
     }
 
     public class Item
     {
+        public string ImageUrl { get; set; }
         public string Title { get; set; }
         public string SubTitle { get; set; }
-        // Add remaining properties.
+        public bool EnableLikeButton = false;
+        public string ChatUrl { get; set; }
+        public string DeepLinkUrl { get; set; }
     }
 }

@@ -372,9 +372,10 @@ namespace CrossVertical.Announcement.Controllers
         {
             var announcement = await Cache.Announcements.GetItemAsync(announcementid);
             TabListViewModel analyticsInfo = new TabListViewModel();
-            analyticsInfo.FirstTab = new ListDetails();
             analyticsInfo.FirstTab.Title = "Acknowledgement";
             analyticsInfo.SecondTab.Title = "Reaction";
+
+
             // Fill in analyticsInfo model.
             if (announcement != null)
             {
@@ -384,17 +385,40 @@ namespace CrossVertical.Announcement.Controllers
                 {
                     foreach (var user in group.Users)
                     {
+                        // Fill in the Item details.
+                        var userDetails = await Cache.Users.GetItemAsync(user.Id);
+
                         if (user.IsAcknoledged)
-                            ackUserList.Add(await Cache.Users.GetItemAsync(user.Id));
+                        {
+                            // Add thie insided  - analyticsInfo.FirstTab.Items
+                            analyticsInfo.FirstTab.Items.Add(
+                            new ViewModels.Item()
+                            {
+                                ImageUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                                Title = userDetails.Name,
+                                EnableLikeButton = false,
+                                ChatUrl = $"https://teams.microsoft.com/l/chat/0/0?users={userDetails.Id}"
+                            });
+                        }
                         if (user.LikeCount != 0)
-                            reactedUserList.Add(await Cache.Users.GetItemAsync(user.Id));
+                        {
+                            analyticsInfo.FirstTab.Items.Add(
+                            new ViewModels.Item()
+                            {
+                                ImageUrl = "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
+                                Title = userDetails.Name,
+                                EnableLikeButton = true,
+                                ChatUrl = $"https://teams.microsoft.com/l/chat/0/0?users={userDetails.Id}"
+                            });
+                            // Add thie insided  - analyticsInfo.Second.Items
+                        }
                     }
                 }
 
             }
             return View("TabListView", analyticsInfo);
         }
-
+        //channels
         [Route("viewAudiance")]
         public async Task<ActionResult> ViewAudiance(string announcementid)
         {
