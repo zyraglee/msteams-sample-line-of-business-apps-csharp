@@ -3,6 +3,7 @@ using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Models;
 using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Connector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,7 +79,7 @@ namespace CrossVertical.Announcement.Helpers
                         new AdaptiveSubmitAction()
                         {
                             Id="showdrafts",
-                            Title="⏱️ View Drafts & Schedules",
+                            Title="⏱️ View Drafts & Scheduled",
                             Data = new ActionDetails() { ActionType = Constants.ShowAllDrafts}
                         },
                         new AdaptiveOpenUrlAction()
@@ -111,6 +112,11 @@ namespace CrossVertical.Announcement.Helpers
         public static async Task<Attachment> GetEditAnnouncementCard(string announcementId, string tenantId)
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
+
+            if (campaign == null || campaign.Status == Status.Sent)
+            {
+                return GetUpdateMessageCard("This announcement is already sent and not allowed to edit.");
+            }
 
             var tenant = await Cache.Tenants.GetItemAsync(tenantId);
 
@@ -437,6 +443,23 @@ namespace CrossVertical.Announcement.Helpers
             {
                 campaign.Actions.Remove(action);
             }
+        }
+
+        internal static Attachment GetAnnouncementBasicDetails(Campaign campaign)
+        {
+            // Updated to Adaptive Card.
+            return new ThumbnailCard()
+            {
+                Images = new List<CardImage>() {
+                            new CardImage() {
+                            Url = (Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
+                            campaign.Author?.ProfilePhoto : null)
+                            }
+                        },
+                Title = campaign.Title,
+                Subtitle = "Author: " + campaign.Author?.Name,
+                Text = $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
+            }.ToAttachment();
         }
     }
 }

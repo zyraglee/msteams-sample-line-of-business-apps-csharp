@@ -40,7 +40,7 @@
 
         .row-date {
             height: 25px;
-            width: 25%;
+            width: 30%;
             color: #252424;
             font-family: "Segoe UI";
             font-size: 12px;
@@ -281,18 +281,18 @@
                                     </td>
                                     @if (item.Recipients == string.Empty || item.Recipients == ", ")
                                     {
-                                        <td class="row-recept">
+                                        <td  onclick="submit('viewGroupAudiance', '@item.Id')"  class="row-recept">
                                             <span>   </span>
                                             <img class="imgstyle" src="~/Resources/channel.PNG" />
                                             <span>@item.RecipientCount</span>
                                         </td>
-                                        <td class="row-info">
+                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
                                             <span>@item.RecipientChannelNames</span>
                                         </td>
                                     }
                                     else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
                                     {
-                                        <td class="row-recept">
+                                        <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
                                             <span>   </span>
 
                                             <img class="imgstyle" src="~/Resources/group.PNG" />
@@ -301,7 +301,7 @@
                                         </td>
 
 
-                                        <td class="row-info">
+                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
 
                                             <span>@item.Recipients</span>
 
@@ -309,7 +309,7 @@
                                     }
                                     else
                                     {
-                                        <td class="row-recept">
+                                        <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
                                             <span>   </span>
                                             <img class="imgstyle" src="~/Resources/group.PNG" />
                                             <span>@item.RecipientCount</span>
@@ -321,7 +321,7 @@
                                         </td>
 
 
-                                        <td class="row-info">
+                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
                                             <span>@item.Recipients</span><br style="line-height:19px;" />
                                             <span>@item.RecipientChannelNames</span>
 
@@ -332,11 +332,11 @@
                                     
                                     <td onclick="submit('viewAckAnalytics', '@item.Id')"  class="responserow">
                                         <img class="imgstyle" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom">@*@item.AckCount*@123</span>
+                                        <span style="vertical-align:bottom">@item.AckCount</span>
                                     </td>
                                     <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow2">
                                         <img class="imgstyle" src="~/Resources/Likes.PNG" />
-                                        <span style="vertical-align:bottom">@*@item.LikeCount*@123</span>
+                                        <span style="vertical-align:bottom">@item.LikeCount</span>
                                     </td>
                                     <td class="row-event">
                                         <table>
@@ -478,8 +478,8 @@
             {
                 taskInfo.title = "View Analytics";
                 taskInfo.height = "400";
-                taskInfo.width = "200";
-                taskInfo.url =  '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAnalytics?id=' + id + "&startTab=" + type;
+                taskInfo.width = "500";
+                taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAnalytics?id=' + id + '&tid=' + tenantId+  "&page=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
             else if (type == "viewGroupAudiance" ||
@@ -487,8 +487,8 @@
             {
                 taskInfo.title = "View Audiance";
                 taskInfo.height = "400";
-                taskInfo.width = "200";
-                taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAudiance?id=' + id + "&startTab=" + type;
+                taskInfo.width = "500";
+                taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAudiance?id=' + id + '&tid=' + tenantId+ "&page=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
             else {
