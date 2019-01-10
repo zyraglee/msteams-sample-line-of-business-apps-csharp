@@ -268,7 +268,7 @@ namespace CrossVertical.Announcement.Dialogs
 
             var listCard = new ListCard();
             listCard.content = new Content();
-            listCard.content.title = "Here are all the announcement drafts:"; ;
+            listCard.content.title = "Here are all draft and scheduled announcements:"; ;
             var list = new List<Item>();
             foreach (var announcementId in tenatInfo.Announcements)
             {
@@ -418,20 +418,8 @@ namespace CrossVertical.Announcement.Dialogs
                 var message = $"We have re-scheduled the announcement to be sent at {campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy hh:mm tt")}.";
                 await context.PostAsync(message);
                 var reply = activity.CreateReply();
-                reply.Attachments.Add(
-                    new ThumbnailCard()
-                    {
-                        Images = new List<CardImage>() {
-                            new CardImage() {
-                            Url = (Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
-                            campaign.Author?.ProfilePhoto : null)
-                            }
-                        },
-                        Title = campaign.Title,
-                        Subtitle = "Author: " + campaign.Author?.Name,
-                        Text=    $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
-                    }.ToAttachment()
-                    );
+                reply.Attachments.Add(AdaptiveCardDesigns.GetAnnouncementBasicDetails(campaign));
+                    
                 await context.PostAsync(reply);
             }
         }
@@ -491,6 +479,12 @@ namespace CrossVertical.Announcement.Dialogs
 
         private static async Task SendPreviewCard(IDialogContext context, Activity activity, Campaign campaign, bool isEditPreview)
         {
+            if (campaign.Status == Status.Sent)
+            {
+                await context.PostAsync("This announcement is already sent.");
+                return;
+            }
+
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var reply = activity.CreateReply();
             reply.Attachments.Add(campaign.GetPreviewCard().ToAttachment());
@@ -504,6 +498,7 @@ namespace CrossVertical.Announcement.Dialogs
             if (previewMessageDetails == null)
             {
                 var messageResouce = await connector.Conversations.SendToConversationAsync(reply);
+
                 previewMessageDetails = new PreviewCardMessageDetails()
                 {
                     MessageCardId = messageResouce.Id
@@ -515,7 +510,7 @@ namespace CrossVertical.Announcement.Dialogs
                 if (campaign.Schedule != null)
                     dateTimeOffset = campaign.Schedule.ScheduledTime;
 
-                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), campaign.Status != Status.Sent ));
+                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), true ));
                 messageResouce = await connector.Conversations.SendToConversationAsync(reply);
                 previewMessageDetails.MessageActionId = messageResouce.Id;
                 context.ConversationData.SetValue(campaign.Id, previewMessageDetails);

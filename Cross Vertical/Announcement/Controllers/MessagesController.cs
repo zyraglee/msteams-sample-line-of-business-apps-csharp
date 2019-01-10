@@ -105,7 +105,16 @@ namespace CrossVertical.Announcement.Controllers
                 case Constants.ShowEditAnnouncementTaskModule:
                     taskInfo["title"] = "Edit Announcement";
                     var editAnnouncement = JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<AnnouncementActionDetails>>(activityValue);
-                    card = JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCard(editAnnouncement.Data.Data.Id, channelData.Tenant.Id));
+
+                    var campaign = await Cache.Announcements.GetItemAsync(editAnnouncement.Data.Data.Id);
+                    if (campaign == null || campaign.Status == Status.Sent)
+                    {
+                        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard("This announcement is already sent and not allowed to edit."));
+                        taskInfo["height"] = 100;
+                        taskInfo["width"] = 500;
+                    }
+                    else
+                        card = JObject.FromObject(await AdaptiveCardDesigns.GetEditAnnouncementCard(editAnnouncement.Data.Data.Id, channelData.Tenant.Id));
                     break;
                 default:
                     break;
