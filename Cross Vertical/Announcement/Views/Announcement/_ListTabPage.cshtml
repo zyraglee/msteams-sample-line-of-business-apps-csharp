@@ -48,8 +48,8 @@
             @foreach (var item in Model.Items)
             {
                 <tr style="border:2px solid white">
-                    <td style="padding:6px;padding-right:15px;"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" /></td>
-                    <td style="padding-right:115px;">@item.Title<br style="line-height:17px;" />@item.SubTitle</td>
+                    <td style="padding-top:6px;padding-left:6px;"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" /></td>
+                    <td >@item.Title<br style="line-height:17px;" />@item.SubTitle</td>
                     @if (item.EnableLikeButton)
                     {
                         <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
@@ -61,7 +61,7 @@
                     }
                     else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
                     {
-                        <td>
+                        <td width="30%">
                             <a target="_blank" href="@(item.DeepLinkUrl)"><button class="rect">
                                     View Conversation
                              </button></a>
