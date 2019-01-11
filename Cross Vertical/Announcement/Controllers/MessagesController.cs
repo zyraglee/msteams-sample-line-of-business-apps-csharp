@@ -146,6 +146,14 @@ namespace CrossVertical.Announcement.Controllers
             ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
             var channelData = message.GetChannelData<TeamsChannelData>();
             var tenant = await RootDialog.CheckAndAddTenantDetails(channelData);
+            if(channelData.EventType == null )
+            {
+                if (message.MembersAdded != null)
+                    channelData.EventType = "teamMemberAdded";
+                if(message.MembersRemoved != null)
+                    channelData.EventType = "teamMemberRemoved";
+            }
+
             switch (channelData.EventType)
             {
                 case "teamMemberAdded":
@@ -316,7 +324,7 @@ namespace CrossVertical.Announcement.Controllers
 
         private static async Task AddTeamDetails(Activity message, TeamsChannelData channelData, Tenant tenant)
         {
-            if (!tenant.Teams.Contains(channelData.Team.Id))
+            if (channelData.Team != null && !tenant.Teams.Contains(channelData.Team.Id))
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
                 var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
