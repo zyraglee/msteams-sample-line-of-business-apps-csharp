@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CrossVertical.Announcement.Models.PostDetails>
+
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -272,151 +273,172 @@
                             @foreach (var item in Model)
                             {
 
-                                <tr class="rowstyle">
-                                    @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
-                                    {
-                                        <td style="padding-right:2px;"></td>
-                                    }
-                                    else if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Important)
-                                    {
-                                        <td><img class="imgstyle" src="~/Resources/exclamation.PNG" /></td>
-                                    }
-                                    else
-                                    {
-                                        <td> </td>
-                                    }
-                                    <td onclick="submit('preview', '@item.Id')" class="row-date">
-                                        <span style="cursor:pointer">@item.Title</span>
+                            <tr class="rowstyle">
+                                @if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Emergency)
+                                {
+                                    <td style="padding-right:2px;"></td>
+                                }
+                                else if (item.MessageSensitivity == CrossVertical.Announcement.Models.MessageSensitivity.Important)
+                                {
+                                    <td><img class="imgstyle" src="~/Resources/exclamation.PNG" /></td>
+                                }
+                                else
+                                {
+                                    <td> </td>
+                                }
+                                <td onclick="submit('preview', '@item.Id')" class="row-date">
+                                    <span style="cursor:pointer">@item.Title</span>
+                                </td>
+                                @if (item.Recipients == string.Empty || item.Recipients == ", ")
+                                {
+                                    <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
+                                        <span>   </span>
+                                        <img class="imgstyle3" src="~/Resources/channel.PNG" />
+                                        <span style="cursor:pointer">@item.RecipientCount</span>
                                     </td>
-                                    @if (item.Recipients == string.Empty || item.Recipients == ", ")
-                                    {
-                                        <td  onclick="submit('viewGroupAudiance', '@item.Id')"  class="row-recept">
-                                            <span>   </span>
-                                            <img class="imgstyle3" src="~/Resources/channel.PNG" />
-                                            <span style="cursor:pointer">@item.RecipientCount</span>
-                                        </td>
-                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
-                                            <span style="cursor:pointer">@item.RecipientChannelNames</span>
-                                        </td>
-                                    }
-                                    else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
-                                    {
-                                        <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
-                                            <span>   </span>
-
-                                            <img class="imgstyle3" src="~/Resources/group.PNG" />
-                                            <span style="cursor:pointer">@item.RecipientCount</span>
-
-                                        </td>
-
-
-                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
-
-                                            <span style="cursor:pointer">@item.Recipients</span>
-
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td class="row-recept">
-                                            <span>   </span>
-                                            <img onclick="submit('viewGroupAudiance', '@item.Id')"  class="imgstyle3" src="~/Resources/group.PNG" />
-                                            <span onclick="submit('viewGroupAudiance', '@item.Id')"  style="cursor:pointer">@item.RecipientCount</span>
-
-                                            <img onclick="submit('viewChannelAudiance', '@item.Id')" class="imgstyle3" src="~/Resources/channel.PNG" />
-                                            <span onclick="submit('viewChannelAudiance', '@item.Id')" style="cursor:pointer">@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
-
-
-                                        </td>
-
-
-                                        <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
-                                            <span style="cursor:pointer">@item.Recipients</span><br style="line-height:19px;" />
-                                            <span style="cursor:pointer">@item.RecipientChannelNames</span>
-
-
-
-                                        </td>
-                                    }
-                                    
-                                    <td onclick="submit('viewAckAnalytics', '@item.Id')"  class="responserow">
-                                        <img class="imgstyle3" src="~/Resources/ack.PNG" />
-                                        <span style="vertical-align:bottom;cursor:pointer">@item.AckCount</span>
+                                    <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
+                                        <span style="cursor:pointer">@item.RecipientChannelNames</span>
                                     </td>
+                                }
+                                else if (item.RecipientChannelNames == string.Empty || item.RecipientChannelNames == ",")
+                                {
+                                    <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
+                                        <span>   </span>
+
+                                        <img class="imgstyle3" src="~/Resources/group.PNG" />
+                                        <span style="cursor:pointer">@item.RecipientCount</span>
+
+                                    </td>
+
+
+                                    <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
+
+                                        <span style="cursor:pointer">@item.Recipients</span>
+
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="row-recept">
+                                        <span>   </span>
+                                        <img onclick="submit('viewGroupAudiance', '@item.Id')" class="imgstyle3" src="~/Resources/group.PNG" />
+                                        <span onclick="submit('viewGroupAudiance', '@item.Id')" style="cursor:pointer">@item.RecipientCount</span>
+
+                                        <img onclick="submit('viewChannelAudiance', '@item.Id')" class="imgstyle3" src="~/Resources/channel.PNG" />
+                                        <span onclick="submit('viewChannelAudiance', '@item.Id')" style="cursor:pointer">@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
+
+
+                                    </td>
+
+
+                                    <td onclick="submit('viewChannelAudiance', '@item.Id')" class="row-info">
+                                        <span style="cursor:pointer">@item.Recipients</span><br style="line-height:19px;" />
+                                        <span style="cursor:pointer">@item.RecipientChannelNames</span>
+
+
+
+                                    </td>
+                                }
+                                @if (item.AckCount == 0)
+                                {
+                                    <td @*onclick="submit('viewAckAnalytics', '@item.Id')" class="responserow"*@>
+                                        <img class="imgstyle" src="~/Resources/ack.PNG" />
+                                        <span style="vertical-align:bottom;">@item.AckCount</span>
+                                    </td>
+                                }
+                                else
+                                {
+
+
+                                <td onclick="submit('viewAckAnalytics', '@item.Id')" class="responserow">
+                                    <img class="imgstyle3" src="~/Resources/ack.PNG" />
+                                    <span style="vertical-align:bottom;cursor:pointer">@item.AckCount</span>
+                                </td>
+                                }
+                                @if (item.LikeCount == 0)
+                                {
+                                    <td @*onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow2"*@>
+                                        <img class="imgstyle" src="~/Resources/Likes.PNG" />
+                                        <span style="vertical-align:bottom;">@item.LikeCount</span>
+                                    </td>
+                                }
+                                else
+                                {
                                     <td onclick="submit('viewReactionAnalytics', '@item.Id')" class="responserow2">
                                         <img class="imgstyle3" src="~/Resources/Likes.PNG" />
                                         <span style="vertical-align:bottom;cursor:pointer">@item.LikeCount</span>
                                     </td>
-                                    <td class="row-event">
-                                        <table>
-                                            <tr class="row-event">
-                                                @if (item.Status == CrossVertical.Announcement.Models.Status.Draft)
-                                                {
-                                                    <td class="row-last">
-                                                        <img class="imgstyle" src="~/Resources/Draft.PNG" />
+                                }
+                                <td class="row-event">
+                                    <table>
+                                        <tr class="row-event">
+                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Draft)
+                                            {
+                                                <td class="row-last">
+                                                    <img class="imgstyle" src="~/Resources/Draft.PNG" />
 
-                                                    </td>
-                                                }
-                                                else if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
-                                                {
-                                                    <td class="row-last">
-                                                        <img class="imgstyle" src="~/Resources/sent.PNG" />
-
-                                                    </td>
-
-                                                }
-                                                else
-                                                {
-                                                    <td class="row-last">
-                                                        <img class="imgstyle" src="~/Resources/schedule.PNG" />
-
-                                                    </td>
-                                                }
-                                                <td><span class="row-line">@item.Date.ToString("dd/mm/yyyy")</span>&nbsp;&nbsp;<span>@item.Status</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-
-                                    <td class="row-last">
-                                        <table>
-                                            <tr class="row-event">
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <img class="imgstyle1" src="~/Resources/Action.PNG" data-toggle="dropdown" />
-
-                                                        <table class="dropdown-menu">
-                                                            @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
-                                                            {
-                                                                <tr onclick="submit('edit', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit2.PNG" /></a></td>
-                                                                    <td><a style="color:#333;" href="#">Edit Message</a></td>
-                                                                </tr>
-                                                            }
-                                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
-                                                            {
-                                                                <tr onclick="submit('viewAckAnalytics', '@item.Id')">
-                                                                    <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/anal.PNG" /></a></td>
-                                                                    <td><a style="color:#333;" href="#">View Analytics</a></td>
-                                                                </tr>
-                                                            }
-                                                            @if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
-                                                            {
-                                                                <tr onclick="submit('schedule', '@item.Id')">
-                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/sched.PNG" /></a></td>
-                                                                    <td><a style="color:#333;" href="#">Modify Schedule</a></td>
-                                                                </tr>
-                                                            }
-                                                            <tr onclick="submit('template', '@item.Id')">
-                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
-                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
                                                 </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
+                                            }
+                                            else if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
+                                            {
+                                                <td class="row-last">
+                                                    <img class="imgstyle" src="~/Resources/sent.PNG" />
+
+                                                </td>
+
+                                            }
+                                            else
+                                            {
+                                                <td class="row-last">
+                                                    <img class="imgstyle" src="~/Resources/schedule.PNG" />
+
+                                                </td>
+                                            }
+                                            <td><span class="row-line">@item.Date.ToString("dd/mm/yyyy")</span>&nbsp;&nbsp;<span>@item.Status</span></td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <td class="row-last">
+                                    <table>
+                                        <tr class="row-event">
+                                            <td>
+                                                <div class="dropdown">
+                                                    <img class="imgstyle1" src="~/Resources/Action.PNG" data-toggle="dropdown" />
+
+                                                    <table class="dropdown-menu">
+                                                        @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
+                                                        {
+                                                            <tr onclick="submit('edit', '@item.Id')">
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit2.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Edit Message</a></td>
+                                                            </tr>
+                                                        }
+                                                        @if (item.Status == CrossVertical.Announcement.Models.Status.Sent)
+                                                        {
+                                                            <tr onclick="submit('viewAckAnalytics', '@item.Id')">
+                                                                <td><a style="color:#333;height:8px;" href="#"><img style="height:17px;font-size:14px;opacity:0.8;" src="~/Resources/anal.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">View Analytics</a></td>
+                                                            </tr>
+                                                        }
+                                                        @if (item.Status == CrossVertical.Announcement.Models.Status.Scheduled)
+                                                        {
+                                                            <tr onclick="submit('schedule', '@item.Id')">
+                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/sched.PNG" /></a></td>
+                                                                <td><a style="color:#333;" href="#">Modify Schedule</a></td>
+                                                            </tr>
+                                                        }
+                                                        <tr onclick="submit('template', '@item.Id')">
+                                                            <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
+                                                            <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
 
                             }
                         </tbody>
@@ -495,7 +517,7 @@
             else if (type == "viewGroupAudiance" ||
                 type == "viewChannelAudiance")
             {
-                taskInfo.title = "View Audiance";
+                taskInfo.title = "View Audience";
                 taskInfo.height = "400";
                 taskInfo.width = "450";
                 taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAudiance?id=' + id + '&tid=' + tenantId+ "&page=" + type;

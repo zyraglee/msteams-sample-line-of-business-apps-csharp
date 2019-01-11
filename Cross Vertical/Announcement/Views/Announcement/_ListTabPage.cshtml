@@ -42,15 +42,16 @@
 
 
         .rect {
-            height: 32px;
+            padding:6PX;
+            height: 34px;
             color: #6264A7;
             border: 1px solid #6264A7;
             border-radius: 2px;
             background-color: white;
             box-shadow: 0 2px 4px -0.75px rgba(0,0,0,0.1);
             font-family: "Segoe UI";
-            font-size: 12px;
-            margin-right: 2px;
+            font-size: 14px;
+            margin-right: 0px;
         }
     </style>
 
@@ -59,6 +60,7 @@
 <body>
 
     <div class="container">
+        <br/>
 
         @if (Model != null && Model.Items.Count != 0)
 
@@ -70,49 +72,57 @@
 
                 {
 
-                    <tr style="border:2px solid white">
+                <tr style="border:2px solid white">
 
-                        <td style="padding-top:6px;padding-left:6px;"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" /></td>
+                    <td style="padding-top:6px;padding-left:6px;"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" /></td>
+                    @if (!string.IsNullOrEmpty(item.DeepLinkUrl))
+                    {
+                        <td style="width:55%"><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
+                    }
+                    else
+                    {
+                        <td><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
+                    }
 
-                        <td ><span style="font-family:'Times New Roman';font-size:19px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Times New Roman'">@item.SubTitle.ToUpperInvariant()</span></td>
 
-                        @if (item.EnableLikeButton)
 
-                        {
+                    @if (item.EnableLikeButton)
 
-                            <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
+                    {
 
-                            <td style="padding:6px;"><img src="~/Resources/chat.PNG" class="imgstyle1" /></td>
+                        <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
 
-                        }
+                        <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
 
-                        else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
+                    }
 
-                        {
+                    else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
 
-                            <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
+                    {
 
-                        }
+                        <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
 
-                        else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
+                    }
 
-                        {
+                    else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
 
-                            <td width="30%">
+                    {
 
-                                <a target="_blank" href="@(item.DeepLinkUrl)">
-                                    <button class="rect">
+                        <td width="30%">
 
-                                        View Conversation
+                            <a target="_blank" href="@(item.DeepLinkUrl)">
+                                <button class="rect">
 
-                                    </button>
-                                </a>
+                                    View Conversation
 
-                            </td>
+                                </button>
+                            </a>
 
-                        }
+                        </td>
 
-                    </tr>
+                    }
+
+                </tr>
 
                 }
 
