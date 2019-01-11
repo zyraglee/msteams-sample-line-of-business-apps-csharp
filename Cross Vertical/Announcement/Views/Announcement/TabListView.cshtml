@@ -29,8 +29,6 @@
             border: 1px solid white;
         }
 
-
-
             .tab button {
                 background-color: inherit;
                 float: left;
@@ -68,73 +66,39 @@
             border-top: none;
         }
     </style>
-
 </head>
-
 <body style="padding:0 1.0rem;">
-
-    <br />
-
-
-
+    <br/>
+    
     <div class="tab">
-
         <button class="tablinks @(Model.SelectFirstTab?"active" : "")" onclick="openTab(event, 'First')">@Model.FirstTab.Title</button>
-
         <button class="tablinks @(!Model.SelectFirstTab?"active" : "")" onclick="openTab(event, 'Second')">@Model.SecondTab.Title</button>
-
     </div>
-
-    <div id="First" class="tabcontent" style="font-family:Times New Roman;display: @(Model.SelectFirstTab?"block" : "none");">
-
-
-
+    <div id="First" class="tabcontent" style="display: @(Model.SelectFirstTab?"block" : "none");">
+        
         @Html.Partial("_ListTabPage", Model.FirstTab)
-
     </div>
+        
+        <div id="Second" class="tabcontent" style="display: @(Model.SelectFirstTab?"none" : "block" );">
+            
+            @Html.Partial("_ListTabPage", Model.SecondTab)
+        </div>
+        <script>
 
-
-
-    <div id="Second" class="tabcontent" style="display: @(Model.SelectFirstTab?"none" : "block" );">
-
-
-
-        @Html.Partial("_ListTabPage", Model.SecondTab)
-
-    </div>
-
-    <script>
-
-
-
-        function openTab(evt, tabName) {
-
-            var i, tabcontent, tablinks;
-
-            tabcontent = document.getElementsByClassName("tabcontent");
-
-            for (i = 0; i < tabcontent.length; i++) {
-
-                tabcontent[i].style.display = "none";
-
+            function openTab(evt, tabName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
             }
-
-            tablinks = document.getElementsByClassName("tablinks");
-
-            for (i = 0; i < tablinks.length; i++) {
-
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-
-            }
-
-            document.getElementById(tabName).style.display = "block";
-
-            evt.currentTarget.className += " active";
-
-        }
-
-    </script>
-
+        </script>
 </body>
 
 </html>

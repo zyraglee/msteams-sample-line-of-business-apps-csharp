@@ -113,11 +113,6 @@ namespace CrossVertical.Announcement.Helpers
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
 
-            if (campaign == null || campaign.Status == Status.Sent)
-            {
-                return GetUpdateMessageCard("This announcement is already sent and not allowed to edit.");
-            }
-
             var tenant = await Cache.Tenants.GetItemAsync(tenantId);
 
             var groups = new List<Group>();
@@ -447,19 +442,51 @@ namespace CrossVertical.Announcement.Helpers
 
         internal static Attachment GetAnnouncementBasicDetails(Campaign campaign)
         {
-            // Updated to Adaptive Card.
-            return new ThumbnailCard()
+            var basicDetailsCard = new AdaptiveCard()
             {
-                Images = new List<CardImage>() {
-                            new CardImage() {
-                            Url = (Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
-                            campaign.Author?.ProfilePhoto : null)
+                Body = new List<AdaptiveElement>()
+                {
+                    new AdaptiveColumnSet()
+                            {
+                                Columns=new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             // Need to fetch this from Graph API.
+                                             new AdaptiveImage(){
+                                                 Id = "profileImage",
+                                                 Url =  Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto,UriKind.Absolute)?
+                                                 new Uri(campaign.Author?.ProfilePhoto) : null,
+                                                 Size =AdaptiveImageSize.Medium,Style=AdaptiveImageStyle.Person }
+
+                                         }
+                                    },
+                                    new AdaptiveColumn()
+                                    {
+                                         Width=AdaptiveColumnWidth.Auto,
+                                         Items=new List<AdaptiveElement>()
+                                         {
+                                             new AdaptiveTextBlock(){
+                                                 Text = campaign.Title,
+                                                 Weight =AdaptiveTextWeight.Bolder,Wrap=true},
+                                             new AdaptiveTextBlock(){
+                                                 Text =  "Author: " + campaign.Author?.Name,
+                                                 Size = AdaptiveTextSize.Default,Spacing=AdaptiveSpacing.None,IsSubtle=true,Wrap=true
+                                             },
+                                              new AdaptiveTextBlock(){
+                                                 Text =  $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
+                                                 Weight= AdaptiveTextWeight.Lighter,
+                                                 Size = AdaptiveTextSize.Default,Wrap=true}
+                                         }
+                                    }
+                                }
                             }
-                        },
-                Title = campaign.Title,
-                Subtitle = "Author: " + campaign.Author?.Name,
-                Text = $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
-            }.ToAttachment();
+                },
+            };
+            return basicDetailsCard.ToAttachment();
         }
     }
 }

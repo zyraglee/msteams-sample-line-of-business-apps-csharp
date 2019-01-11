@@ -352,9 +352,11 @@
     <Content Include="Resources\Likes.PNG" />
     <Content Include="Resources\lines.PNG" />
     <Content Include="Resources\pencil.PNG" />
+    <Content Include="Resources\Person.png" />
     <Content Include="Resources\sched.PNG" />
     <Content Include="Resources\schedule.PNG" />
     <Content Include="Resources\sent.PNG" />
+    <Content Include="Resources\Team.png" />
     <Content Include="Resources\temp.PNG" />
     <Content Include="Resources\template.PNG" />
     <Content Include="Resources\view.PNG" />

@@ -98,7 +98,7 @@ namespace CrossVertical.Announcement.Helpers
             catch (Exception ex)
             {
                 ErrorLogService.LogError(ex);
-                profilePhotoUrl = null;
+                profilePhotoUrl = ApplicationSettings.BaseUrl + "/Resources/Person.png";
             }
             return profilePhotoUrl;
         }
@@ -130,7 +130,7 @@ namespace CrossVertical.Announcement.Helpers
             catch (Exception ex)
             {
                 ErrorLogService.LogError(ex);
-                profilePhotoUrl = null;
+                profilePhotoUrl = ApplicationSettings.BaseUrl + "/Resources/Team.png";
             }
             return profilePhotoUrl;
         }

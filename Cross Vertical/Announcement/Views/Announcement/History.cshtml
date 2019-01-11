@@ -318,13 +318,13 @@
                                     }
                                     else
                                     {
-                                        <td onclick="submit('viewGroupAudiance', '@item.Id')" class="row-recept">
+                                        <td class="row-recept">
                                             <span>   </span>
-                                            <img class="imgstyle3" src="~/Resources/group.PNG" />
-                                            <span style="cursor:pointer">@item.RecipientCount</span>
+                                            <img onclick="submit('viewGroupAudiance', '@item.Id')"  class="imgstyle3" src="~/Resources/group.PNG" />
+                                            <span onclick="submit('viewGroupAudiance', '@item.Id')"  style="cursor:pointer">@item.RecipientCount</span>
 
-                                            <img class="imgstyle3" src="~/Resources/channel.PNG" />
-                                            <span style="cursor:pointer">@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
+                                            <img onclick="submit('viewChannelAudiance', '@item.Id')" class="imgstyle3" src="~/Resources/channel.PNG" />
+                                            <span onclick="submit('viewChannelAudiance', '@item.Id')" style="cursor:pointer">@item.RecipientChannelCount</span><br style="vertical-align:bottom" />
 
 
                                         </td>
@@ -468,7 +468,8 @@
                 taskInfo.title = "Edit";
             }
             else if (type.includes('preview')) {
-                url = '/getPreviewCard?id=' + id ;
+                url = '/getPreviewCard?id=' + id;
+                taskInfo.height = "500";
                 taskInfo.title = "Preview";
             }
             else if (type.includes('template')) {
@@ -487,7 +488,7 @@
             {
                 taskInfo.title = "View Analytics";
                 taskInfo.height = "400";
-                taskInfo.width = "450";
+                taskInfo.width = "470";
                 taskInfo.url = '@(CrossVertical.Announcement.Helper.ApplicationSettings.BaseUrl)' + '/viewAnalytics?id=' + id + '&tid=' + tenantId+  "&page=" + type;
                 microsoftTeams.tasks.startTask(taskInfo);
             }
