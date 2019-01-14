@@ -232,7 +232,10 @@ namespace CrossVertical.Announcement.Dialogs
                     break;
                 case Constants.SendAnnouncement:
                 case Constants.ScheduleAnnouncement:
-                    await SendOrScheduleAnnouncement(type, context, activity, channelData);
+                    new Task(async () =>
+                    {
+                        await SendOrScheduleAnnouncement(type, context, activity, channelData);
+                    }).Start();
                     break;
                 case Constants.Acknowledge:
                     await SaveAcknowledgement(context, activity, channelData);
@@ -419,7 +422,7 @@ namespace CrossVertical.Announcement.Dialogs
                 await context.PostAsync(message);
                 var reply = activity.CreateReply();
                 reply.Attachments.Add(AdaptiveCardDesigns.GetAnnouncementBasicDetails(campaign));
-                    
+
                 await context.PostAsync(reply);
             }
         }
@@ -510,7 +513,7 @@ namespace CrossVertical.Announcement.Dialogs
                 if (campaign.Schedule != null)
                     dateTimeOffset = campaign.Schedule.ScheduledTime;
 
-                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), true ));
+                reply.Attachments.Add(AdaptiveCardDesigns.GetScheduleConfirmationCard(campaign.Id, dateTimeOffset.ToString("MM/dd/yyyy"), dateTimeOffset.ToString("HH:mm"), true));
                 messageResouce = await connector.Conversations.SendToConversationAsync(reply);
                 previewMessageDetails.MessageActionId = messageResouce.Id;
                 context.ConversationData.SetValue(campaign.Id, previewMessageDetails);

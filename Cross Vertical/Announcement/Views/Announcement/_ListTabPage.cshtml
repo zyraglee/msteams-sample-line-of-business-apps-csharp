@@ -8,9 +8,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -42,7 +42,7 @@
 
 
         .rect {
-            padding:6PX;
+            padding: 6PX;
             height: 34px;
             color: #6264A7;
             border: 1px solid #6264A7;
@@ -60,7 +60,7 @@
 <body>
 
     <div class="container">
-        <br/>
+        <br />
 
         @if (Model != null && Model.Items.Count != 0)
 
@@ -72,57 +72,57 @@
 
                 {
 
-                <tr style="border:2px solid white">
+                    <tr style="border:2px solid white">
 
-                    <td style="padding-top:6px;padding-left:6px;"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" /></td>
-                    @if (!string.IsNullOrEmpty(item.DeepLinkUrl))
-                    {
-                        <td style="width:55%"><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
-                    }
-                    else
-                    {
-                        <td><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
-                    }
+                        <td style="padding-top:6px;padding-left:6px;width:15%"><img style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" id="profileImage" /></td>
+                        @if (!string.IsNullOrEmpty(item.DeepLinkUrl))
+                        {
+                            <td style="width:55%"><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
+                        }
+                        else
+                        {
+                            <td><span style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" /><span style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span></td>
+                        }
 
 
 
-                    @if (item.EnableLikeButton)
+                        @if (item.EnableLikeButton)
 
-                    {
+                        {
 
-                        <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
+                            <td style="padding:6px;"><img src="~/Resources/Like.PNG" class="imgstyle" /></td>
 
-                        <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
+                            <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
 
-                    }
+                        }
 
-                    else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
+                        else if (!string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
 
-                    {
+                        {
 
-                        <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
+                            <td style="padding:6px;"><a target="_blank" href="@(item.ChatUrl)"><img src="~/Resources/chat.PNG" class="imgstyle1" /></a></td>
 
-                    }
+                        }
 
-                    else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
+                        else if (!string.IsNullOrEmpty(item.DeepLinkUrl) && string.IsNullOrEmpty(item.ChatUrl) && !item.EnableLikeButton)
 
-                    {
+                        {
 
-                        <td width="30%">
+                            <td width="30%">
 
-                            <a target="_blank" href="@(item.DeepLinkUrl)">
-                                <button class="rect">
+                                <a target="_blank" href="@(item.DeepLinkUrl)">
+                                    <button class="rect" style="width: 130px;"
+>
+                                        View Conversation
 
-                                    View Conversation
+                                    </button>
+                                </a>
 
-                                </button>
-                            </a>
+                            </td>
 
-                        </td>
+                        }
 
-                    }
-
-                </tr>
+                    </tr>
 
                 }
 
@@ -139,7 +139,44 @@
         }
 
     </div>
+    @*<script src="@("https://unpkg.com/@microsoft/teams-js@1.3.4/dist/MicrosoftTeams.min.js")"></script>
+        <script>
+             microsoftTeams.initialize();
+             var tenantId;
+             microsoftTeams.getContext(function (context) {
+                 tenantId = context.tid;
+             });
 
+
+                    function photofunction()
+                     {
+                          //GEt all images.
+                         var userId;
+                       var images=document.getElementsByName("profileImage");
+                       for(int i=0;i<images.Length;i++)
+                        {
+                         // GEt Image Src => UserID
+                         userId = images[i];
+                         // Ajax call to fetchProfilePhot()
+                         var url = '/fetchProfilePhoto?tid='+ tenantId+" &id" + userId
+                                     $.ajax({
+                                         url: url,
+                                        type: 'get',
+                                         contentType: 'application/json',
+
+                                         success: function(data, textStatus, jQxhr) {
+                                              //images[i] => Set SRC
+                                     },
+                                         error: function(jqXhr, textStatus, errorThrown) {
+
+                                                 }
+                                 });
+                        }
+
+                    }
+         }
+
+         </script>*@
 </body>
 
 </html>
