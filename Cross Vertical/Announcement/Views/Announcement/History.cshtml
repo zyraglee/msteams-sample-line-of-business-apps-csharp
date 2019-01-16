@@ -487,12 +487,12 @@
             }
             else if (type.includes('edit')) {
                 url = '/getEditCard?id=' + id + '&tid=' + tenantId;
-                taskInfo.title = "Edit";
+                taskInfo.title = "Edit a message";
             }
             else if (type.includes('preview')) {
                 url = '/getPreviewCard?id=' + id;
                 taskInfo.height = "500";
-                taskInfo.title = "Preview";
+                taskInfo.title = "Details";
             }
             else if (type.includes('template')) {
                 url = '/getTemplateCard?id=' + id + '&tid=' + tenantId;

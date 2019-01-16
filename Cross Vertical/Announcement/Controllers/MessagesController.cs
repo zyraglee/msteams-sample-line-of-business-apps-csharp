@@ -92,11 +92,11 @@ namespace CrossVertical.Announcement.Controllers
             switch (action.Data.Data.ActionType)
             {
                 case Constants.CreateOrEditAnnouncement:
-                    taskInfo["title"] = "New Announcement";
+                    taskInfo["title"] = "Create New";
                     card = JObject.FromObject(await AdaptiveCardDesigns.GetCreateNewAnnouncementCard(channelData.Tenant.Id));
                     break;
                 case Constants.ShowMoreDetails:
-                    taskInfo["title"] = "Announcement";
+                    taskInfo["title"] = "Details";
                     var showDetails = JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<AnnouncementActionDetails>>(activityValue);
                     card = JObject.FromObject(await AdaptiveCardDesigns.GetPreviewAnnouncementCard(showDetails.Data.Data.Id));
                     taskInfo["height"] = 900;
@@ -104,7 +104,7 @@ namespace CrossVertical.Announcement.Controllers
 
                     break;
                 case Constants.ShowEditAnnouncementTaskModule:
-                    taskInfo["title"] = "Edit Announcement";
+                    taskInfo["title"] = "Edit a message";
                     var editAnnouncement = JsonConvert.DeserializeObject<TaskModule.TaskModuleActionData<AnnouncementActionDetails>>(activityValue);
 
                     var campaign = await Cache.Announcements.GetItemAsync(editAnnouncement.Data.Data.Id);

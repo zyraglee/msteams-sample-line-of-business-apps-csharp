@@ -1,5 +1,6 @@
 ﻿using AdaptiveCards;
 using AdaptiveCards.Rendering.Html;
+using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Helpers;
 using System;
 using System.Collections.Generic;
@@ -54,17 +55,13 @@ namespace CrossVertical.Announcement.Models
                     {
                          Items=new List<AdaptiveElement>()
                          {
-                           new AdaptiveTextBlock()
-                           {
-                                Text = "📢 Create a new annoucement",
-                                Size = AdaptiveTextSize.ExtraLarge,
-                                Spacing = AdaptiveSpacing.None,
-                                Weight = AdaptiveTextWeight.Bolder,
-
+                           new AdaptiveImage()
+                            {
+                                Url=new System.Uri(ApplicationSettings.BaseUrl + "/Resources/CreateMessageHeader.png")
                             },
                             new AdaptiveTextBlock()
                             {
-                                Text = "This announcement will be sent from the Contoso Announcement app handle. Fields marked with (*) are mandatory while composing.",
+                                Text = "This announcement will be sent from the Contoso Broadcast app handle. Fields marked with (*) are mandatory while composing.",
                                 Size = AdaptiveTextSize.Small,
                                 Color = AdaptiveTextColor.Accent,
                                 Spacing = AdaptiveSpacing.Small,
@@ -456,23 +453,13 @@ namespace CrossVertical.Announcement.Models
                                 }
                             }
                         }
-                    },
-                    new AdaptiveTextBlock()
-                    {
-                        Size=AdaptiveTextSize.Small,
-                        Color=AdaptiveTextColor.Accent,
-                        Text="Hitting 'Submit' will show you a preview of the card before it gets delivered to the chosen audience.",
-                        IsSubtle=true,
-                        Wrap=true,
                     }
-
-
                 },
                 Actions = new List<AdaptiveAction>()
                 {
                     new AdaptiveSubmitAction()
                     {
-                        Title="✔️ Submit",
+                        Title="✔️ Preview",
                         Data = isEditCard?
                         new AnnouncementActionDetails(){  ActionType = Constants.CreateOrEditAnnouncement, Id = Id }
                         :new ActionDetails(){  ActionType = Constants.CreateOrEditAnnouncement }

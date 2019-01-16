@@ -23,7 +23,6 @@
     <title>TabListView</title>
 
     <style>
-
         .tab {
             overflow: hidden;
             border: 1px solid white;
@@ -67,43 +66,33 @@
         }
     </style>
 </head>
-<body style="padding:0 1.0rem;">
+<body onload="@(Model.FirstTab.Items.Count!=0? (Model.FirstTab.Type)+ "ReadAllPhotos(this);" : "")@(Model.SecondTab.Items.Count!=0? (Model.SecondTab.Type)+ "ReadAllPhotos(this)" : "")" style="padding:0 1.0rem;">
     <br />
-    @if (Model.FirstTab.Items.Count==0 && Model.SecondTab.Items.Count != 0)
-    { 
-        <div class="tab">
-            <button class="tablinks @(Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'First')">@Model.SecondTab.Title</button>
-
-        </div>
-    }
-    else if (Model.SecondTab.Items.Count == 0 && Model.FirstTab.Items.Count != 0)
-    {
-        <div class="tab">
-            <button class="tablinks @(Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'First')">@Model.FirstTab.Title</button>
-
-        </div>
-    }
-    else if(Model.SecondTab.Items.Count == 0 && Model.FirstTab.Items.Count == 0)
-    {
-       <p>user reaction shown here</p>
-    }
-    else
-    {
-
     <div class="tab">
-        <button class="tablinks @(Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'First')">@Model.FirstTab.Title</button>
-        <button class="tablinks @(!Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'Second')">@Model.SecondTab.Title</button>
+        @if (Model.FirstTab.Items.Count != 0)
+            {
+            <button class="tablinks @(Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'First')">@Model.FirstTab.Title</button>
+        }
+        @if (Model.SecondTab.Items.Count != 0)
+            {
+            <button class="tablinks @(!Model.SelectFirstTab ? "active" : "")" onclick="openTab(event, 'Second')">@Model.SecondTab.Title</button>
+        }
     </div>
+
+    @if (Model.FirstTab.Items.Count != 0)
+    {
+        <div id="First" class="tabcontent" style="display: @(Model.SelectFirstTab ? "block" : "none");">
+
+            @Html.Partial("_ListTabPage", Model.FirstTab)
+        </div>
     }
-    <div id="First" class="tabcontent" style="display: @(Model.SelectFirstTab?"block" : "none");">
+    @if (Model.SecondTab.Items.Count != 0)
+    {
+        <div id="Second" class="tabcontent" style="display: @(Model.SelectFirstTab ? "none" : "block" );">
 
-        @Html.Partial("_ListTabPage", Model.FirstTab)
-    </div>
-
-    <div id="Second" class="tabcontent" style="display: @(Model.SelectFirstTab?"none" : "block" );">
-
-        @Html.Partial("_ListTabPage", Model.SecondTab)
-    </div>
+            @Html.Partial("_ListTabPage", Model.SecondTab)
+        </div>
+    }
     <script>
 
         function openTab(evt, tabName) {

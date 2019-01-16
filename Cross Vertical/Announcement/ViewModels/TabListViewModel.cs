@@ -13,10 +13,13 @@ namespace CrossVertical.Announcement.ViewModels
     {
         public List<Item> Items { get; set; } = new List<Item>();
         public string Title { get; set; }
+        public string Type { get; set; }
+        public string TenantId { get; set; }
     }
 
     public class Item
     {
+        public string Id { get; set; }
         public string ImageUrl { get; set; }
         public string Title { get; set; }
         public string SubTitle { get; set; }

@@ -339,9 +339,11 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Resources\Action.PNG" />
     <Content Include="Resources\anal.PNG" />
+    <Content Include="Resources\Announce-Header.png" />
     <Content Include="Resources\arrow.PNG" />
     <Content Include="Resources\channel.PNG" />
     <Content Include="Resources\chat.PNG" />
+    <Content Include="Resources\CreateMessageHeader.png" />
     <Content Include="Resources\download.jpg" />
     <Content Include="Resources\Draft.PNG" />
     <Content Include="Resources\edit.PNG" />

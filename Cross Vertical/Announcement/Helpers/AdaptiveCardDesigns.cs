@@ -25,7 +25,7 @@ namespace CrossVertical.Announcement.Helpers
                         {
                             new AdaptiveImage()
                             {
-                                Url=new System.Uri("https://cixdoq.bn.files.1drv.com/y4mswnHfii0b0TH6lDflshlunlPiT0Xu8_Ncrbjr3bSFfCF8gV8IyIDUl8zA8rZWFgryCXQ6gJ-JImjNfLkM8NgQIxqsbeIgI9vwcNRg4GoWSPchAjX9beEYdncTExDslPlkAULCcy67-D7qvAaIGVnY38JoNekYOiKlUqp68gxZ2EINJIu_LN-PdBzPtlkpnGC?width=1373&height=242&cropmode=none")
+                                Url=new System.Uri(ApplicationSettings.BaseUrl + "/Resources/Announce-Header.png")
                             },
                             new AdaptiveTextBlock()
                             {
@@ -144,7 +144,7 @@ namespace CrossVertical.Announcement.Helpers
         {
             var campaign = card.Content as AdaptiveCard;
             var submitAction = campaign.Actions.FirstOrDefault();
-            if (submitAction != null && submitAction.Title == "✔️ Submit")// TODO: change this
+            if (submitAction != null && submitAction.Title == "✔️ Preview")// TODO: change this
             {
                 var acknowledgeAction = submitAction as AdaptiveSubmitAction;
                 acknowledgeAction.Data = action;

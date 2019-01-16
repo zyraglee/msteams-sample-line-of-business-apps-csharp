@@ -375,6 +375,10 @@ namespace CrossVertical.Announcement.Controllers
             analyticsInfo.FirstTab.Title = "Acknowledgement";
             analyticsInfo.SecondTab.Title = "Reaction";
             analyticsInfo.SelectFirstTab = page == "viewAckAnalytics";
+            analyticsInfo.FirstTab.TenantId = analyticsInfo.SecondTab.TenantId = tid;
+
+            analyticsInfo.FirstTab.Type = "person";
+            analyticsInfo.SecondTab.Type = "channel";
 
             // Fill in analyticsInfo model.
             if (announcement != null)
@@ -390,12 +394,14 @@ namespace CrossVertical.Announcement.Controllers
                     foreach (var user in group.Users)
                     {
                         // Fill in the Item details.
-                        var userDetails = await helper.GetUser(user.Id);
+                        // var userDetails = await helper.GetUser(user.Id);
+                        var userDetails = await Cache.Users.GetItemAsync(user.Id);
+
                         if (user.IsAcknoledged)
                         {
                             if (!allAckUsers.Contains(user.Id))
                             {
-                                var item = await GetUserItem(tid, helper, userDetails);
+                                var item = GetUserItem(tid, helper, userDetails);
                                 analyticsInfo.FirstTab.Items.Add(item);
                                 allAckUsers.Add(user.Id);
                             }
@@ -404,7 +410,7 @@ namespace CrossVertical.Announcement.Controllers
                         {
                             if (!allReactionUsers.Contains(user.Id))
                             {
-                                var item = await GetUserItem(tid, helper, userDetails);
+                                var item = GetUserItem(tid, helper, userDetails);
                                 item.EnableLikeButton = true;
                                 analyticsInfo.SecondTab.Items.Add(item);
                                 allReactionUsers.Add(user.Id);
@@ -416,15 +422,16 @@ namespace CrossVertical.Announcement.Controllers
             return View("TabListView", analyticsInfo);
         }
 
-        private static async Task<ViewModels.Item> GetUserItem(string tid, GraphHelper helper, Microsoft.Graph.User userDetails)
+        private static ViewModels.Item GetUserItem(string tid, GraphHelper helper, User userDetails)
         {
             // Add thie insided  - analyticsInfo.FirstTab.Items
 
             return new ViewModels.Item()
             {
-                ImageUrl = await helper.GetUserProfilePhoto(tid, userDetails.Id),
-                Title = userDetails.DisplayName ?? userDetails.GivenName,
-                SubTitle = userDetails.JobTitle ?? userDetails.UserPrincipalName,
+                Id = userDetails.Id,
+                ImageUrl = ApplicationSettings.BaseUrl + "/Resources/Person.png", //await helper.GetUserProfilePhoto(tid, userDetails.Id),
+                Title = userDetails.Name,
+                SubTitle = "",
                 EnableLikeButton = false,
                 // ChatUrl = $"https://teams.microsoft.com/l/chat/0/0?users={userDetails.UserPrincipalName}"
                 ChatUrl = $"https://teams.microsoft.com/_#/conversations/8:orgid:{userDetails.Id}?ctx=chat"
@@ -438,7 +445,12 @@ namespace CrossVertical.Announcement.Controllers
             var announcement = await Cache.Announcements.GetItemAsync(id);
             TabListViewModel audianceInfo = new TabListViewModel();
             audianceInfo.FirstTab.Title = "1:1 Chat";
+            audianceInfo.FirstTab.Type = "person";
+
             audianceInfo.SecondTab.Title = "Channels";
+            audianceInfo.SecondTab.Type = "channel";
+
+            audianceInfo.FirstTab.TenantId = audianceInfo.SecondTab.TenantId = tid;
             audianceInfo.SelectFirstTab = page == "viewGroupAudiance";
             // Fill in audianceInfo model.
             if (announcement != null)
@@ -458,10 +470,8 @@ namespace CrossVertical.Announcement.Controllers
                         else
                             allUsers.Add(user.Id);
 
-                        // var userDetails = await Cache.Users.GetItemAsync(user.Id);
-                            var userDetails = await helper.GetUser(user.Id);
-                        var item = await GetUserItem(tid, helper, userDetails);
-                        
+                        var userDetails = await Cache.Users.GetItemAsync(user.Id);
+                        var item = GetUserItem(tid, helper, userDetails);
                         audianceInfo.FirstTab.Items.Add(item);
                     }
                 }
@@ -476,14 +486,12 @@ namespace CrossVertical.Announcement.Controllers
                     var channelDetails = team.Channels.FirstOrDefault(c => c.Id == channel.Channel.Id);
                     if (channelDetails == null)
                         continue;
-
                     var photo = await helper.GetTeamPhoto(tid, team.Id);
-                    // if(photo == null)
-
                     audianceInfo.SecondTab.Items.Add(
                          new ViewModels.Item()
                          {
-                             ImageUrl = photo,
+                             Id = team.Id,
+                             ImageUrl = ApplicationSettings.BaseUrl + "/Resources/Team.png",
                              Title = channelDetails.Name,
                              SubTitle = team.Name,
                              EnableLikeButton = false,
@@ -499,12 +507,45 @@ namespace CrossVertical.Announcement.Controllers
 
 
         [Route("fetchProfilePhoto")]
-        public async Task<string> FetchProfilePhoto(string tid, string id)
+        public async Task<JObject> FetchProfilePhoto(string tid, string id, string type)
         {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(tid))
+                return null;
+
+            var userProfile = id.Contains("/");
+            var userId = userProfile ? id.Split('/').Last() : id;
+
             var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
             GraphHelper helper = new GraphHelper(token);
-            var photo = await helper.GetUserProfilePhoto(tid, id);
-            return photo;
+            ViewModels.Item item = null;
+            if (type == "person")
+            {
+                var user = await helper.GetUser(userId);
+                var photo = await helper.GetUserProfilePhoto(tid, user.Id);
+
+                item = new ViewModels.Item()
+                {
+                    Id = userId,
+                    ImageUrl = photo,
+                    Title = user.DisplayName ?? user.GivenName,
+                    SubTitle = user.JobTitle ?? user.UserPrincipalName,
+                };
+            }
+            else if(type == "channel")
+            {
+                var teamId = Team.GetTeamId(userId);
+                var photo = await helper.GetTeamPhoto(tid, userId);
+                item =
+                    new ViewModels.Item()
+                    {
+                        Id = userId,
+                        ImageUrl = photo
+                    };
+
+            }
+            return JObject.FromObject(item);
+
+
         }
     }
 }
