@@ -52,7 +52,7 @@
 
 </head>
 @*onload="@(Model.Type)ReadAllPhotos(this);"*@
-<body >
+<body>
 
     <div class="container">
         <br />
@@ -134,10 +134,8 @@
     <script>
         function @(Model.Type)ReadAllPhotos(context) {
                  //GEt all images.
-            alert('@Model.Type');
             var isProfileImage = @Json.Encode(Model.Type == "person");
             var images = document.getElementsByName("@(Model.Type)_ProfileImage");
-            alert(images.length);
 
                  for (var i = 0; i < images.length; i++) {
                      // GEt Image Src => UserID

@@ -11,12 +11,12 @@
     "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
   },
   "name": {
-    "short": "Announcements",
-    "full": "Announcements app for Microsoft Teams"
+    "short": "Contoso Broadcast",
+    "full": "Broadcast app for Microsoft Teams"
   },
   "description": {
-    "short": "Announcements for Microsoft Teams",
-    "full": "This sample Announcement app which demos Announcement flow. You can extend this to add more content and capabilities."
+    "short": "Contoso Broadcast app for Microsoft Teams",
+    "full": "This sample broadcast app which demos broadcast flow. You can extend this to add more content and capabilities."
   },
   "icons": {
     "outline": "outline.png",
