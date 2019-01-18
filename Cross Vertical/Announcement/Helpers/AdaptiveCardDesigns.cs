@@ -15,41 +15,41 @@ namespace CrossVertical.Announcement.Helpers
     {
         public static Attachment GetWelcomeScreen(bool isChannelCard)
         {
-            var card = new AdaptiveCard()
+            var card = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
                     new AdaptiveContainer()
                     {
-                        Items=new List<AdaptiveElement>()
+                        Items = new List<AdaptiveElement>()
                         {
                             new AdaptiveImage()
                             {
-                                Url=new System.Uri(ApplicationSettings.BaseUrl + "/Resources/Announce-Header.png")
+                                Url = new System.Uri(ApplicationSettings.BaseUrl + "/Resources/Announce-Header.png")
                             },
                             new AdaptiveTextBlock()
                             {
-                                Weight=AdaptiveTextWeight.Bolder,
-                                Text="Reach people right where they collaborate. "
+                                Weight = AdaptiveTextWeight.Bolder,
+                                Text = "Reach people right where they collaborate. "
 
                             },
                             new AdaptiveTextBlock()
                             {
-                                IsSubtle=true,
-                                Text="Get the message out to employees using Microsoft Teams. Send announcements to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
-                                Wrap=true
+                                IsSubtle = true,
+                                Text = "Get the message out to employees using Microsoft Teams. Send announcements to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
+                                Wrap = true
                             },
                             new AdaptiveTextBlock()
                             {
-                                Size=AdaptiveTextSize.Small,
-                                IsSubtle=true,
-                                Wrap=true,
-                                Text="* Collaborate and communicate with large employee groups\n* Target announcements via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver announcements to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
+                                Size = AdaptiveTextSize.Small,
+                                IsSubtle = true,
+                                Wrap = true,
+                                Text = "* Collaborate and communicate with large employee groups\n* Target announcements via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver announcements to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
                             },
                             new AdaptiveTextBlock()
                             {
-                                Text= isChannelCard ? "Note: This application works only in personal scope." : "Take your pick to get started:",
-                                IsSubtle=true,
+                                Text = isChannelCard ? "Note: This application works only in personal scope." : "Take your pick to get started:",
+                                IsSubtle = true,
 
                             }
                         }
@@ -162,7 +162,6 @@ namespace CrossVertical.Announcement.Helpers
         public static async Task<Attachment> GetPreviewAnnouncementCard(string announcementId)
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
-
             campaign.ShowAllDetailsButton = false;
             var card = campaign.GetPreviewCard().ToAttachment();
             campaign.ShowAllDetailsButton = true;
@@ -193,54 +192,54 @@ namespace CrossVertical.Announcement.Helpers
             var date = campaign.Schedule.ScheduledTime.ToString("MM/dd/yyyy");
             var time = campaign.Schedule.ScheduledTime.ToString("HH:mm");
 
-            var card = new AdaptiveCard()
+            var card = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
                     new AdaptiveContainer()
-                                        {
-                                            Items=new List<AdaptiveElement>()
-                                            {
-                                                new AdaptiveTextBlock()
-                                                {
-                                                    Text="Please select schedule for your anouncement:"
-                                                },
-                                                new AdaptiveDateInput()
-                                                {
-                                                    Id = "Date",
-                                                    Value = date
-                                                },
-                                                new AdaptiveTimeInput()
-                                                {
-                                                    Id = "Time",
-                                                    Value = time
-                                                }
-                                            }
-                                        }
+                    {
+                        Items = new List<AdaptiveElement>()
+                        {
+                            new AdaptiveTextBlock()
+                            {
+                                Text="Please select schedule for your anouncement:"
+                            },
+                            new AdaptiveDateInput()
+                            {
+                                Id = "Date",
+                                Value = date
+                            },
+                            new AdaptiveTimeInput()
+                            {
+                                Id = "Time",
+                                Value = time
+                            }
+                        }
+                    }
                 },
                 Actions = new List<AdaptiveAction>()
-                          {
-                            new AdaptiveSubmitAction()
-                            {
-                                Id = "sendNow",
-                                Title = "Send Now",
-                                Data = new AnnouncementActionDetails()
-                                {
-                                    ActionType = Constants.SendAnnouncement,
-                                    Id = announcementId
-                                }
-                            },
-                            new AdaptiveSubmitAction()
-                            {
-                                Id= "schedule",
-                                Title="Schedule",
-                                Data = new AnnouncementActionDetails()
-                                {
-                                    Id = announcementId,
-                                    ActionType = Constants.ScheduleAnnouncement
-                                }
-                            }
-                          }
+                {
+                    new AdaptiveSubmitAction()
+                    {
+                        Id = "sendNow",
+                        Title = "Send Now",
+                        Data = new AnnouncementActionDetails()
+                        {
+                            ActionType = Constants.SendAnnouncement,
+                            Id = announcementId
+                        }
+                    },
+                    new AdaptiveSubmitAction()
+                    {
+                        Id = "schedule",
+                        Title ="Schedule",
+                        Data = new AnnouncementActionDetails()
+                        {
+                            Id = announcementId,
+                            ActionType = Constants.ScheduleAnnouncement
+                        }
+                    }
+                }
             };
 
             return new Attachment()
@@ -252,7 +251,7 @@ namespace CrossVertical.Announcement.Helpers
 
         public static Attachment GetScheduleConfirmationCard(string announcementId, string date, string time, bool allowEdit)
         {
-            var Card = new AdaptiveCard()
+            var Card = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
@@ -269,61 +268,60 @@ namespace CrossVertical.Announcement.Helpers
                     }
                 },
                 Actions = new List<AdaptiveAction>()
-                          {
-                            new AdaptiveSubmitAction()
+                {
+                    new AdaptiveSubmitAction()
+                    {
+                        Id = "sendNow",
+                        Title = "Send Now",
+                        Data = new AnnouncementActionDetails()
+                        {
+                            ActionType = Constants.SendAnnouncement ,
+                            Id = announcementId
+                        }
+                    },
+                    new AdaptiveShowCardAction()
+                    {
+                        Id = "sendLater",
+                        Title = "Send Later",
+                        Card = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
+                        {
+                            Body = new List<AdaptiveElement>()
                             {
-                                Id = "sendNow",
-                                Title = "Send Now",
-                                Data = new AnnouncementActionDetails()
+                                new AdaptiveContainer()
                                 {
-                                    ActionType = Constants.SendAnnouncement ,
-                                    Id = announcementId
-                                }
-                            },
-                            new AdaptiveShowCardAction()
-                            {
-                                Id = "sendLater",
-                                Title="Send Later",
-                                Card=new AdaptiveCard()
-                                {
-                                    Body=new List<AdaptiveElement>()
+                                    Items=new List<AdaptiveElement>()
                                     {
-                                        new AdaptiveContainer()
+                                        new AdaptiveTextBlock()
                                         {
-                                            Items=new List<AdaptiveElement>()
-                                            {
-                                                new AdaptiveTextBlock()
-                                                {
-                                                    Text="Schedule your anouncement here"
-                                                },
-                                                new AdaptiveDateInput()
-                                                {
-                                                    Id = "Date",
-                                                    Placeholder="Select Date",
-                                                    Value = date
-                                                },
-                                                new AdaptiveTimeInput()
-                                                {
-                                                    Id = "Time",
-                                                    Placeholder="Select time",
-                                                    Value = time
-                                                }
-                                            }
+                                            Text="Schedule your anouncement here"
+                                        },
+                                        new AdaptiveDateInput()
+                                        {
+                                            Id = "Date",
+                                            Placeholder="Select Date",
+                                            Value = date
+                                        },
+                                        new AdaptiveTimeInput()
+                                        {
+                                            Id = "Time",
+                                            Placeholder="Select time",
+                                            Value = time
                                         }
-                                    },
-                                    Actions=new List<AdaptiveAction>()
-                                    {
-                                      new AdaptiveSubmitAction()
-                                      {
-                                          Id= "schedule",
-                                          Title="Schedule",
-                                          Data = new AnnouncementActionDetails(){ Id = announcementId,  ActionType = Constants.ScheduleAnnouncement}
-                                      }
                                     }
                                 }
-                              }
-
-                          }
+                            },
+                            Actions = new List<AdaptiveAction>()
+                            {
+                                new AdaptiveSubmitAction()
+                                {
+                                    Id= "schedule",
+                                    Title = "Schedule",
+                                    Data = new AnnouncementActionDetails(){ Id = announcementId,  ActionType = Constants.ScheduleAnnouncement}
+                                }
+                            }
+                        }
+                    }
+                }
             };
 
             if (allowEdit)
@@ -353,18 +351,18 @@ namespace CrossVertical.Announcement.Helpers
 
         public static Attachment GetUpdateMessageCard(string message)
         {
-            var Card = new AdaptiveCard()
+            var Card = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
                     new AdaptiveContainer()
                     {
-                        Items=new List<AdaptiveElement>()
+                        Items = new List<AdaptiveElement>()
                         {
                             new AdaptiveTextBlock()
                             {
-                                Weight=AdaptiveTextWeight.Bolder,
-                                Text=message,
+                                Weight = AdaptiveTextWeight.Bolder,
+                                Text = message,
                                 Wrap = true
                             }
                         }
@@ -406,18 +404,18 @@ namespace CrossVertical.Announcement.Helpers
                 new AdaptiveContainer()
                 {
                     Items = new List<AdaptiveElement>()
-                                {
-                                    new AdaptiveTextBlock()
-                                    {
-                                        Text= message,
-                                        Wrap=true,
-                                        HorizontalAlignment=AdaptiveHorizontalAlignment.Left,
-                                        Spacing=AdaptiveSpacing.None,
-                                        Weight=AdaptiveTextWeight.Bolder,
-                                        Color= AdaptiveTextColor.Attention,
-                                        MaxLines=1
-                                    }
-                                }
+                    {
+                        new AdaptiveTextBlock()
+                        {
+                            Text= message,
+                            Wrap=true,
+                            HorizontalAlignment=AdaptiveHorizontalAlignment.Left,
+                            Spacing=AdaptiveSpacing.None,
+                            Weight=AdaptiveTextWeight.Bolder,
+                            Color= AdaptiveTextColor.Attention,
+                            MaxLines=1
+                        }
+                    }
                 });
             return campaignAttachment;
         }
@@ -442,48 +440,47 @@ namespace CrossVertical.Announcement.Helpers
 
         internal static Attachment GetAnnouncementBasicDetails(Campaign campaign)
         {
-            var basicDetailsCard = new AdaptiveCard()
+            var basicDetailsCard = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
                     new AdaptiveColumnSet()
+                    {
+                        Columns = new List<AdaptiveColumn>()
+                        {
+                            new AdaptiveColumn()
                             {
-                                Columns=new List<AdaptiveColumn>()
-                                {
-                                    new AdaptiveColumn()
+                                    Width = AdaptiveColumnWidth.Auto,
+                                    Items = new List<AdaptiveElement>()
                                     {
-                                         Width=AdaptiveColumnWidth.Auto,
-                                         Items=new List<AdaptiveElement>()
-                                         {
-                                             // Need to fetch this from Graph API.
-                                             new AdaptiveImage(){
-                                                 Id = "profileImage",
-                                                 Url =  Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto,UriKind.Absolute)?
-                                                 new Uri(campaign.Author?.ProfilePhoto) : null,
-                                                 Size =AdaptiveImageSize.Medium,Style=AdaptiveImageStyle.Person }
+                                        // Need to fetch this from Graph API.
+                                        new AdaptiveImage(){
+                                            Id = "profileImage",
+                                            Url =  Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto,UriKind.Absolute) ? new Uri(campaign.Author?.ProfilePhoto) : null,
+                                            Size = AdaptiveImageSize.Medium,Style=AdaptiveImageStyle.Person }
 
-                                         }
-                                    },
-                                    new AdaptiveColumn()
-                                    {
-                                         Width=AdaptiveColumnWidth.Auto,
-                                         Items=new List<AdaptiveElement>()
-                                         {
-                                             new AdaptiveTextBlock(){
-                                                 Text = campaign.Title,
-                                                 Weight =AdaptiveTextWeight.Bolder,Wrap=true},
-                                             new AdaptiveTextBlock(){
-                                                 Text =  "Author: " + campaign.Author?.Name,
-                                                 Size = AdaptiveTextSize.Default,Spacing=AdaptiveSpacing.None,IsSubtle=true,Wrap=true
-                                             },
-                                              new AdaptiveTextBlock(){
-                                                 Text =  $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
-                                                 Weight= AdaptiveTextWeight.Lighter,
-                                                 Size = AdaptiveTextSize.Default,Wrap=true}
-                                         }
                                     }
-                                }
+                            },
+                            new AdaptiveColumn()
+                            {
+                                    Width=AdaptiveColumnWidth.Auto,
+                                    Items=new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveTextBlock(){
+                                            Text = campaign.Title,
+                                            Weight = AdaptiveTextWeight.Bolder,Wrap=true},
+                                        new AdaptiveTextBlock(){
+                                            Text = "Author: " + campaign.Author?.Name,
+                                            Size = AdaptiveTextSize.Default,Spacing=AdaptiveSpacing.None,IsSubtle=true,Wrap=true
+                                        },
+                                        new AdaptiveTextBlock(){
+                                            Text = $"Created Date: {campaign.CreatedTime.ToShortDateString()}",
+                                            Weight = AdaptiveTextWeight.Lighter,
+                                            Size = AdaptiveTextSize.Default,Wrap=true}
+                                    }
                             }
+                        }
+                    }
                 },
             };
             return basicDetailsCard.ToAttachment();

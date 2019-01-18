@@ -6,7 +6,6 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 using System;
-using System.Linq;
 using System.Configuration;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -47,11 +46,10 @@ namespace CrossVertical.Announcement
                 .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
                 .AsSelf()
                 .SingleInstance();
-
             });
         }
 
-        
+
 
         //in global.asax or global.asax.cs
         protected void Application_Error(object sender, EventArgs e)

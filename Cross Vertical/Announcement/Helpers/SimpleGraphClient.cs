@@ -176,7 +176,7 @@ namespace CrossVertical.Announcement.Helpers
         {
             GraphServiceClient graphClient = new GraphServiceClient(
                 new DelegateAuthenticationProvider(
-                    async (requestMessage) =>
+                    (requestMessage) =>
                     {
                         string accessToken = _token;
 
@@ -185,6 +185,8 @@ namespace CrossVertical.Announcement.Helpers
 
                         // Get event times in the current time zone.
                         requestMessage.Headers.Add("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"");
+
+                        return Task.CompletedTask;
                     }));
             return graphClient;
         }

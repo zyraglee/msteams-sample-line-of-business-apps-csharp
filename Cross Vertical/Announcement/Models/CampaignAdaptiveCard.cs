@@ -46,18 +46,17 @@ namespace CrossVertical.Announcement.Models
             messageTypeChoices.Add(new AdaptiveChoice() { Title = "❕ Important", Value = "Important" });
             messageTypeChoices.Add(new AdaptiveChoice() { Title = "❗ Emergency", Value = "Emergency" });
             messageTypeChoices.Add(new AdaptiveChoice() { Title = "📄 Information", Value = "Information" });
-            var newCampaignCard = new AdaptiveCard()
+            var newCampaignCard = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
-
                     new AdaptiveContainer()
                     {
-                         Items=new List<AdaptiveElement>()
-                         {
-                           new AdaptiveImage()
+                        Items = new List<AdaptiveElement>()
+                        {
+                            new AdaptiveImage()
                             {
-                                Url=new System.Uri(ApplicationSettings.BaseUrl + "/Resources/CreateMessageHeader.png")
+                                Url = new Uri(ApplicationSettings.BaseUrl + "/Resources/CreateMessageHeader.png")
                             },
                             new AdaptiveTextBlock()
                             {
@@ -73,7 +72,6 @@ namespace CrossVertical.Announcement.Models
                             new AdaptiveTextBlock()
                             {
                                 Separator=true,
-
                                 Spacing=AdaptiveSpacing.Large,
                                 Size=AdaptiveTextSize.Large,
                                 Color=AdaptiveTextColor.Accent,
@@ -193,10 +191,7 @@ namespace CrossVertical.Announcement.Models
                                                  },
                                               Width="85"
                                              }
-
                                          }
-
-
                                      },
                                      new AdaptiveColumnSet()
                                      {
@@ -478,6 +473,7 @@ namespace CrossVertical.Announcement.Models
         public override AdaptiveCard GetPreviewCard()
         {
             string broadcastType = " ❗ EMERGENCY BROADCAST";
+
             AdaptiveTextColor broadcaseColor = AdaptiveTextColor.Attention;
             switch (Sensitivity)
             {
@@ -492,8 +488,9 @@ namespace CrossVertical.Announcement.Models
                 default:
                     break;
             }
+
             AdaptiveCardRenderer renderer = new AdaptiveCardRenderer();
-            var previewCard = new AdaptiveCard()
+            var previewCard = new AdaptiveCard(new AdaptiveSchemaVersion("1.0"))
             {
                 Body = new List<AdaptiveElement>()
                 {
@@ -593,7 +590,7 @@ namespace CrossVertical.Announcement.Models
 
                 // Get the output HTML 
                 HtmlTag html = renderedCard.Html;
-                              // (Optional) Check for any renderer warnings
+                // (Optional) Check for any renderer warnings
                 // This includes things like an unknown element type found in the card
                 // Or the card exceeded the maxmimum number of supported actions, etc
                 IList<AdaptiveWarning> warnings = renderedCard.Warnings;
@@ -603,8 +600,6 @@ namespace CrossVertical.Announcement.Models
                 throw ex;
                 // Failed rendering
             }
-
-
 
             previewCard.Actions = new List<AdaptiveAction>();
             if (ShowAllDetailsButton)
