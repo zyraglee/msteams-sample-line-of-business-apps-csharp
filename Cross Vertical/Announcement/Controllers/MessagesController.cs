@@ -373,13 +373,13 @@ namespace CrossVertical.Announcement.Controllers
                     await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
 
                     var result = await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id, null, card);
-                    if (!result.IsSuccessful)
-                    {
-                        ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
-                        var reply = message.CreateReply();
-                        reply.Text = $"Failed to send welcome message to {member.UserPrincipalName}. Error: {result.FailureMessage}";
-                        connector.Conversations.ReplyToActivity(reply);
-                    }
+                    //if (!result.IsSuccessful) // Disable messages in channel.
+                    //{
+                    //    ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                    //    var reply = message.CreateReply();
+                    //    reply.Text = $"Failed to send welcome message to {member.UserPrincipalName}. Error: {result.FailureMessage}";
+                    //    connector.Conversations.ReplyToActivity(reply);
+                    //}
                 }
             }
         }
