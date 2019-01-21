@@ -70,7 +70,8 @@
                     <tr style="border:2px solid white">
 
                         <td style="padding-top:6px;padding-left:6px;width:15%">
-                            <img id="ImageUrl_@(item.Id)" style="border-radius:50%;width:45px;height:45px" src="@item.ImageUrl" name="@(Model.Type)_ProfileImage" />
+                            <img id="@(Model.Type)_ImageUrl_@(item.Id)" style="border-radius:50%;width:45px;height:45px"
+                                 src="@item.ImageUrl" name="@(Model.Type)_ProfileImage" />
                         </td>
                         @if (!string.IsNullOrEmpty(item.DeepLinkUrl))
                         {
@@ -79,8 +80,8 @@
                         else
                         {
                             <td>
-                                <span id="Title_@(item.Id)" style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" />
-                                <span id="SubTitle_@(item.Id)" style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span>
+                                <span id="@(Model.Type)_Title_@(item.Id)" style="font-family:'Segoe UI';font-size:16px;font-weight:500;">@item.Title</span><br style="line-height:17px;" />
+                                <span id="@(Model.Type)_SubTitle_@(item.Id)" style="color:darkgrey;font-family:'Segoe UI'">@item.SubTitle.ToUpperInvariant()</span>
                             </td>
                         }
 
@@ -134,12 +135,12 @@
     <script>
         function @(Model.Type)ReadAllPhotos(context) {
                  //GEt all images.
-            var isProfileImage = @Json.Encode(Model.Type == "person");
+            var isProfileImage = @Json.Encode(Model.Type.Contains("person"));
             var images = document.getElementsByName("@(Model.Type)_ProfileImage");
 
                  for (var i = 0; i < images.length; i++) {
                      // GEt Image Src => UserID
-                     var userId = images[i].id.replace("ImageUrl_","");
+                     var userId = images[i].id.replace("@(Model.Type)_ImageUrl_","");
                      var url = '/fetchProfilePhoto?tid=' + '@Model.TenantId' + "&id=" + userId + "&type=" + '@(Model.Type)';
                      $.ajax({
                          url: url,
@@ -148,12 +149,12 @@
 
                          success: function (data, textStatus, jQxhr) {
                              var details = JSON.parse(data);
-                             document.getElementById("ImageUrl_" + details['id']).src = details['imageUrl'];
+                             document.getElementById("@(Model.Type)_ImageUrl_" + details['id']).src = details['imageUrl'];
 
                              if (isProfileImage) {
                                  // Set job title and name.
-                                 document.getElementById("Title_" + details['id']).innerText = details['title'];
-                                 document.getElementById("SubTitle_" + details['id']).innerText = details['subTitle'];
+                                 document.getElementById("@(Model.Type)_Title_" + details['id']).innerText = details['title'];
+                                 document.getElementById("@(Model.Type)_SubTitle_" + details['id']).innerText = details['subTitle'];
                              }
                          },
                          error: function (jqXhr, textStatus, errorThrown) {

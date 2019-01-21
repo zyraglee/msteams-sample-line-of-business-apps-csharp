@@ -377,8 +377,8 @@ namespace CrossVertical.Announcement.Controllers
             analyticsInfo.SelectFirstTab = page == "viewAckAnalytics";
             analyticsInfo.FirstTab.TenantId = analyticsInfo.SecondTab.TenantId = tid;
 
-            analyticsInfo.FirstTab.Type = "person";
-            analyticsInfo.SecondTab.Type = "channel";
+            analyticsInfo.FirstTab.Type = "personAcknowledgement";
+            analyticsInfo.SecondTab.Type = "personReaction";
 
             // Fill in analyticsInfo model.
             if (announcement != null)
@@ -445,10 +445,10 @@ namespace CrossVertical.Announcement.Controllers
             var announcement = await Cache.Announcements.GetItemAsync(id);
             TabListViewModel audianceInfo = new TabListViewModel();
             audianceInfo.FirstTab.Title = "1:1 Chat";
-            audianceInfo.FirstTab.Type = "person";
+            audianceInfo.FirstTab.Type = "personAudiance";
 
             audianceInfo.SecondTab.Title = "Channels";
-            audianceInfo.SecondTab.Type = "channel";
+            audianceInfo.SecondTab.Type = "channelAudiance";
 
             audianceInfo.FirstTab.TenantId = audianceInfo.SecondTab.TenantId = tid;
             audianceInfo.SelectFirstTab = page == "viewGroupAudiance";
@@ -518,7 +518,7 @@ namespace CrossVertical.Announcement.Controllers
             var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
             GraphHelper helper = new GraphHelper(token);
             ViewModels.Item item = null;
-            if (type == "person")
+            if (type.Contains("person"))
             {
                 var user = await helper.GetUser(userId);
                 var photo = await helper.GetUserProfilePhoto(tid, user.Id);
