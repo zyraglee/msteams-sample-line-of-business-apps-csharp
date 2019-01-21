@@ -200,6 +200,8 @@ namespace CrossVertical.Announcement.Dialogs
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+            if (members.Count == 0)
+                return null;
             return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName;
         }
 
@@ -652,6 +654,11 @@ namespace CrossVertical.Announcement.Dialogs
                     announcement.Author.Name = userDetails.DisplayName;
                     announcement.Author.Role = userDetails.JobTitle ?? userDetails.UserPrincipalName;
                     announcement.Author.ProfilePhoto = await helper.GetUserProfilePhoto(tenantId, userDetails.Id);
+                }
+                else
+                {
+                    announcement.Author.Name = announcement.Author.EmailId;
+                    announcement.Author.ProfilePhoto = ApplicationSettings.BaseUrl + "/Resources/Person.png";
                 }
             }
 

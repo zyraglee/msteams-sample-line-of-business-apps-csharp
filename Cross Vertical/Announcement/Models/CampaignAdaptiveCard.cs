@@ -604,7 +604,11 @@ namespace CrossVertical.Announcement.Models
                 // Failed rendering
             }
 
-
+            AdaptiveElement adaptiveElement = previewCard.Body.FirstOrDefault(i => i.Id == "bannerImage");
+            if(!Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute) && adaptiveElement != null )
+            {
+                previewCard.Body.Remove(adaptiveElement);
+            }
 
             previewCard.Actions = new List<AdaptiveAction>();
             if (ShowAllDetailsButton)
