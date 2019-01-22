@@ -61,7 +61,7 @@ namespace CrossVertical.Announcement.Models
                             },
                             new AdaptiveTextBlock()
                             {
-                                Text = "This announcement will be sent from the Contoso Broadcast app handle. Fields marked with (*) are mandatory while composing.",
+                                Text = $"This {ApplicationSettings.AppFeature} will be sent from the {ApplicationSettings.AppName} app handle. Fields marked with (*) are mandatory while composing.",
                                 Size = AdaptiveTextSize.Small,
                                 Color = AdaptiveTextColor.Accent,
                                 Spacing = AdaptiveSpacing.Small,

@@ -3,6 +3,11 @@ namespace CrossVertical.Announcement.Helper
 {
     public static class ApplicationSettings
     {
+        public static string AppName { get; set; } = "Company Communicator";
+
+        public static string AppFeature { get; set; } = "message";
+
+
         public static string BaseUrl { get; set; }
 
         public static string ConnectionName { get; set; }

@@ -1,6 +1,7 @@
 ﻿using CrossVertical.Announcement.Dialogs;
 using CrossVertical.Announcement.Helpers;
 using CrossVertical.Announcement.Models;
+
 using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
@@ -110,7 +111,7 @@ namespace CrossVertical.Announcement.Controllers
                     var campaign = await Cache.Announcements.GetItemAsync(editAnnouncement.Data.Data.Id);
                     if (campaign == null || campaign.Status == Status.Sent)
                     {
-                        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard("This announcement is already sent and not allowed to edit."));
+                        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard($"This {Helper.ApplicationSettings.AppFeature} is already sent and not allowed to edit."));
                         taskInfo["height"] = 100;
                         taskInfo["width"] = 500;
                     }
@@ -232,12 +233,23 @@ namespace CrossVertical.Announcement.Controllers
                     if (!messageFound && channelData.Team != null)
                         foreach (var channel in announcement.Recipients.Channels)
                         {
+                            //var user = channel.LikedUsers.FirstOrDefault(u => u.MessageId == replyToId);
+                           
                             if (channel.Channel.MessageId == replyToId)
                             {
-                                channel.Channel.LikeCount += reactionToAdd;
+                                var EmailId=await RootDialog.GetUserEmailId(message);
+                                if(message.ReactionsAdded != null&&message.ReactionsAdded.Count!=0)
+                                {
+                                    if (!channel.LikedUsers.Contains(EmailId))
+                                        channel.LikedUsers.Add(EmailId);
+                                }
+                                else if(message.ReactionsRemoved != null)
+                                {
+                                    if (channel.LikedUsers.Contains(EmailId))
+                                        channel.LikedUsers.Remove(EmailId);
+                                }
+                                // channel.Channel.LikeCount += reactionToAdd;
                                 messageFound = true;
-                                if (channel.Channel.LikeCount < 0)
-                                    channel.Channel.LikeCount = 0;
                                 break;
 
                             }

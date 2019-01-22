@@ -74,11 +74,13 @@ namespace CrossVertical.Announcement.Controllers
                     if (!channelNames.Contains(teamname.Name))
                     {
                         channelNames.Add(teamname.Name);
-
+                        
                         post.RecipientChannelCount += teamname.MemberCount;
                     }
 
-                    post.LikeCount += team.Channel.LikeCount;
+                    post.LikeCount += team.LikedUsers.Count;
+                    //post.LikeCount += team.Channel.LikeCount;
+
                 }
                 if (recipientCount == 0 && announcement.Recipients != null && announcement.Recipients.Channels != null)
                     recipientCount = announcement.Recipients.Channels.Count;
@@ -418,6 +420,27 @@ namespace CrossVertical.Announcement.Controllers
                         }
                     }
                 }
+                foreach(var channel in announcement.Recipients.Channels)
+                {
+                    foreach(var user in channel.LikedUsers)
+                    {
+                        //var userDetails = await Cache.Users.GetItemAsync(user.Id);
+                        var userDetails = await Cache.Users.GetItemAsync(user);
+                        if(channel.LikedUsers.Count != 0)
+                        {
+                            if (!allReactionUsers.Contains(user))
+                            {
+                                var item = GetUserItem(tid, helper, userDetails);
+                                item.EnableLikeButton = true;
+                                analyticsInfo.SecondTab.Items.Add(item);
+                                allReactionUsers.Add(user);
+                            }
+                        }
+
+
+                    }
+                }
+                
             }
             return View("TabListView", analyticsInfo);
         }
