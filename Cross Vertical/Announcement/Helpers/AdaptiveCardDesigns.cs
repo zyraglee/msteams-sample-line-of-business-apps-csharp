@@ -36,7 +36,7 @@ namespace CrossVertical.Announcement.Helpers
                             new AdaptiveTextBlock()
                             {
                                 IsSubtle=true,
-                                Text="Get the message out to employees using Microsoft Teams. Send announcements to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
+                                Text=$"Get the message out to employees using Microsoft Teams. Send {ApplicationSettings.AppFeature} to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
                                 Wrap=true
                             },
                             new AdaptiveTextBlock()
@@ -44,7 +44,7 @@ namespace CrossVertical.Announcement.Helpers
                                 Size=AdaptiveTextSize.Small,
                                 IsSubtle=true,
                                 Wrap=true,
-                                Text="* Collaborate and communicate with large employee groups\n* Target announcements via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver announcements to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
+                                Text=$"* Collaborate and communicate with large employee groups\n* Target {ApplicationSettings.AppFeature} via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver {ApplicationSettings.AppFeature}s to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
                             },
                             new AdaptiveTextBlock()
                             {
@@ -203,7 +203,7 @@ namespace CrossVertical.Announcement.Helpers
                                             {
                                                 new AdaptiveTextBlock()
                                                 {
-                                                    Text="Please select schedule for your anouncement:"
+                                                    Text=$"Please select schedule for your {ApplicationSettings.AppFeature}:"
                                                 },
                                                 new AdaptiveDateInput()
                                                 {
@@ -294,7 +294,7 @@ namespace CrossVertical.Announcement.Helpers
                                             {
                                                 new AdaptiveTextBlock()
                                                 {
-                                                    Text="Schedule your anouncement here"
+                                                    Text=$"Schedule your {ApplicationSettings.AppFeature} here"
                                                 },
                                                 new AdaptiveDateInput()
                                                 {

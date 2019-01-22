@@ -394,7 +394,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Manifest\Contoso Broadcast Manifest.zip" />
+    <Content Include="Manifest\Company Communicator App Manifest.zip" />
     <None Include="packages.config" />
     <Content Include="Views\Announcement\Configure.cshtml" />
     <Content Include="Views\Announcement\History.cshtml" />

@@ -111,7 +111,7 @@ namespace CrossVertical.Announcement.Controllers
                     var campaign = await Cache.Announcements.GetItemAsync(editAnnouncement.Data.Data.Id);
                     if (campaign == null || campaign.Status == Status.Sent)
                     {
-                        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard("This announcement is already sent and not allowed to edit."));
+                        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard($"This {Helper.ApplicationSettings.AppFeature} is already sent and not allowed to edit."));
                         taskInfo["height"] = 100;
                         taskInfo["width"] = 500;
                     }
