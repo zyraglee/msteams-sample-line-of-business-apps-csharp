@@ -297,6 +297,7 @@
     <Compile Include="Helpers\Scheduler.cs" />
     <Compile Include="Helpers\SimpleGraphClient.cs" />
     <Compile Include="Models\ActionButtonInputDetails.cs" />
+    <Compile Include="Models\AdminDetails.cs" />
     <Compile Include="Models\AnnouncementDetails.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Models\Celebration.cs" />

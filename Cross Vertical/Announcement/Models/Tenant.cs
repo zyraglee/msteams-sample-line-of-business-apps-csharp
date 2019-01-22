@@ -7,10 +7,12 @@ using System.Web;
 namespace CrossVertical.Announcement.Models
 {
 
-    public class Tenant: DatabaseItem
+    public class Tenant : DatabaseItem
     {
         [JsonProperty("type")]
         public override string Type { get; set; } = nameof(Tenant);
+
+        public string Admin { get; set; }
 
         public bool IsAdminConsented { get; set; }
 
@@ -21,5 +23,8 @@ namespace CrossVertical.Announcement.Models
         public List<string> Groups { get; set; } = new List<string>();
 
         public List<string> Announcements { get; set; } = new List<string>();
+
+        public List<string> Moderators { get; set; } = new List<string>();
+
     }
 }

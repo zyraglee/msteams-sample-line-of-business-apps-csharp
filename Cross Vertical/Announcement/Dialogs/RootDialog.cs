@@ -58,6 +58,17 @@ namespace CrossVertical.Announcement.Dialogs
                 userDetails = await CheckAndAddUserDetails(activity, channelData);
                 context.ConversationData.SetValue<User>(profileKey, userDetails);
             }
+
+            Tenant tenantData = await CheckAndAddTenantDetails(channelData);
+            if (!tenantData.IsAdminConsented)
+            {
+                await SendOAuthCardAsync(context, activity);
+                // var reply = activity.CreateReply();
+                // Send Sign In Card
+                // reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null));
+                // await context.PostAsync(reply);
+                return;
+            }
             // Check and add tenant details
             if (activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == FileDownloadInfo.ContentType))
             {
@@ -91,12 +102,68 @@ namespace CrossVertical.Announcement.Dialogs
                         }
                     }
 
-                    reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null));
+                    if (tenantData.Admin == userDetails.Id || tenantData.Moderators.Contains(userDetails.Id))
+                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null));
+                    else
+                    {
+                        reply.Text = "We will deliver your announcements here.";
 
+                    }
                     await context.PostAsync(reply);
                 }
             }
         }
+
+        #region Sign In Flow
+        private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
+        {
+            var reply = await context.Activity.CreateOAuthReplyAsync(ApplicationSettings.ConnectionName,
+                "To do this, you'll first need to sign in.", "Sign In", true).ConfigureAwait(false);
+            await context.PostAsync(reply);
+
+            context.Wait(WaitForToken);
+        }
+
+        private async Task WaitForToken(IDialogContext context, IAwaitable<object> result)
+        {
+            var activity = await result as Activity;
+
+            var tokenResponse = activity.ReadTokenResponseContent();
+            var channelData = context.Activity.GetChannelData<TeamsChannelData>();
+            if (tokenResponse != null)
+            {
+                // Use the token to do exciting things!
+                await SendGrantAdminConsentCard(context, activity, channelData);
+            }
+            else
+            {
+                // Get the Activity Message as well as activity.value in case of Auto closing of pop-up
+                string input = activity.Type == ActivityTypes.Message ? Microsoft.Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity)
+                                                                : ((dynamic)(activity.Value)).state.ToString();
+                if (!string.IsNullOrEmpty(input))
+                {
+                    tokenResponse = await context.GetUserTokenAsync(ApplicationSettings.ConnectionName, input.Trim());
+                    if (tokenResponse != null)
+                    {
+                        try
+                        {
+                            await context.PostAsync($"Your sign in was successful. Please grant the application permissions.");
+                            await SendGrantAdminConsentCard(context, activity, channelData);
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLogService.LogError(ex);
+                        }
+
+                        context.Wait(MessageReceivedAsync);
+                        return;
+                    }
+                }
+                await context.PostAsync($"Hmm. Something went wrong. Please initiate the SignIn again. Try sending help.");
+                context.Wait(MessageReceivedAsync);
+            }
+        }
+        #endregion
 
         private static async Task HandleExcelAttachement(IDialogContext context, Attachment attachment, TeamsChannelData channelData)
         {
@@ -153,7 +220,7 @@ namespace CrossVertical.Announcement.Dialogs
             var userEmailId = await GetUserEmailId(activity);
             // User not present in cache
             var userDetails = await Cache.Users.GetItemAsync(userEmailId);
-            if (userDetails == null)
+            if (userDetails == null && userEmailId != null)
             {
                 userDetails = new User()
                 {
@@ -536,29 +603,39 @@ namespace CrossVertical.Announcement.Dialogs
                         <li><strong>Members</strong>  : Comma separated user emails eg: <pre>user1@org.com, user2@org.com</pre></li></ol>
                         </br> <strong>Note: Please keep first row header as described above. You can provide details for multiple teams row by row. Members/Channels columns can be empty.</strong>",
             };
-            var tenant = await Cache.Tenants.GetItemAsync(channelData.Tenant.Id);
-            if (!tenant.IsAdminConsented)
-            {
-                configurationCard.Text = "Please grant permission to the application first. Once that is done you can upload excel file with group details.";
-                // Show button with Open URl.
-                var loginUrl = GetAdminConsentUrl(channelData.Tenant.Id, ApplicationSettings.AppId);
-                configurationCard.Buttons = new List<CardAction>();
-                configurationCard.Buttons.Add(new CardAction()
-                {
-                    Title = "Grant Admin Permission",
-                    Value = loginUrl,
-                    Type = ActionTypes.OpenUrl
-                });
-            }
 
             var reply = activity.CreateReply();
             reply.Attachments.Add(configurationCard.ToAttachment());
             await context.PostAsync(reply);
         }
 
-        private static string GetAdminConsentUrl(string tenant, string appId)
+        private async Task SendGrantAdminConsentCard(IDialogContext context, Activity activity, TeamsChannelData channelData)
         {
-            return $"https://login.microsoftonline.com/{tenant}/adminconsent?client_id={appId}&state=12345&redirect_uri={ System.Web.HttpUtility.UrlEncode(ApplicationSettings.BaseUrl + "/adminconsent")}";
+            var configurationCard = new ThumbnailCard();
+
+            configurationCard.Text = "Please grant permission to the application first.";
+            // Show button with Open URl.
+            AdminUserDetails adminDetails = new AdminUserDetails();
+            adminDetails.ServiceUrl = activity.ServiceUrl;
+            adminDetails.UserEmailId = await GetUserEmailId(activity);
+            var loginUrl = GetAdminConsentUrl(channelData.Tenant.Id, ApplicationSettings.AppId, adminDetails);
+            configurationCard.Buttons = new List<CardAction>();
+            configurationCard.Buttons.Add(new CardAction()
+            {
+                Title = "Grant Admin Permission",
+                Value = loginUrl,
+                Type = ActionTypes.OpenUrl
+            });
+
+            var reply = activity.CreateReply();
+            reply.Attachments.Add(configurationCard.ToAttachment());
+            await context.PostAsync(reply);
+        }
+
+        private static string GetAdminConsentUrl(string tenant, string appId, AdminUserDetails adminDetails)
+        {
+            var data = System.Web.HttpUtility.UrlEncode(JsonConvert.SerializeObject(adminDetails));
+            return $"https://login.microsoftonline.com/{tenant}/adminconsent?client_id={appId}&state={data}&redirect_uri={ System.Web.HttpUtility.UrlEncode(ApplicationSettings.BaseUrl + "/adminconsent")}";
         }
 
         private async Task<Campaign> AddAnnouncecmentInDB(Activity activity, CreateNewAnnouncementData data, string tenantId)

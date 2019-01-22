@@ -20,10 +20,9 @@ namespace CrossVertical.Announcement
     {
         protected void Application_Start()
         {
-            DocumentDBRepository.Initialize();
-
             new Task(async () =>
             {
+                await DocumentDBRepository.Initialize();
                 await AnnouncementScheduler.InitializeSchedulesFromDB();
             }).Start();
 
