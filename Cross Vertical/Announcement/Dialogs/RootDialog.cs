@@ -195,7 +195,7 @@ namespace CrossVertical.Announcement.Dialogs
             return activity.From.Id + key;
         }
 
-        private static async Task<string> GetUserEmailId(Activity activity)
+        public static async Task<string> GetUserEmailId(Activity activity)
         {
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));

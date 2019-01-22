@@ -12,6 +12,7 @@ namespace CrossVertical.Announcement.Models
         public string FailureMessage { get; set; }
         public bool IsAcknoledged { get; set; }
         public int LikeCount { get; set; }
+        
     }
 
     public class GroupRecipient
@@ -24,6 +25,7 @@ namespace CrossVertical.Announcement.Models
     {
         public string TeamId { get; set; }
         public RecipientDetails Channel { get; set; }
+        public List<string> LikedUsers { get; set; } = new List<string>();
     }
 
 }
