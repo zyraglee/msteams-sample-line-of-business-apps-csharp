@@ -1087,6 +1087,24 @@ namespace ProfessionalServices.LeaveBot
 
         public static Attachment PublicHolidays()
         {
+            DateTime nextholiday=DateTime.Now;
+            string title=string.Empty;
+            var month = DateTime.Now.Month;
+            List<PublicHoliday> displayList = new List<PublicHoliday>();
+                foreach (var item in PublicHolidaysList.HolidayList)
+                {
+                
+                    if (item.Date.Date > DateTime.Now.Date)
+                    {
+                    displayList.Add(item);
+                    }
+                if (displayList.Count == 2)
+                    break;
+                    
+
+                }
+            
+            
             var PublicHolidaysCard = new AdaptiveCard()
             {
                 Body = new List<AdaptiveElement>()
@@ -1170,7 +1188,7 @@ namespace ProfessionalServices.LeaveBot
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                    new AdaptiveTextBlock(){Text="01 Nov 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
+                                    new AdaptiveTextBlock(){Text=displayList[0].Date.ToShortDateString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
 
 
 
@@ -1185,7 +1203,7 @@ namespace ProfessionalServices.LeaveBot
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="Thursday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text=displayList[0].Date.DayOfWeek.ToString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1199,7 +1217,7 @@ namespace ProfessionalServices.LeaveBot
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="Kannada Rajyotsava", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text=displayList[0].Title, Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1226,7 +1244,7 @@ namespace ProfessionalServices.LeaveBot
                                 Items=new List<AdaptiveElement>()
                                 {
 
-                                     new AdaptiveTextBlock(){Text="08 Nov 2018", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
+                                     new AdaptiveTextBlock(){Text=displayList[1].Date.ToShortDateString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true, Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Bolder}
 
 
 
@@ -1242,7 +1260,7 @@ namespace ProfessionalServices.LeaveBot
                                 {
 
 
-                                     new AdaptiveTextBlock(){Text="Thursday", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text=displayList[1].Date.DayOfWeek.ToString(), Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
@@ -1257,7 +1275,7 @@ namespace ProfessionalServices.LeaveBot
                                 {
 
 
-                                     new AdaptiveTextBlock(){Text="Diwali", Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
+                                     new AdaptiveTextBlock(){Text=displayList[1].Title, Size=AdaptiveTextSize.Medium,Wrap=true, Separator=true,  Spacing=AdaptiveSpacing.Padding, Weight=AdaptiveTextWeight.Default}
 
 
                                 }
