@@ -1,4 +1,5 @@
 ﻿using CrossVertical.Announcement.Dialogs;
+using CrossVertical.Announcement.Helper;
 using CrossVertical.Announcement.Helpers;
 using CrossVertical.Announcement.Models;
 
@@ -147,7 +148,9 @@ namespace CrossVertical.Announcement.Controllers
             ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
             var channelData = message.GetChannelData<TeamsChannelData>();
             var tenant = await RootDialog.CheckAndAddTenantDetails(channelData);
-            if(channelData.EventType == null )
+            await RootDialog.CheckAndAddUserDetails(message, channelData);
+
+            if (channelData.EventType == null )
             {
                 if (message.MembersAdded != null)
                     channelData.EventType = "teamMemberAdded";
@@ -162,9 +165,12 @@ namespace CrossVertical.Announcement.Controllers
                     if (message.MembersAdded.Any(m => m.Id.Contains(message.Recipient.Id)))
                     {
                         // Bot is added. Let's send welcome message.
-                        message.Text = Constants.ShowWelcomeScreen;
-                        await Conversation.SendAsync(message, () => new RootDialog());
-                        await AddTeamDetails(message, channelData, tenant);
+                        if (!tenant.Teams.Contains(channelData.Team.Id))
+                        {
+                            message.Text = Constants.ShowWelcomeScreen;
+                            await Conversation.SendAsync(message, () => new RootDialog());
+                            await AddTeamDetails(message, channelData, tenant);
+                        }
                     }
                     else
                     {
@@ -345,7 +351,7 @@ namespace CrossVertical.Announcement.Controllers
                 {
                     Id = channelData.Team.Id,
                     Name = channelData.Team.Name,
-                    MemberCount = count
+                    Members = members.Select(m => m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList()
                 };
                 // Add all teams and channels
                 ConversationList channels = connector.GetTeamsConnectorClient().Teams.FetchChannelList(message.GetChannelData<TeamsChannelData>().Team.Id);
@@ -362,7 +368,6 @@ namespace CrossVertical.Announcement.Controllers
                 await SendWelcomeMessageToAllMembers(tenant, message,  channelData, members.AsTeamsChannelAccounts());
 
             }
-            await RootDialog.CheckAndAddUserDetails(message, channelData);
         }
 
         private static async Task SendWelcomeMessageToAllMembers(Tenant tenant, Activity message, TeamsChannelData channelData, IEnumerable<TeamsChannelAccount> members)
@@ -376,7 +381,7 @@ namespace CrossVertical.Announcement.Controllers
                     userDetails = new User()
                     {
                         BotConversationId = member.Id,
-                        Id = member.UserPrincipalName,
+                        Id = member.UserPrincipalName.ToLower().Trim(),
                         Name = member.Name ?? member.GivenName
                     };
                     await Cache.Users.AddOrUpdateItemAsync(userDetails.Id, userDetails);
@@ -384,7 +389,19 @@ namespace CrossVertical.Announcement.Controllers
                     tenant.Users.Add(userDetails.Id);
                     await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
 
-                    var result = await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id, null, card);
+                    if (tenant.IsAdminConsented)
+                    {
+                        if (tenant.Moderators.Contains(userDetails.Id))
+                        {
+                            await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id, null, card);
+                        }
+                        else
+                        {
+                            // Get User welcome card.
+                            await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id,
+                                $"Welcome to {ApplicationSettings.AppName}. We will deliver company {ApplicationSettings.AppFeature}s here.", null );
+                        }
+                    }
                     //if (!result.IsSuccessful) // Disable messages in channel.
                     //{
                     //    ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
@@ -402,10 +419,9 @@ namespace CrossVertical.Announcement.Controllers
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
                 var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
-                int count = members.Count;
 
                 var team = await Cache.Teams.GetItemAsync(channelData.Team.Id);
-                team.MemberCount = count;
+                team.Members = members.Select(m=>m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList();
                 await Cache.Teams.AddOrUpdateItemAsync(team.Id, team);
             }
 

@@ -26,6 +26,7 @@ namespace CrossVertical.Announcement.Models
         public string TeamId { get; set; }
         public RecipientDetails Channel { get; set; }
         public List<string> LikedUsers { get; set; } = new List<string>();
+        public List<string> Members { get; set; } = new List<string>();
     }
 
 }

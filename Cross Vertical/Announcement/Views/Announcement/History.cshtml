@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CrossVertical.Announcement.Models.PostDetails>
+﻿@model CrossVertical.Announcement.Models.HistoryViewModel
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -240,7 +240,7 @@
         <br />
         <div class="panel-group">
             <div class="body">
-                @if (Model != null)
+                @if (Model.Posts != null)
                 {
                     <table rules="none" border="0" cellpadding="8" cellspacing="0" align="center">
                         <thead>
@@ -270,7 +270,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Posts)
                             {
 
                                 <tr class="rowstyle">
@@ -407,7 +407,7 @@
                                                         <img class="imgstyle1" src="~/Resources/Action.PNG" data-toggle="dropdown" />
 
                                                         <table class="dropdown-menu">
-                                                            @if (item.Status != CrossVertical.Announcement.Models.Status.Sent)
+                                                            @if (item.Status != CrossVertical.Announcement.Models.Status.Sent && Model.Role != CrossVertical.Announcement.Models.Role.User)
                                                             {
                                                                 <tr onclick="submit('edit', '@item.Id')">
                                                                     <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/edit2.PNG" /></a></td>
@@ -428,10 +428,13 @@
                                                                     <td><a style="color:#333;" href="#">Modify Schedule</a></td>
                                                                 </tr>
                                                             }
-                                                            <tr onclick="submit('template', '@item.Id')">
+                                                            @if (Model.Role != CrossVertical.Announcement.Models.Role.User)
+                                                            {
+                                                                <tr onclick="submit('template', '@item.Id')">
                                                                 <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
                                                                 <td><a style="color:#333;" href="#">Use as Template</a></td>
-                                                            </tr>
+                                                                </tr>
+                                                            }
                                                         </table>
                                                     </div>
                                                 </td>

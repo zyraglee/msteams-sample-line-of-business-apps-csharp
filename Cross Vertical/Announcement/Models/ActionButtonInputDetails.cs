@@ -10,6 +10,11 @@ namespace CrossVertical.Announcement.Models
         public string ActionType { get; set; }
     }
 
+    public class ModeratorActionDetails : ActionDetails
+    {
+        public string Moderators { get; set; }
+    }
+
     public class AnnouncementActionDetails : ActionDetails
     {
         public string Id { get; set; }

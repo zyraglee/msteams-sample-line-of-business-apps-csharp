@@ -32,7 +32,7 @@ namespace CrossVertical.Announcement.Helpers
                             Group groupDetails = new Group();
                             groupDetails.Id = Guid.NewGuid().ToString();
                             groupDetails.Name = row[0].ToString();
-                            var users = row[1].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(user => user.Trim()).ToList();
+                            var users = row[1].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(user => user.ToLower().Trim()).ToList();
                             groupDetails.Users = users;
                             groups.Add(groupDetails);
                         }

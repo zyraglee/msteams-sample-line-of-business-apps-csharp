@@ -12,7 +12,7 @@ namespace CrossVertical.Announcement.Models
 
         public List<Channel> Channels { get; set; } = new List<Channel>();
 
-        public int MemberCount { get; set; }
+        public List<string> Members { get; set; } = new List<string>();
 
         public static string GetTeamId(string id)
         {

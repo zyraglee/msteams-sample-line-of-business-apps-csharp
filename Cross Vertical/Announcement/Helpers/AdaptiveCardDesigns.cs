@@ -98,9 +98,42 @@ namespace CrossVertical.Announcement.Helpers
                         {
                             Id = "adminpanel",
                             Title = "⚙️ Admin Panel",
-                            Data = new ActionDetails() { ActionType = Constants.Configure }
+                            Data = new ActionDetails() { ActionType = Constants.ConfigureAdminSettings }
                         }
                 };
+
+            return new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card
+            };
+        }
+
+        public static Attachment GetCardForNonConsentedTenant()
+        {
+            var card = new AdaptiveCard()
+            {
+                Body = new List<AdaptiveElement>()
+                {
+                    new AdaptiveContainer()
+                    {
+                        Items=new List<AdaptiveElement>()
+                        {
+                            new AdaptiveTextBlock()
+                            {
+                                Text= "Currently this app is not configured by your administrator in your organization. If you are admin then please configure the app from personal scrope.",
+                                IsSubtle=true,
+                            }
+                        }
+                    }
+                }
+            };
+            card.Actions.Add(new AdaptiveOpenUrlAction()
+            {
+                Id = "chatinpersonal",
+                Title = "Go to Personal App",
+                Url = new System.Uri($"https://teams.microsoft.com/l/chat/0/0?users=28:{ApplicationSettings.AppId}")
+            });
 
             return new Attachment()
             {
@@ -247,6 +280,81 @@ namespace CrossVertical.Announcement.Helpers
             {
                 ContentType = AdaptiveCard.ContentType,
                 Content = card
+            };
+        }
+
+        public static async Task<Attachment> GetAdminPanelCard(string currentModerators)
+        {
+            var Card = new AdaptiveCard()
+            {
+                Body = new List<AdaptiveElement>()
+                {
+                    new AdaptiveContainer()
+                    {
+                        Items=new List<AdaptiveElement>()
+                        {
+                            new AdaptiveTextBlock()
+                            {
+                                Weight=AdaptiveTextWeight.Bolder,
+                                Text="Please select your action:"
+                            }
+                        }
+                    }
+                },
+                Actions = new List<AdaptiveAction>()
+                          {
+                            new AdaptiveSubmitAction()
+                            {
+                                Id = "configureGroups",
+                                Title = "Configure Groups",
+                                Data = new ActionDetails()
+                                {
+                                    ActionType = Constants.ConfigureGroups,
+                                }
+                            },
+                            new AdaptiveShowCardAction()
+                            {
+                                Id = "setModerators",
+                                Title="Set Moderators",
+                                Card=new AdaptiveCard()
+                                {
+                                    Body=new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveContainer()
+                                        {
+                                            Items=new List<AdaptiveElement>()
+                                            {
+                                                new AdaptiveTextBlock()
+                                                {
+                                                    Text=$"Please set list of moderators. "
+                                                },
+                                                new AdaptiveTextInput()
+                                                {
+                                                    Id = "Moderators",
+                                                    Placeholder="ex: user1@org.com, user2@org.com",
+                                                    Value = currentModerators
+                                                }
+                                            }
+                                        }
+                                    },
+                                    Actions=new List<AdaptiveAction>()
+                                    {
+                                      new AdaptiveSubmitAction()
+                                      {
+                                          Id= "setModerator",
+                                          Title=string.IsNullOrEmpty(currentModerators) ?"Set" : "Updated",
+                                          Data = new ModeratorActionDetails(){  ActionType = Constants.SetModerators}
+                                      }
+                                    }
+                                }
+                              }
+                          }
+            };
+
+            return new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = Card
             };
         }
 

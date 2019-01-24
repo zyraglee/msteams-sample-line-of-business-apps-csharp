@@ -62,11 +62,14 @@ namespace CrossVertical.Announcement.Dialogs
             Tenant tenantData = await CheckAndAddTenantDetails(channelData);
             if (!tenantData.IsAdminConsented)
             {
-                await SendOAuthCardAsync(context, activity);
-                // var reply = activity.CreateReply();
-                // Send Sign In Card
-                // reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null));
-                // await context.PostAsync(reply);
+                if (channelData.Team == null)
+                    await SendOAuthCardAsync(context, activity);
+                else
+                {
+                    var reply = activity.CreateReply();
+                    reply.Attachments.Add(AdaptiveCardDesigns.GetCardForNonConsentedTenant());
+                    await context.PostAsync(reply);
+                }
                 return;
             }
             // Check and add tenant details
@@ -217,16 +220,16 @@ namespace CrossVertical.Announcement.Dialogs
 
         internal async static Task<User> CheckAndAddUserDetails(Activity activity, TeamsChannelData channelData)
         {
-            var userEmailId = await GetUserEmailId(activity);
+            var currentUser = await GetCurrentUser(activity);
             // User not present in cache
-            var userDetails = await Cache.Users.GetItemAsync(userEmailId);
-            if (userDetails == null && userEmailId != null)
+            var userDetails = await Cache.Users.GetItemAsync(currentUser.UserPrincipalName.ToLower());
+            if (userDetails == null && currentUser != null)
             {
                 userDetails = new User()
                 {
                     BotConversationId = activity.From.Id,
-                    Id = userEmailId,
-                    Name = activity.From.Name
+                    Id = currentUser.UserPrincipalName.ToLower(),
+                    Name = currentUser.Name ?? currentUser.GivenName
                 };
                 await Cache.Users.AddOrUpdateItemAsync(userDetails.Id, userDetails);
 
@@ -269,7 +272,17 @@ namespace CrossVertical.Announcement.Dialogs
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
             if (members.Count == 0)
                 return null;
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName;
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName.ToLower();
+        }
+
+        public static async Task<TeamsChannelAccount> GetCurrentUser(Activity activity)
+        {
+            // Fetch the members in the current conversation
+            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+            if (members.Count == 0)
+                return null;
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount();
         }
 
         private async Task HandleActions(IDialogContext context, Activity activity)
@@ -295,9 +308,16 @@ namespace CrossVertical.Announcement.Dialogs
                     // Save in DB & Send preview card
                     await CreateOrEditAnnouncement(context, activity, channelData);
                     break;
-                case Constants.Configure:
+                case Constants.ConfigureAdminSettings:
+                    await SendAdminPanelCard(context, activity, channelData);
+                    break;
+                case Constants.ConfigureGroups:
                     // Allow user to configure the groups.
                     await SendConfigurationCard(context, activity, channelData);
+                    break;
+                case Constants.SetModerators:
+                    // Allow user to configure the groups.
+                    await SetModerators(context, activity, channelData);
                     break;
                 case Constants.SendAnnouncement:
                 case Constants.ScheduleAnnouncement:
@@ -318,6 +338,14 @@ namespace CrossVertical.Announcement.Dialogs
                 default:
                     break;
             }
+        }
+
+        private static async Task SendAdminPanelCard(IDialogContext context, Activity activity, TeamsChannelData channelData)
+        {
+            var reply = activity.CreateReply();
+            Tenant tenantData = await CheckAndAddTenantDetails(channelData);
+            reply.Attachments.Add(await AdaptiveCardDesigns.GetAdminPanelCard(string.Join(",", tenantData.Moderators)));
+            await context.PostAsync(reply);
         }
 
         private async Task ShowAnnouncementDraft(IDialogContext context, Activity activity, TeamsChannelData channelData)
@@ -591,6 +619,28 @@ namespace CrossVertical.Announcement.Dialogs
             {
                 await connector.Conversations.UpdateActivityAsync(activity.Conversation.Id, previewMessageDetails.MessageCardId, reply);
             }
+        }
+
+        private async Task SetModerators(IDialogContext context, Activity activity, TeamsChannelData channelData)
+        {
+            // TODO: Updated DB
+            var details = JsonConvert.DeserializeObject<ModeratorActionDetails>(activity.Value.ToString());
+            if (details == null || details.Moderators == null)
+            {
+                details = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<ModeratorActionDetails>>
+                    (activity.Value.ToString()).Data;
+            }
+            var moderatorList = details.Moderators.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m=> m.ToLower().Trim()).ToList();
+            if (moderatorList.Count == 0)
+            {
+                await context.PostAsync("Please set at least one moderator.");
+                return;
+            }
+            Tenant tenantData = await CheckAndAddTenantDetails(channelData);
+            tenantData.Moderators = moderatorList;
+
+            await Cache.Tenants.AddOrUpdateItemAsync(tenantData.Id, tenantData);
+            await context.PostAsync("Moderators are set successfully. These users can now create message and post.");
         }
 
         private async Task SendConfigurationCard(IDialogContext context, Activity activity, TeamsChannelData channelData)

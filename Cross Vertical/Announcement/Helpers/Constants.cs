@@ -6,7 +6,7 @@ namespace CrossVertical.Announcement.Helpers
     public class Constants
     {
 
-        public const string Configure = "Configure";
+        public const string ConfigureAdminSettings = "ConfigureAdminSettings";
         public const string ShowAllDrafts = "ShowDrafts";
         public const string ShowAnnouncement = "ShowAnnouncementDraft";
         public const string Cancel = "Cancel";
@@ -16,6 +16,9 @@ namespace CrossVertical.Announcement.Helpers
         public const string ScheduleAnnouncement = "ScheduleAnnouncement";
         public const string ShowMoreDetails = "ShowMoreDetails";
         public const string SendAnnouncement = "SendAnnouncement";
+
+        public const string ConfigureGroups = "ConfigureGroups";
+        public const string SetModerators = "SetModerators";
 
         public const string ShowEditAnnouncementTaskModule = "ShowEditAnnouncementTaskModule";
 

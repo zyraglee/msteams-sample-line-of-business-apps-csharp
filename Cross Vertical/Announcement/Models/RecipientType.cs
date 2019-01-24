@@ -1,9 +1,9 @@
 ﻿namespace CrossVertical.Announcement.Models
 {
-    public enum RecipientType
+    public enum Role
     {
-        Group,
-        Channel,
+        Admin,
+        Moderator,
         User
     }
 }

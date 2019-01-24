@@ -308,6 +308,7 @@
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\DatabaseItem.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\HistoryViewModel.cs" />
     <Compile Include="Models\ListCard.cs" />
     <Compile Include="Models\MessageSensitivity.cs" />
     <Compile Include="Models\NotificationSendStatus.cs" />

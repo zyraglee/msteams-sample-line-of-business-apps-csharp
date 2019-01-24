@@ -22,23 +22,42 @@ namespace CrossVertical.Announcement.Controllers
         }
 
         [Route("history")]
-        public async Task<ActionResult> History(string tid)
+        public async Task<ActionResult> History(string tid, string emailId)
         {
-            if (string.IsNullOrEmpty(tid))
+            if (string.IsNullOrEmpty(tid) || string.IsNullOrEmpty(emailId))
             {
                 return HttpNotFound();
             }
             var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
             var myTenantAnnouncements = new List<Campaign>();
 
-            foreach (var announcementId in tenatInfo.Announcements)
+            var myAnnouncements = tenatInfo.Announcements;
+            var role = Role.User;
+            if (tenatInfo.Moderators.Contains(emailId))
+                role = Role.Moderator;
+            if (tenatInfo.Admin == emailId)
+                role = Role.Admin;
+            foreach (var announcementId in myAnnouncements)
             {
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
                 if (announcement != null)
-                    myTenantAnnouncements.Add(announcement);
+                {
+                    if (role == Role.Moderator || role == Role.Admin)
+                    {
+                        myTenantAnnouncements.Add(announcement);
+                    }
+                    else if (announcement.Recipients.Channels.Any(c => c.Members.Contains(emailId))
+                          || announcement.Recipients.Groups.Any(g => g.Users.Any(u => u.Id == emailId)))
+                    {
+                        // Validate if user is part of this announcement.
+                        myTenantAnnouncements.Add(announcement);
+                    }
+
+                }
             }
 
-            List<PostDetails> postDetails = new List<PostDetails>();
+            HistoryViewModel historyViewModel = new HistoryViewModel();
+            historyViewModel.Role = Role.Admin;
             foreach (var announcement in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime))
             {
                 //var campaign = announcement.Post as Campaign;
@@ -74,8 +93,8 @@ namespace CrossVertical.Announcement.Controllers
                     if (!channelNames.Contains(teamname.Name))
                     {
                         channelNames.Add(teamname.Name);
-                        
-                        post.RecipientChannelCount += teamname.MemberCount;
+
+                        post.RecipientChannelCount += teamname.Members.Count;
                     }
 
                     post.LikeCount += team.LikedUsers.Count;
@@ -121,10 +140,10 @@ namespace CrossVertical.Announcement.Controllers
                 post.Recipients = $"{recipientNames}";
                 post.RecipientChannelNames = $"{recipientChannelNames}";
 
-                postDetails.Add(post);
+                historyViewModel.Posts.Add(post);
             }
 
-            return View(postDetails);
+            return View(historyViewModel);
         }
         [Route("details")]
         public async Task<ActionResult> Details(string announcementid)
@@ -420,13 +439,13 @@ namespace CrossVertical.Announcement.Controllers
                         }
                     }
                 }
-                foreach(var channel in announcement.Recipients.Channels)
+                foreach (var channel in announcement.Recipients.Channels)
                 {
-                    foreach(var user in channel.LikedUsers)
+                    foreach (var user in channel.LikedUsers)
                     {
                         //var userDetails = await Cache.Users.GetItemAsync(user.Id);
                         var userDetails = await Cache.Users.GetItemAsync(user);
-                        if(channel.LikedUsers.Count != 0)
+                        if (channel.LikedUsers.Count != 0)
                         {
                             if (!allReactionUsers.Contains(user))
                             {
@@ -440,7 +459,7 @@ namespace CrossVertical.Announcement.Controllers
 
                     }
                 }
-                
+
             }
             return View("TabListView", analyticsInfo);
         }
@@ -554,7 +573,7 @@ namespace CrossVertical.Announcement.Controllers
                     SubTitle = user.JobTitle ?? user.UserPrincipalName,
                 };
             }
-            else if(type == "channel")
+            else if (type == "channel")
             {
                 var teamId = Team.GetTeamId(userId);
                 var photo = await helper.GetTeamPhoto(tid, userId);
