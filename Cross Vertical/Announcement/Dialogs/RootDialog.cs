@@ -44,7 +44,6 @@ namespace CrossVertical.Announcement.Dialogs
             string message = string.Empty;
             if (activity.Text != null)
                 message = Microsoft.Bot.Connector.Teams.ActivityExtensions.GetTextWithoutMentions(activity).ToLowerInvariant();
-
             // Check if User or Team is registered.
             string profileKey = GetKey(activity, ProfileKey);
             User userDetails = null;
@@ -80,7 +79,7 @@ namespace CrossVertical.Announcement.Dialogs
             }
             else if (activity.Value != null)
             {
-                await HandleActions(context, activity);
+                await HandleActions(context, activity, tenantData, userDetails);
             }
             else
             {
@@ -88,8 +87,15 @@ namespace CrossVertical.Announcement.Dialogs
                 {
                     // Perform configuration.
                 }
-                else if (message.ToLowerInvariant().Contains("reset"))
+                else if (message.ToLowerInvariant().Contains("clear cache"))
                 {
+                    Cache.Announcements = new DBCache<Campaign>();
+                    Cache.Groups = new DBCache<Group>();
+                    Cache.Teams = new DBCache<Team>();
+                    Cache.Tenants = new DBCache<Tenant>();
+                    Cache.Users = new DBCache<User>();
+
+                    await context.PostAsync("Cache cleared.");
                     // Reset if needed
                 }
                 else
@@ -285,7 +291,7 @@ namespace CrossVertical.Announcement.Dialogs
             return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount();
         }
 
-        private async Task HandleActions(IDialogContext context, Activity activity)
+        private async Task HandleActions(IDialogContext context, Activity activity, Tenant tenant, User userDetails)
         {
             string type = string.Empty;
             try
@@ -300,7 +306,13 @@ namespace CrossVertical.Announcement.Dialogs
                 type = details.ActionType;
             }
 
+            var role = Common.GetUserRole(userDetails.Id, tenant);
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
+            if(role == Role.User && type != Constants.Acknowledge)
+            {
+                await context.PostAsync("You do not have permissions to perform this task.");
+                return;
+            }
             switch (type)
             {
                 case Constants.CreateOrEditAnnouncement:
@@ -734,14 +746,17 @@ namespace CrossVertical.Announcement.Dialogs
                 foreach (var channelInfo in channels)
                 {
                     var info = channelInfo.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
+                    var teamId = info[0];
+                    var channelId = info[1];
+                    var team = await Cache.Teams.GetItemAsync(teamId);
                     recipients.Channels.Add(new ChannelRecipient()
                     {
-                        TeamId = info[0],
+                        TeamId = teamId,
                         Channel = new RecipientDetails()
                         {
-                            Id = info[1],
-                        }
+                            Id = channelId,
+                        },
+                        Members = team?.Members
                     });
                 }
             }

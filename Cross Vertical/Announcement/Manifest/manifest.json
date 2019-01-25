@@ -26,7 +26,7 @@
   "staticTabs": [
     {
       "entityId": "com.contoso.Announcement.history",
-      "name": "History",
+      "name": "My Messages",
       "contentUrl": "https://announcement.azurewebsites.net/history?tid={tid}&emailId={loginHint}",
       "websiteUrl": "https://announcement.azurewebsites.net/history",
       "scopes": [
@@ -64,5 +64,5 @@
     "identity",
     "messageTeamMembers"
   ],
-  "validDomains": []
+  "validDomains": [ "*.botframework.com" ]
 }

@@ -236,7 +236,10 @@
 
     <div class="containers">
 
-        <span><button onclick="submit('create');" class="rect"><i style="font-size:10px" class="glyphicon glyphicon-edit"></i>  New Post</button></span>
+        @if (Model.Role != CrossVertical.Announcement.Models.Role.User)
+        {
+            <span><button onclick="submit('create');" class="rect"><i style="font-size:10px" class="glyphicon glyphicon-edit"></i>  New Post</button></span>
+        }
         <br />
         <div class="panel-group">
             <div class="body">
@@ -431,8 +434,8 @@
                                                             @if (Model.Role != CrossVertical.Announcement.Models.Role.User)
                                                             {
                                                                 <tr onclick="submit('template', '@item.Id')">
-                                                                <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
-                                                                <td><a style="color:#333;" href="#">Use as Template</a></td>
+                                                                    <td><a style="color:#333;" href="#"><img class="imgstyle" src="~/Resources/temp.PNG" /></a></td>
+                                                                    <td><a style="color:#333;" href="#">Use as Template</a></td>
                                                                 </tr>
                                                             }
                                                         </table>

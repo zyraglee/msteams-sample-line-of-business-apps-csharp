@@ -123,6 +123,7 @@ namespace CrossVertical.Announcement.Helpers
                             {
                                 Text= "Currently this app is not configured by your administrator in your organization. If you are admin then please configure the app from personal scrope.",
                                 IsSubtle=true,
+                                Wrap = true
                             }
                         }
                     }

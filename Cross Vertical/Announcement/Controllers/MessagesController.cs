@@ -150,11 +150,11 @@ namespace CrossVertical.Announcement.Controllers
             var tenant = await RootDialog.CheckAndAddTenantDetails(channelData);
             await RootDialog.CheckAndAddUserDetails(message, channelData);
 
-            if (channelData.EventType == null )
+            if (channelData.EventType == null)
             {
                 if (message.MembersAdded != null)
                     channelData.EventType = "teamMemberAdded";
-                if(message.MembersRemoved != null)
+                if (message.MembersRemoved != null)
                     channelData.EventType = "teamMemberRemoved";
             }
 
@@ -165,12 +165,10 @@ namespace CrossVertical.Announcement.Controllers
                     if (message.MembersAdded.Any(m => m.Id.Contains(message.Recipient.Id)))
                     {
                         // Bot is added. Let's send welcome message.
-                        if (!tenant.Teams.Contains(channelData.Team.Id))
-                        {
-                            message.Text = Constants.ShowWelcomeScreen;
-                            await Conversation.SendAsync(message, () => new RootDialog());
-                            await AddTeamDetails(message, channelData, tenant);
-                        }
+                        message.Text = Constants.ShowWelcomeScreen;
+                        await Conversation.SendAsync(message, () => new RootDialog());
+
+                        await AddTeamDetails(message, channelData, tenant);
                     }
                     else
                     {
@@ -240,16 +238,16 @@ namespace CrossVertical.Announcement.Controllers
                         foreach (var channel in announcement.Recipients.Channels)
                         {
                             //var user = channel.LikedUsers.FirstOrDefault(u => u.MessageId == replyToId);
-                           
+
                             if (channel.Channel.MessageId == replyToId)
                             {
-                                var EmailId=await RootDialog.GetUserEmailId(message);
-                                if(message.ReactionsAdded != null&&message.ReactionsAdded.Count!=0)
+                                var EmailId = await RootDialog.GetUserEmailId(message);
+                                if (message.ReactionsAdded != null && message.ReactionsAdded.Count != 0)
                                 {
                                     if (!channel.LikedUsers.Contains(EmailId))
                                         channel.LikedUsers.Add(EmailId);
                                 }
-                                else if(message.ReactionsRemoved != null)
+                                else if (message.ReactionsRemoved != null)
                                 {
                                     if (channel.LikedUsers.Contains(EmailId))
                                         channel.LikedUsers.Remove(EmailId);
@@ -342,17 +340,28 @@ namespace CrossVertical.Announcement.Controllers
 
         private static async Task AddTeamDetails(Activity message, TeamsChannelData channelData, Tenant tenant)
         {
-            if (channelData.Team != null && !tenant.Teams.Contains(channelData.Team.Id))
+            if (channelData.Team != null)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
                 var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
                 int count = members.Count;
-                var team = new Team
+                Team team = null;
+                if (tenant.Teams.Contains(channelData.Team.Id))
                 {
-                    Id = channelData.Team.Id,
-                    Name = channelData.Team.Name,
-                    Members = members.Select(m => m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList()
-                };
+                    team = await Cache.Teams.GetItemAsync(channelData.Team.Id);
+                }
+                else
+                {
+                    team = new Team
+                    {
+                        Id = channelData.Team.Id
+                    };
+                }
+
+                // Update the members.
+                team.Name = channelData.Team.Name;
+                team.Members = members.Select(m => m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList();
+
                 // Add all teams and channels
                 ConversationList channels = connector.GetTeamsConnectorClient().Teams.FetchChannelList(message.GetChannelData<TeamsChannelData>().Team.Id);
                 foreach (var channel in channels.Conversations)
@@ -365,7 +374,7 @@ namespace CrossVertical.Announcement.Controllers
 
                 await Cache.Tenants.AddOrUpdateItemAsync(tenant.Id, tenant);
 
-                await SendWelcomeMessageToAllMembers(tenant, message,  channelData, members.AsTeamsChannelAccounts());
+                await SendWelcomeMessageToAllMembers(tenant, message, channelData, members.AsTeamsChannelAccounts());
 
             }
         }
@@ -375,7 +384,7 @@ namespace CrossVertical.Announcement.Controllers
             var card = AdaptiveCardDesigns.GetWelcomeScreen(false);
             foreach (var member in members)
             {
-                var userDetails = await Cache.Users.GetItemAsync(member.UserPrincipalName);
+                var userDetails = await Cache.Users.GetItemAsync(member.UserPrincipalName.ToLower());
                 if (userDetails == null)
                 {
                     userDetails = new User()
@@ -399,7 +408,7 @@ namespace CrossVertical.Announcement.Controllers
                         {
                             // Get User welcome card.
                             await ProactiveMessageHelper.SendNotification(message.ServiceUrl, channelData.Tenant.Id, member.Id,
-                                $"Welcome to {ApplicationSettings.AppName}. We will deliver company {ApplicationSettings.AppFeature}s here.", null );
+                                $"Welcome to {ApplicationSettings.AppName}. We will deliver company {ApplicationSettings.AppFeature}s here.", null);
                         }
                     }
                     //if (!result.IsSuccessful) // Disable messages in channel.
@@ -421,7 +430,7 @@ namespace CrossVertical.Announcement.Controllers
                 var members = await connector.Conversations.GetConversationMembersAsync(channelData.Team.Id);
 
                 var team = await Cache.Teams.GetItemAsync(channelData.Team.Id);
-                team.Members = members.Select(m=>m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList();
+                team.Members = members.Select(m => m.AsTeamsChannelAccount().UserPrincipalName.ToLower()).ToList();
                 await Cache.Teams.AddOrUpdateItemAsync(team.Id, team);
             }
 

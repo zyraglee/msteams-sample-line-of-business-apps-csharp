@@ -290,6 +290,7 @@
     <Compile Include="Helpers\AnnouncementScheduler.cs" />
     <Compile Include="Helpers\AnnouncementSender.cs" />
     <Compile Include="Helpers\ApplicationSettings.cs" />
+    <Compile Include="Helpers\Common.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
     <Compile Include="Helpers\ExceptionLogger.cs" />
@@ -317,7 +318,7 @@
     <Compile Include="Models\PreviewCardMessageDetails.cs" />
     <Compile Include="Models\Recipient.cs" />
     <Compile Include="Models\RecipientInfo.cs" />
-    <Compile Include="Models\RecipientType.cs" />
+    <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\TaskModel.cs" />

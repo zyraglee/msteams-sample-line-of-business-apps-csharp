@@ -30,13 +30,9 @@ namespace CrossVertical.Announcement.Controllers
             }
             var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
             var myTenantAnnouncements = new List<Campaign>();
-
+            emailId = emailId.ToLower();
             var myAnnouncements = tenatInfo.Announcements;
-            var role = Role.User;
-            if (tenatInfo.Moderators.Contains(emailId))
-                role = Role.Moderator;
-            if (tenatInfo.Admin == emailId)
-                role = Role.Admin;
+            Role role = Common.GetUserRole(emailId, tenatInfo);
             foreach (var announcementId in myAnnouncements)
             {
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
@@ -57,7 +53,7 @@ namespace CrossVertical.Announcement.Controllers
             }
 
             HistoryViewModel historyViewModel = new HistoryViewModel();
-            historyViewModel.Role = Role.Admin;
+            historyViewModel.Role = role;
             foreach (var announcement in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime))
             {
                 //var campaign = announcement.Post as Campaign;
@@ -145,6 +141,7 @@ namespace CrossVertical.Announcement.Controllers
 
             return View(historyViewModel);
         }
+
         [Route("details")]
         public async Task<ActionResult> Details(string announcementid)
         {
