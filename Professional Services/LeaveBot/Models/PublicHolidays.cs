@@ -7,6 +7,7 @@ namespace ProfessionalServices.LeaveBot.Models
     // Static class
     public static class PublicHolidaysList
     {
+        public static string Title = "Public Holidays" +" "+ DateTime.Now.Year;
         public static List<PublicHoliday> HolidayList { get; set; } = new List<PublicHoliday>()
         {
             new PublicHoliday() {Date = new DateTime(DateTime.Now.Year, 01, 01), Title = "New Years Day",ImagePath = null,OptionalHoliday = null,CelebrationText = null },
