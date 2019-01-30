@@ -149,7 +149,19 @@
             font-size: 12px;
             margin-right: 2px;
         }
-
+        .rectangle {
+           
+            height: 32px;
+            width: 100px;
+            color: white;
+            border: 1px solid rgba(37,36,36,0.15);
+            border-radius: 2px;
+            background-color: #6264A7;
+            box-shadow: 0 2px 4px -0.75px rgba(0,0,0,0.1);
+            font-family: "Segoe UI";
+            font-size: 12px;
+           
+        }
 
         .body {
             background-color: #f3f2f1;
@@ -229,6 +241,13 @@
         .imgstyle:hover {
             background-color: #f3f2f1;
         }
+        center {
+            position: fixed; 
+            top: 50%;
+            left: 50%;
+           
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 
@@ -236,14 +255,14 @@
 
     <div class="containers">
 
-        @if (Model.Role != CrossVertical.Announcement.Models.Role.User)
+        @if (Model.Role != CrossVertical.Announcement.Models.Role.User && Model.Posts.Count!=0)
         {
             <span><button onclick="submit('create');" class="rect"><i style="font-size:10px" class="glyphicon glyphicon-edit"></i>  New Post</button></span>
         }
         <br />
         <div class="panel-group">
             <div class="body">
-                @if (Model.Posts != null)
+                @if (Model.Posts != null && Model.Posts.Count != 0)
                 {
                     <table rules="none" border="0" cellpadding="8" cellspacing="0" align="center">
                         <thead>
@@ -407,6 +426,7 @@
                                             <tr class="row-event">
                                                 <td>
                                                     <div class="dropdown">
+                                                        
                                                         <img class="imgstyle1" src="~/Resources/Action.PNG" data-toggle="dropdown" />
 
                                                         <table class="dropdown-menu">
@@ -450,9 +470,20 @@
                         </tbody>
                     </table>
                 }
-                else
+                else if (Model.Role != CrossVertical.Announcement.Models.Role.User  && Model.Posts.Count == 0)
                 {
-                    <p>No announcements yet.Please go ahead and create new announcement</p>
+
+                    <center>
+                        You don't seem to have any messages either sent or received to be shown here. Please go ahead and create one.<br style="line-height:25px;" />
+
+                        <span><button onclick="submit('create');" class="rectangle"><i style="font-size:10px" class="glyphicon glyphicon-edit"></i>  New Post</button></span>
+                    </center>
+                }
+                else if(Model.Role==CrossVertical.Announcement.Models.Role.User)
+                {
+                    <center>
+                        You don't seem to have any messages received to be shown here. Hang on!
+                    </center>
                 }
             </div>
         </div>
