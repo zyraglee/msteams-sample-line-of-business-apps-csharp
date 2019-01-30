@@ -87,9 +87,18 @@ namespace CrossVertical.Announcement.Dialogs
             }
             else
             {
-                if (message.ToLowerInvariant().Contains("configure"))
+                if (message.ToLowerInvariant().Contains("refresh photos") && role == Role.Admin)
                 {
                     // Perform configuration.
+                    if (!tenantData.IsAdminConsented)
+                        return;
+                    var token = await GraphHelper.GetAccessToken(tenantData.Id, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
+                    GraphHelper helper = new GraphHelper(token);
+                    foreach (var user in tenantData.Users)
+                    {
+                        var photo = await helper.GetUserProfilePhoto(tenantData.Id, user);
+                    }
+                    await context.PostAsync("Profile photos are refreshed.");
                 }
                 else if (message.ToLowerInvariant().Contains("clear cache"))
                 {
@@ -116,11 +125,11 @@ namespace CrossVertical.Announcement.Dialogs
                     }
 
                     if (tenantData.Admin == userDetails.Id || tenantData.Moderators.Contains(userDetails.Id))
-                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null,role));
+                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null, role));
                     else
                     {
                         //reply.Text = "We will deliver your announcements here.";
-                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null,role));
+                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null, role));
                     }
                     await context.PostAsync(reply);
                 }
@@ -335,12 +344,12 @@ namespace CrossVertical.Announcement.Dialogs
 
             var role = Common.GetUserRole(userDetails.Id, tenant);
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
-            if(role == Role.User && type != Constants.Acknowledge && type != Constants.ShowRecents)
+            if (role == Role.User && type != Constants.Acknowledge && type != Constants.ShowRecents)
             {
                 await context.PostAsync("You do not have permissions to perform this task.");
                 return;
             }
-             
+
             switch (type)
             {
                 case Constants.CreateOrEditAnnouncement:
@@ -376,7 +385,7 @@ namespace CrossVertical.Announcement.Dialogs
                     await ShowAnnouncementDraft(context, activity, channelData);
                     break;
                 case Constants.ShowRecents:
-                    await ShowRecentAnnouncements(context,activity,channelData);
+                    await ShowRecentAnnouncements(context, activity, channelData);
                     break;
                 default:
                     break;
@@ -411,14 +420,16 @@ namespace CrossVertical.Announcement.Dialogs
 
                 }
             }
-            foreach(var item in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime).Take(10))
+            foreach (var item in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime).Take(10))
             {
                 //item.ShowAllDetailsButton = false;
-               reply.Attachments.Add(item.GetPreviewCard().ToAttachment());
+                reply.Attachments.Add(item.GetPreviewCard().ToAttachment());
                 // item.ShowAllDetailsButton = true;
                 reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                
+
             }
+            if (reply.Attachments.Count == 0)
+                reply.Text = "You don't seem to have any messages received recently. Hang on!";
             await context.PostAsync(reply);
             //foreach
         }
@@ -712,7 +723,7 @@ namespace CrossVertical.Announcement.Dialogs
                 details = JsonConvert.DeserializeObject<TaskModule.BotFrameworkCardValue<ModeratorActionDetails>>
                     (activity.Value.ToString()).Data;
             }
-            var moderatorList = details.Moderators.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m=> m.ToLower().Trim()).ToList();
+            var moderatorList = details.Moderators.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m => m.ToLower().Trim()).ToList();
             if (moderatorList.Count == 0)
             {
                 await context.PostAsync("Please set at least one moderator.");

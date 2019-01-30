@@ -1,4 +1,5 @@
-﻿using CrossVertical.Announcement.Helpers;
+﻿using CrossVertical.Announcement.Helper;
+using CrossVertical.Announcement.Helpers;
 using CrossVertical.Announcement.Models;
 using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Connector;
@@ -55,9 +56,10 @@ namespace CrossVertical.Announcement
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
                 if (announcement != null)
                 {
+                    var authorName = announcement.Author?.Name?.ToLower() ?? "";
                     if (!announcement.Title.ToLower().Contains(searchString)
                         && !announcement.SubTitle.ToLower().Contains(searchString)
-                        && (announcement.Author != null && !announcement.Author.Name.ToLower().Contains(searchString)))
+                        && !(authorName.Contains(searchString)))
                     {
                         continue;
                     }
@@ -86,7 +88,7 @@ namespace CrossVertical.Announcement
             };
             previewCard.Images = new List<CardImage>() {
                 new CardImage(Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
-                campaign.Author?.ProfilePhoto : null ) };
+                campaign.Author?.ProfilePhoto : ApplicationSettings.BaseUrl + "/Resources/Person.png" ) };
             campaign.ShowAllDetailsButton = false;
             var card = campaign.GetPreviewCard().ToAttachment();
             campaign.ShowAllDetailsButton = true;
