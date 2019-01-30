@@ -105,7 +105,15 @@ namespace ProfessionalServices.LeaveBot.Dialogs
 
                     reply.Attachments.Add(EchoBot.WelcomeLeaveCard(employee.DisplayName, isManager));
 
-                    await context.PostAsync(reply);
+                    try
+                    {
+                        await context.PostAsync(reply);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        throw;
+                    }
                 }
             }
         }
@@ -558,7 +566,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName;
+            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName.ToLower();
         }
 
         private async Task SendOAuthCardAsync(IDialogContext context, Activity activity)
@@ -646,7 +654,7 @@ namespace ProfessionalServices.LeaveBot.Dialogs
             var employee = new Employee()
             {
                 Name = me.DisplayName,
-                EmailId = me.UserPrincipalName,
+                EmailId = me.UserPrincipalName.ToLower(),
                 UserUniqueId = context.Activity.From.Id, // For proactive messages
                 TenantId = channelData.Tenant.Id,
                 DemoManagerEmailId = string.Empty,

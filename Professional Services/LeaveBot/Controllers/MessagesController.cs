@@ -23,7 +23,14 @@ namespace ProfessionalServices.LeaveBot.Controllers
         {
             if (activity != null && activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new RootDialog());
+                try
+                {
+                    await Conversation.SendAsync(activity, () => new RootDialog());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
             }
             else if (activity.Type == ActivityTypes.Invoke)
