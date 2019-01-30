@@ -411,11 +411,11 @@ namespace CrossVertical.Announcement.Dialogs
 
                 }
             }
-            var annuncments = from m in myTenantAnnouncements orderby m.CreatedTime select m;
-            foreach(var item in annuncments)
+            foreach(var item in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime).Take(10))
             {
-                
+                //item.ShowAllDetailsButton = false;
                reply.Attachments.Add(item.GetPreviewCard().ToAttachment());
+                // item.ShowAllDetailsButton = true;
                 reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                 
             }

@@ -392,7 +392,6 @@ namespace CrossVertical.Announcement.Controllers
             TabListViewModel analyticsInfo = new TabListViewModel();
             analyticsInfo.FirstTab.Title = "Acknowledgement";
             analyticsInfo.SecondTab.Title = "Reaction";
-            analyticsInfo.SelectFirstTab = page == "viewAckAnalytics";
             analyticsInfo.FirstTab.TenantId = analyticsInfo.SecondTab.TenantId = tid;
 
             analyticsInfo.FirstTab.Type = "personAcknowledgement";
@@ -458,6 +457,10 @@ namespace CrossVertical.Announcement.Controllers
                 }
 
             }
+
+            analyticsInfo.SelectFirstTab = page == "viewAckAnalytics";
+            if (analyticsInfo.SelectFirstTab && analyticsInfo.FirstTab.Items.Count == 0)
+                analyticsInfo.SelectFirstTab = false;
             return View("TabListView", analyticsInfo);
         }
 
