@@ -116,7 +116,6 @@ namespace CrossVertical.Announcement.Dialogs
                     else
                     {
                         reply.Text = "We will deliver your announcements here.";
-
                     }
                     await context.PostAsync(reply);
                 }
@@ -275,10 +274,33 @@ namespace CrossVertical.Announcement.Dialogs
         {
             // Fetch the members in the current conversation
             ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-            var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
-            if (members.Count == 0)
+            try
+            {
+                var members = await connector.Conversations.GetConversationMembersAsync(activity.Conversation.Id);
+                if (members.Count == 0)
+                    return null;
+                return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName.ToLower();
+            }
+            catch (Exception)
+            {
+                // This is the case for compose extension.
+                var channelData = activity.GetChannelData<TeamsChannelData>();
+                var tid = channelData.Tenant.Id;
+                return await GetEmailIdFromGraphAPI(activity, tid);
+            }
+        }
+
+        private static async Task<string> GetEmailIdFromGraphAPI(Activity activity, string tid)
+        {
+            var tenant = await Cache.Tenants.GetItemAsync(tid);
+            if (tenant == null || !tenant.IsAdminConsented)
                 return null;
-            return members.Where(m => m.Id == activity.From.Id).First().AsTeamsChannelAccount().UserPrincipalName.ToLower();
+
+            var token = await GraphHelper.GetAccessToken(tid, ApplicationSettings.AppId, ApplicationSettings.AppSecret);
+            GraphHelper helper = new GraphHelper(token);
+
+            var emailId = await helper.GetUserEmailId(activity.From.AadObjectId);
+            return emailId;
         }
 
         public static async Task<TeamsChannelAccount> GetCurrentUser(Activity activity)

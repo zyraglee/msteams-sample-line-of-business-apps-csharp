@@ -197,6 +197,11 @@ namespace CrossVertical.Announcement.Helpers
         {
             var campaign = await Cache.Announcements.GetItemAsync(announcementId);
 
+            return GetPreviewAnnouncementCard(campaign);
+        }
+
+        public static Attachment GetPreviewAnnouncementCard(Campaign campaign)
+        {
             campaign.ShowAllDetailsButton = false;
             var card = campaign.GetPreviewCard().ToAttachment();
             campaign.ShowAllDetailsButton = true;

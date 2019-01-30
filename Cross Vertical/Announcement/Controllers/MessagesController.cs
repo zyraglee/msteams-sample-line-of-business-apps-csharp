@@ -27,21 +27,27 @@ namespace CrossVertical.Announcement.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
-            using (var connector = new ConnectorClient(new Uri(activity.ServiceUrl)))
-            {
-                if (activity.IsComposeExtensionQuery())
 
+            if (activity.IsComposeExtensionQuery())
+            {
+                using (var connector = new ConnectorClient(new Uri(activity.ServiceUrl)))
                 {
                     var channelData = activity.GetChannelData<TeamsChannelData>();
                     var tid = channelData.Tenant.Id;
-                    
-                    var emailId = await RootDialog.GetUserEmailId(activity);
-                    var response = await MessageExtension.HandleMessageExtensionQuery(connector, activity,tid,emailId);
+
+                    string emailId = await RootDialog.GetUserEmailId(activity);
+                    if (emailId == null)
+                    {
+                        // Get Email Id from Azure Ad
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    var response = await MessageExtension.HandleMessageExtensionQuery(connector, activity, tid, emailId);
                     return response != null
                         ? Request.CreateResponse<ComposeExtensionResponse>(response)
                         : new HttpResponseMessage(HttpStatusCode.OK);
                 }
             }
+
             if (activity != null && activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new RootDialog());
@@ -120,6 +126,28 @@ namespace CrossVertical.Announcement.Controllers
                     taskInfo["height"] = 900;
                     taskInfo["width"] = 600;
 
+                    //var myCampaign = await Cache.Announcements.GetItemAsync(showDetails.Data.Data.Id);
+                    //var emailId = await RootDialog.GetUserEmailId(activity);
+                    //if(emailId != null)
+                    //{
+                    //    taskInfo["height"] = 100;
+                    //    taskInfo["width"] = 500;
+                    //    if (myCampaign == null)
+                    //    {
+                    //        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard("This announcement has been removed from the system."));
+                    //    }
+                    //    else if (!myCampaign.Recipients.Channels.Any(c => c.Members.Contains(emailId))
+                    //          && !myCampaign.Recipients.Groups.Any(g => g.Users.Any(u => u.Id == emailId)))
+                    //    {
+                    //        card = JObject.FromObject(AdaptiveCardDesigns.GetUpdateMessageCard("You do not have permission to access this message."));
+                    //    }
+                    //    else
+                    //    {
+                    //        card = JObject.FromObject(await AdaptiveCardDesigns.GetPreviewAnnouncementCard(showDetails.Data.Data.Id));
+                    //        taskInfo["height"] = 900;
+                    //        taskInfo["width"] = 600;
+                    //    }
+                    //}
                     break;
                 case Constants.ShowEditAnnouncementTaskModule:
                     taskInfo["title"] = "Edit a message";

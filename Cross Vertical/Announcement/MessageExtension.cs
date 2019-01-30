@@ -1,51 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;using CrossVertical.Announcement.Helpers;
+﻿using CrossVertical.Announcement.Helpers;
 using CrossVertical.Announcement.Models;
-using Faker;
 using CrossVertical.Announcement.Repository;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 namespace CrossVertical.Announcement
 {
     public class MessageExtension
     {
-        public async static Task<ComposeExtensionResponse> HandleMessageExtensionQuery(ConnectorClient connector, Activity activity,string tid,string emailId)
-
+        public async static Task<ComposeExtensionResponse> HandleMessageExtensionQuery(ConnectorClient connector, Activity activity, string tid, string emailId)
         {
 
             var query = activity.GetComposeExtensionQueryData();
 
-            if (query == null || query.CommandId != "getMyAnnouncements")
-
+            if (query == null || query.CommandId != "getMyMessages")
             {
-
-                // We only process the 'getRandomText' queries with this message extension
-
+                // We only process the 'getMyMessages' queries with this message extension
                 return null;
-
             }
 
+            var searchString = string.Empty;
 
-
-            var title = "";
-
-            var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "cardTitle");
+            var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "title");
 
             if (titleParam != null)
-
             {
-
-                title = titleParam.Value.ToString();
-
+                searchString = titleParam.Value.ToString().ToLower();
             }
             var attachments = new List<ComposeExtensionAttachment>();
-           var announcements = await GetMyAnnouncements(tid, emailId);
-           foreach (var item in announcements)
+            var announcements = await GetMyAnnouncements(tid, emailId, searchString);
+            foreach (var item in announcements.OrderByDescending(a => a.CreatedTime))
             {
                 var attachment2 = GetAttachment(item);
                 attachments.Add(attachment2);
@@ -55,9 +43,8 @@ namespace CrossVertical.Announcement
             return response;
 
         }
-        public static async Task<List<Campaign>> GetMyAnnouncements(string tid,string emailId)
+        public static async Task<List<Campaign>> GetMyAnnouncements(string tid, string emailId, string searchString)
         {
-            
             var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
             var myTenantAnnouncements = new List<Campaign>();
             emailId = emailId.ToLower();
@@ -68,6 +55,12 @@ namespace CrossVertical.Announcement
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
                 if (announcement != null)
                 {
+                    if (!announcement.Title.ToLower().Contains(searchString)
+                        && !announcement.SubTitle.ToLower().Contains(searchString)
+                        && (announcement.Author != null && !announcement.Author.Name.ToLower().Contains(searchString)))
+                    {
+                        continue;
+                    }
                     if (role == Role.Moderator || role == Role.Admin)
                     {
                         myTenantAnnouncements.Add(announcement);
@@ -78,40 +71,28 @@ namespace CrossVertical.Announcement
                         // Validate if user is part of this announcement.
                         myTenantAnnouncements.Add(announcement);
                     }
-
                 }
             }
             return myTenantAnnouncements;
 
         }
 
-
-
-        private static ComposeExtensionAttachment GetAttachment(Campaign item)
-
+        private static ComposeExtensionAttachment GetAttachment(Campaign campaign)
         {
-
-            var card = new ThumbnailCard
-
+            var previewCard = new ThumbnailCard
             {
-
-                Title = item.Title/*!string.IsNullOrWhiteSpace(title) ? title : Faker.Lorem.Sentence()*/,
-
-                Text = item.SubTitle,
-
-             };
-           // card.Images = new List<CardImage>() { new CardImage(item.ImageUrl) };
-            card.Images = new List<CardImage>() { new CardImage("http://lorempixel.com/640/480?rand=" + DateTime.Now.Ticks.ToString()) };
-
-
+                Title = campaign.Title/*!string.IsNullOrWhiteSpace(title) ? title : Faker.Lorem.Sentence()*/,
+                Text = campaign.SubTitle,
+            };
+            previewCard.Images = new List<CardImage>() {
+                new CardImage(Uri.IsWellFormedUriString(campaign.Author?.ProfilePhoto, UriKind.Absolute) ?
+                campaign.Author?.ProfilePhoto : null ) };
+            campaign.ShowAllDetailsButton = false;
+            var card = campaign.GetPreviewCard().ToAttachment();
+            campaign.ShowAllDetailsButton = true;
             return card
-
-                .ToAttachment()
-
-                .ToComposeExtensionAttachment();
-
+                .ToComposeExtensionAttachment(previewCard.ToAttachment());
         }
-
     }
 
 }

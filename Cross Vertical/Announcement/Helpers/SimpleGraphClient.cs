@@ -51,14 +51,31 @@ namespace CrossVertical.Announcement.Helpers
             return null;
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<string> GetUserEmailId(string userId)
+        {
+            var graphClient = GetAuthenticatedClient();
+            // Get the user.
+            try
+            {
+                var filteredUsers = await graphClient.Users[userId].Request().GetAsync();
+                return filteredUsers?.UserPrincipalName.ToLower();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        public async Task<User> GetUser(string emailId)
         {
             var graphClient = GetAuthenticatedClient();
             // Get the user.
             try
             {
                 var filteredUsers = await graphClient.Users.Request()
-                .Filter($"startswith(userPrincipalName,'{userId}')")
+                .Filter($"startswith(userPrincipalName,'{emailId}')")
                 .GetAsync();
                 return filteredUsers.FirstOrDefault();
             }
