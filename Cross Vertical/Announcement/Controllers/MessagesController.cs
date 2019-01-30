@@ -425,7 +425,11 @@ namespace CrossVertical.Announcement.Controllers
 
         private static async Task SendWelcomeMessageToAllMembers(Tenant tenant, Activity message, TeamsChannelData channelData, IEnumerable<TeamsChannelAccount> members)
         {
-            var card = AdaptiveCardDesigns.GetWelcomeScreen(false);
+            var tid = channelData.Tenant.Id;
+            var emailId = await RootDialog.GetUserEmailId(message);
+            var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
+            Role role = Common.GetUserRole(emailId, tenatInfo);
+            var card = AdaptiveCardDesigns.GetWelcomeScreen(false,role);
             foreach (var member in members)
             {
                 var userDetails = await Cache.Users.GetItemAsync(member.UserPrincipalName.ToLower());
