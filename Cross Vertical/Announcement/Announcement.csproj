@@ -70,8 +70,11 @@
     <Reference Include="ExcelDataReader.DataSet, Version=3.4.2.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\..\Packages\ExcelDataReader.DataSet.3.4.2\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
     </Reference>
-    <Reference Include="Faker.NET4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Faker.Net.1.0.3\lib\net40\Faker.NET4.dll</HintPath>
+    <Reference Include="Faker, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Faker.1.2\lib\Faker.dll</HintPath>
+    </Reference>
+    <Reference Include="Faker.NET45, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Faker.Net.1.1.1\lib\net452\Faker.NET45.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack.NetCore, Version=1.5.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\Packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\net45\HtmlAgilityPack.NetCore.dll</HintPath>
@@ -297,6 +300,7 @@
     <Compile Include="Helpers\ProactiveMessageHelper.cs" />
     <Compile Include="Helpers\Scheduler.cs" />
     <Compile Include="Helpers\SimpleGraphClient.cs" />
+    <Compile Include="MessageExtension.cs" />
     <Compile Include="Models\ActionButtonInputDetails.cs" />
     <Compile Include="Models\AdminDetails.cs" />
     <Compile Include="Models\AnnouncementDetails.cs" />

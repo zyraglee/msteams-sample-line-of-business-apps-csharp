@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Connector.Teams.Models;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -26,6 +27,21 @@ namespace CrossVertical.Announcement.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
+            using (var connector = new ConnectorClient(new Uri(activity.ServiceUrl)))
+            {
+                if (activity.IsComposeExtensionQuery())
+
+                {
+                    var channelData = activity.GetChannelData<TeamsChannelData>();
+                    var tid = channelData.Tenant.Id;
+                    
+                    var emailId = await RootDialog.GetUserEmailId(activity);
+                    var response = await MessageExtension.HandleMessageExtensionQuery(connector, activity,tid,emailId);
+                    return response != null
+                        ? Request.CreateResponse<ComposeExtensionResponse>(response)
+                        : new HttpResponseMessage(HttpStatusCode.OK);
+                }
+            }
             if (activity != null && activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new RootDialog());
