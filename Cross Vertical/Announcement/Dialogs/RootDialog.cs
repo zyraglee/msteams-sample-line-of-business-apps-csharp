@@ -48,6 +48,10 @@ namespace CrossVertical.Announcement.Dialogs
             string profileKey = GetKey(activity, ProfileKey);
             User userDetails = null;
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
+            var tid = channelData.Tenant.Id;
+            var emailId = await RootDialog.GetUserEmailId(activity);
+            var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
+            Role role = Common.GetUserRole(emailId, tenatInfo);
             if (context.ConversationData.ContainsKey(profileKey))
             {
                 userDetails = context.ConversationData.GetValue<User>(profileKey);
@@ -71,7 +75,7 @@ namespace CrossVertical.Announcement.Dialogs
                 }
                 return;
             }
-            // Check and add tenant details
+            //Check and add tenant details
             if (activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == FileDownloadInfo.ContentType))
             {
                 var attachment = activity.Attachments.First();
@@ -112,11 +116,11 @@ namespace CrossVertical.Announcement.Dialogs
                     }
 
                     if (tenantData.Admin == userDetails.Id || tenantData.Moderators.Contains(userDetails.Id))
-                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null));
+                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null,role));
                     else
                     {
-                        reply.Text = "We will deliver your announcements here.";
-
+                        //reply.Text = "We will deliver your announcements here.";
+                        reply.Attachments.Add(AdaptiveCardDesigns.GetWelcomeScreen(channelData.Team != null,role));
                     }
                     await context.PostAsync(reply);
                 }
@@ -308,11 +312,12 @@ namespace CrossVertical.Announcement.Dialogs
 
             var role = Common.GetUserRole(userDetails.Id, tenant);
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
-            if(role == Role.User && type != Constants.Acknowledge)
+            if(role == Role.User && type != Constants.Acknowledge && type != Constants.ShowRecents)
             {
                 await context.PostAsync("You do not have permissions to perform this task.");
                 return;
             }
+             
             switch (type)
             {
                 case Constants.CreateOrEditAnnouncement:
@@ -347,11 +352,53 @@ namespace CrossVertical.Announcement.Dialogs
                 case Constants.ShowAnnouncement:
                     await ShowAnnouncementDraft(context, activity, channelData);
                     break;
+                case Constants.ShowRecents:
+                    await ShowRecentAnnouncements(context,activity,channelData);
+                    break;
                 default:
                     break;
             }
         }
 
+        private async Task ShowRecentAnnouncements(IDialogContext context, Activity activity, TeamsChannelData channelData)
+        {
+            var tid = channelData.Tenant.Id;
+            var emailId = await RootDialog.GetUserEmailId(activity);
+            var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
+            var myTenantAnnouncements = new List<Campaign>();
+            emailId = emailId.ToLower();
+            var myAnnouncements = tenatInfo.Announcements;
+            Role role = Common.GetUserRole(emailId, tenatInfo);
+            var reply = activity.CreateReply();
+            foreach (var announcementId in myAnnouncements)
+            {
+                var announcement = await Cache.Announcements.GetItemAsync(announcementId);
+                if (announcement != null)
+                {
+                    if (role == Role.Moderator || role == Role.Admin)
+                    {
+                        myTenantAnnouncements.Add(announcement);
+                    }
+                    else if (announcement.Recipients.Channels.Any(c => c.Members.Contains(emailId))
+                          || announcement.Recipients.Groups.Any(g => g.Users.Any(u => u.Id == emailId)))
+                    {
+                        // Validate if user is part of this announcement.
+                        myTenantAnnouncements.Add(announcement);
+                    }
+
+                }
+            }
+            var annuncments = from m in myTenantAnnouncements orderby m.CreatedTime select m;
+            foreach(var item in annuncments)
+            {
+                
+               reply.Attachments.Add(item.GetPreviewCard().ToAttachment());
+                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                
+            }
+            await context.PostAsync(reply);
+            //foreach
+        }
         private static async Task SendAdminPanelCard(IDialogContext context, Activity activity, TeamsChannelData channelData)
         {
             var reply = activity.CreateReply();

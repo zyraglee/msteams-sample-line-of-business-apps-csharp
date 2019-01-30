@@ -13,7 +13,8 @@ namespace CrossVertical.Announcement.Helpers
 {
     public class AdaptiveCardDesigns
     {
-        public static Attachment GetWelcomeScreen(bool isChannelCard)
+        
+        public static Attachment GetWelcomeScreen(bool isChannelCard,Role role)
         {
             var card = new AdaptiveCard()
             {
@@ -66,6 +67,42 @@ namespace CrossVertical.Announcement.Helpers
                 });
 
             }
+            
+            else if(role==Role.User)
+                card.Actions = new List<AdaptiveAction>()
+                {
+                    //new AdaptiveSubmitAction()
+                    //{
+                    //    Id = "createmessage",
+                    //    Title = "📢 Create Message",
+                    //    Data = new AdaptiveCardValue<ActionDetails>()
+                    //    { Data = new ActionDetails() { ActionType = Constants.CreateOrEditAnnouncement } }
+                    //},
+                        new AdaptiveSubmitAction()
+                        {
+                            Id="showdrafts",
+                            Title="⏱️ View Recents",
+                            Data = new ActionDetails() { ActionType = Constants.ShowRecents}
+                        },
+                        new AdaptiveOpenUrlAction()
+                        {
+                            Id="viewall",
+                            Title="📄 View All", // Take to Tab
+                            Url = new System.Uri(Constants.HistoryTabDeeplink)
+                        },
+                        //,
+                        //new AdaptiveSubmitAction()
+                        //{
+                        //    Id="viewstatistics",
+                        //    Title="👁‍🗨 View Statistics"
+                        //},
+                        //new AdaptiveSubmitAction()
+                        //{
+                        //    Id = "adminpanel",
+                        //    Title = "⚙️ Admin Panel",
+                        //    Data = new ActionDetails() { ActionType = Constants.ConfigureAdminSettings }
+                        //}
+                };
             else
                 card.Actions = new List<AdaptiveAction>()
                 {
@@ -101,7 +138,6 @@ namespace CrossVertical.Announcement.Helpers
                             Data = new ActionDetails() { ActionType = Constants.ConfigureAdminSettings }
                         }
                 };
-
             return new Attachment()
             {
                 ContentType = AdaptiveCard.ContentType,

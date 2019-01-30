@@ -2,6 +2,7 @@
 using CrossVertical.Announcement.Helpers;
 using CrossVertical.Announcement.Models;
 using CrossVertical.Announcement.Repository;
+using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,14 @@ namespace CrossVertical.Announcement.Controllers
         [Route("adminconsent")]
         public async Task<ActionResult> ConsentPage(string tenant, string admin_consent, string state)
         {
+            
             if (string.IsNullOrEmpty(tenant))
             {
                 return HttpNotFound();
             }
 
             var adminUserDetails = JsonConvert.DeserializeObject<AdminUserDetails>(HttpUtility.UrlDecode(state));
-
+            var role = Role.Admin;
             var tenantDetails = await Cache.Tenants.GetItemAsync(tenant);
             tenantDetails.IsAdminConsented = true;
             tenantDetails.Admin = adminUserDetails.UserEmailId;
@@ -35,7 +37,7 @@ namespace CrossVertical.Announcement.Controllers
 
             await ProactiveMessageHelper.SendNotification(adminUserDetails.ServiceUrl, tenant, userDetails.BotConversationId, "Your app consent is successfully granted. Please go ahead and set groups in Admin Panel." , null);
 
-            await ProactiveMessageHelper.SendNotification(adminUserDetails.ServiceUrl, tenant, userDetails.BotConversationId, null, AdaptiveCardDesigns.GetWelcomeScreen(false));
+            await ProactiveMessageHelper.SendNotification(adminUserDetails.ServiceUrl, tenant, userDetails.BotConversationId, null, AdaptiveCardDesigns.GetWelcomeScreen(false,role));
 
 
             return View();
