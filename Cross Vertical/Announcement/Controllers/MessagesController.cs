@@ -273,9 +273,7 @@ namespace CrossVertical.Announcement.Controllers
                             if (user != null)
                             {
                                 messageFound = true;
-                                user.LikeCount += reactionToAdd;
-                                if (user.LikeCount < 0)
-                                    user.LikeCount = 0;
+                                user.LikeCount = reactionToAdd == 1 ? 1 : 0;
                             }
                         }
                     if (!messageFound && channelData.Team != null)
@@ -429,7 +427,7 @@ namespace CrossVertical.Announcement.Controllers
             var emailId = await RootDialog.GetUserEmailId(message);
             var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
             Role role = Common.GetUserRole(emailId, tenatInfo);
-            var card = AdaptiveCardDesigns.GetWelcomeScreen(false,role);
+            var card = AdaptiveCardDesigns.GetWelcomeScreen(false, role);
             foreach (var member in members)
             {
                 var userDetails = await Cache.Users.GetItemAsync(member.UserPrincipalName.ToLower());

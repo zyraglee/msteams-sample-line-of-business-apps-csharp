@@ -387,6 +387,9 @@ namespace CrossVertical.Announcement.Dialogs
                 case Constants.ShowRecents:
                     await ShowRecentAnnouncements(context, activity, channelData);
                     break;
+                case Constants.ShowSentAnnouncement:
+                    await SendPreviewOfSentAnnouncement(context, activity);
+                    break;
                 default:
                     break;
             }
@@ -401,11 +404,10 @@ namespace CrossVertical.Announcement.Dialogs
             emailId = emailId.ToLower();
             var myAnnouncements = tenatInfo.Announcements;
             Role role = Common.GetUserRole(emailId, tenatInfo);
-            var reply = activity.CreateReply();
             foreach (var announcementId in myAnnouncements)
             {
                 var announcement = await Cache.Announcements.GetItemAsync(announcementId);
-                if (announcement != null)
+                if (announcement != null && announcement.Status == Status.Sent)
                 {
                     if (role == Role.Moderator || role == Role.Admin)
                     {
@@ -417,21 +419,49 @@ namespace CrossVertical.Announcement.Dialogs
                         // Validate if user is part of this announcement.
                         myTenantAnnouncements.Add(announcement);
                     }
-
                 }
             }
-            foreach (var item in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime).Take(10))
-            {
-                //item.ShowAllDetailsButton = false;
-                reply.Attachments.Add(item.GetPreviewCard().ToAttachment());
-                // item.ShowAllDetailsButton = true;
-                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
 
+            var listCard = new ListCard();
+            listCard.content = new Content();
+            listCard.content.title = "Here are all your recent announcements:"; ;
+            var list = new List<Item>();
+            foreach (var announcement in myTenantAnnouncements.OrderByDescending(a => a.CreatedTime).Take(10))
+            {
+                if (announcement != null && (announcement.Status == Status.Sent))
+                {
+                    var item = new Item
+                    {
+                        icon = announcement.Author.ProfilePhoto,
+                        type = "resultItem",
+                        id = announcement.Id,
+                        title = announcement.Title,
+                        subtitle = "Author: " + announcement.Author?.Name
+                             + $" | Received Date: { (announcement.Status == Status.Scheduled ? announcement.CreatedTime.ToShortDateString() : announcement.Schedule.ScheduledTime.Date.ToShortDateString()) }",
+                        tap = new Tap()
+                        {
+                            type = ActionTypes.MessageBack,
+                            title = "Id",
+                            value = JsonConvert.SerializeObject(new AnnouncementActionDetails()
+                            { Id = announcement.Id, ActionType = Constants.ShowSentAnnouncement }) //  "Show Announcement " + announcement.Title + " (" + announcement.Id + ")"
+                        }
+                    };
+                    list.Add(item);
+                }
             }
-            if (reply.Attachments.Count == 0)
-                reply.Text = "You don't seem to have any messages received recently. Hang on!";
-            await context.PostAsync(reply);
-            //foreach
+
+            if (list.Count > 0)
+            {
+                listCard.content.items = list.ToArray();
+                Attachment attachment = new Attachment();
+                attachment.ContentType = listCard.contentType;
+                attachment.Content = listCard.content;
+                var reply = activity.CreateReply();
+                reply.Attachments.Add(attachment);
+                await context.PostAsync(reply);
+            }
+            else
+                await context.PostAsync("You don't seem to have any messages received recently. Hang on!");
         }
         private static async Task SendAdminPanelCard(IDialogContext context, Activity activity, TeamsChannelData channelData)
         {
@@ -450,6 +480,35 @@ namespace CrossVertical.Announcement.Dialogs
                 if (campaign == null)
                     return;
                 await SendPreviewCard(context, activity, campaign, false);
+            }
+        }
+
+        private static async Task SendPreviewOfSentAnnouncement(IDialogContext context, Activity activity)
+        {
+            var details = JsonConvert.DeserializeObject<AnnouncementActionDetails>(activity.Value.ToString());
+            if (details != null)
+            {
+                var campaign = await Cache.Announcements.GetItemAsync(details.Id);
+                if (campaign == null)
+                {
+                    await context.PostAsync("This message no longer exists.");
+                    return;
+                }
+                var reply = activity.CreateReply();
+                var card = campaign.GetPreviewCard().ToAttachment();
+                var userEmailId = await GetUserEmailId(activity);
+                var group = campaign.Recipients.Groups.FirstOrDefault(g => g.Users.Any(u => u.Id == userEmailId));
+                if (group != null)
+                {
+                    var campaignCard = AdaptiveCardDesigns.GetCardWithAcknowledgementDetails(card, campaign.Id, userEmailId, group.GroupId);
+                    reply.Attachments.Add(campaignCard);
+                }
+                else
+                {
+                    var campaignCard = AdaptiveCardDesigns.GetCardWithoutAcknowledgementAction(card);
+                    reply.Attachments.Add(campaignCard);
+                }
+                await context.PostAsync(activity);
             }
         }
 

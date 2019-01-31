@@ -31,13 +31,16 @@ namespace CrossVertical.Announcement.Helpers
                             new AdaptiveTextBlock()
                             {
                                 Weight=AdaptiveTextWeight.Bolder,
-                                Text="Reach people right where they collaborate. "
-
+                                Text= role == Role.User?
+                                "Get contacted where you collaborate."
+                                :"Reach people right where they collaborate. "
                             },
                             new AdaptiveTextBlock()
                             {
                                 IsSubtle=true,
-                                Text=$"Get the message out to employees using Microsoft Teams. Send {ApplicationSettings.AppFeature} to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
+                                Text= role == Role.User?
+                                $"Never again miss a formal communication of interest from your enterprise on Microsoft Teams! Get notified about instant messages sent to you or your team, react, acknowledge, track and view engagement on relevant messages - all in a structured manner within your favorite workspace.\n Using this app, you can:"
+                                : $"Get the message out to employees using Microsoft Teams. Send {ApplicationSettings.AppFeature} to a set of employees, stores, roles or locations in one or more channels or individually.\nUsing this app, you can:",
                                 Wrap=true
                             },
                             new AdaptiveTextBlock()
@@ -45,7 +48,9 @@ namespace CrossVertical.Announcement.Helpers
                                 Size=AdaptiveTextSize.Small,
                                 IsSubtle=true,
                                 Wrap=true,
-                                Text=$"* Collaborate and communicate with large employee groups\n* Target {ApplicationSettings.AppFeature} via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver {ApplicationSettings.AppFeature}s to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
+                                Text= role == Role.User?
+                                $"* Receive communication sent to large employee groups\n* Get notified about {ApplicationSettings.AppFeature}s sent to you via 1:1 chat\n* Get messages in channels to encourage discussion and feedback\n* See {ApplicationSettings.AppFeature}s to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report engagement on messages you receive\n* Send “read receipt or acknowledgments, if requested"
+                                :$"* Collaborate and communicate with large employee groups\n* Target {ApplicationSettings.AppFeature} via 1:1 chats for select employees\n* Post in Channels to encourage discussion and feedback\n* Deliver {ApplicationSettings.AppFeature}s to desktop, web clients or mobile clients of Microsoft Teams  – wherever users are\n* Track and report employee engagement on what you post\n* Track and report employee’s “read receipt if requested "
                             },
                             new AdaptiveTextBlock()
                             {
@@ -65,7 +70,6 @@ namespace CrossVertical.Announcement.Helpers
                     Title = "Go to Personal App",
                     Url = new System.Uri($"https://teams.microsoft.com/l/chat/0/0?users=28:{ApplicationSettings.AppId}")
                 });
-
             }
 
             else if (role == Role.User)

@@ -9,6 +9,7 @@ namespace CrossVertical.Announcement.Helpers
         public const string ConfigureAdminSettings = "ConfigureAdminSettings";
         public const string ShowAllDrafts = "ShowDrafts";
         public const string ShowAnnouncement = "ShowAnnouncementDraft";
+        public const string ShowSentAnnouncement = "ShowSentAnnouncement";
         public const string Cancel = "Cancel";
         public const string ShowRecents = "ShowRecents";
 
