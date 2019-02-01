@@ -49,7 +49,7 @@ namespace CrossVertical.Announcement.Dialogs
             User userDetails = null;
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
             var tid = channelData.Tenant.Id;
-            var emailId = await RootDialog.GetUserEmailId(activity);
+            var emailId = await GetUserEmailId(activity);
             var tenatInfo = await Cache.Tenants.GetItemAsync(tid);
             Role role = Common.GetUserRole(emailId, tenatInfo);
             if (context.ConversationData.ContainsKey(profileKey))
@@ -344,7 +344,7 @@ namespace CrossVertical.Announcement.Dialogs
 
             var role = Common.GetUserRole(userDetails.Id, tenant);
             var channelData = context.Activity.GetChannelData<TeamsChannelData>();
-            if (role == Role.User && type != Constants.Acknowledge && type != Constants.ShowRecents)
+            if (role == Role.User && type != Constants.Acknowledge && type != Constants.ShowRecents && type != Constants.ShowSentAnnouncement)
             {
                 await context.PostAsync("You do not have permissions to perform this task.");
                 return;
@@ -437,7 +437,7 @@ namespace CrossVertical.Announcement.Dialogs
                         id = announcement.Id,
                         title = announcement.Title,
                         subtitle = "Author: " + announcement.Author?.Name
-                             + $" | Received Date: { (announcement.Status == Status.Scheduled ? announcement.CreatedTime.ToShortDateString() : announcement.Schedule.ScheduledTime.Date.ToShortDateString()) }",
+                             + $" | Received Date: { (announcement.Status == Status.Sent ? announcement.CreatedTime.ToShortDateString() : announcement.Schedule.ScheduledTime.Date.ToShortDateString()) }",
                         tap = new Tap()
                         {
                             type = ActionTypes.MessageBack,
@@ -508,7 +508,7 @@ namespace CrossVertical.Announcement.Dialogs
                     var campaignCard = AdaptiveCardDesigns.GetCardWithoutAcknowledgementAction(card);
                     reply.Attachments.Add(campaignCard);
                 }
-                await context.PostAsync(activity);
+                await context.PostAsync(reply);
             }
         }
 
